@@ -37,6 +37,10 @@ These are events the user can emit to.
 
 * `nickname` <string> - The nickname of the player
 
+### goToWorld
+
+* `location` <Object> - The location object belonging to the destination world
+
 ### exploreTile
 
 * `position` <Object> - The position of the tile to explore
