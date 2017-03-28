@@ -1,7 +1,0 @@
-FROM hypriot/rpi-node:latest
-
-RUN mkdir -p /elmeron
-WORKDIR /elmeron
-COPY . /elmeron
-RUN npm install
-CMD npm run lint && npm run test
