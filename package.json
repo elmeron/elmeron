@@ -1,0 +1,29 @@
+{
+  "name": "tddd272017-elmeron",
+  "version": "0.0.1",
+  "description": "A real time multiplayer game where every player competes on the exploration of the universe",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "webserver:build": "babel ./webserver/src -d ./webserver/build",
+    "webserver:start": "node ./webserver/build/server.js"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.ida.liu.se:natlo809/TDDD272017_elmeron.git"
+  },
+  "author": "Natanael Log <natte.log@gmail.com> (www.natanael.se)",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "6.24.0",
+    "babel-preset-es2015": "6.24.0",
+    "express": "4.15.2"
+  }
+}

@@ -1,0 +1,13 @@
+FROM hypriot/rpi-node:latest
+
+RUN mkdir -p /elmeron/webserver
+WORKDIR /elmeron
+
+COPY ./package.json /elmeron
+RUN npm install
+
+COPY ./webserver /elmeron/webserver
+RUN npm run webserver:build
+
+EXPOSE 3000
+CMD npm run webserver:start
