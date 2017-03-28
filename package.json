@@ -8,12 +8,17 @@
   },
   "scripts": {
     "webserver:build": "babel ./webserver/src -d ./webserver/build",
-    "webserver:start": "node ./webserver/build/server.js"
+    "webserver:start": "node ./webserver/build/server.js",
+    "lint": "eslint ./webserver/src",
+    "test": "jest"
   },
   "babel": {
     "presets": [
       "es2015"
     ]
+  },
+  "eslintConfig": {
+    "extends": "airbnb"
   },
   "repository": {
     "type": "git",
@@ -24,6 +29,14 @@
   "devDependencies": {
     "babel-cli": "6.24.0",
     "babel-preset-es2015": "6.24.0",
+    "eslint": "3.18.0",
+    "eslint-config-airbnb": "14.1.0",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "4.0.0",
+    "eslint-plugin-react": "6.10.3",
+    "jest": "19.0.2"
+  },
+  "dependencies": {
     "express": "4.15.2"
   }
 }
