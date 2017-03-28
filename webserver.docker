@@ -1,13 +1,19 @@
-FROM hypriot/rpi-node:latest
+FROM hypriot/rpi-node:7.4
 
-RUN mkdir -p /elmeron/webserver
+RUN mkdir /elmeron
 WORKDIR /elmeron
 
 COPY ./package.json /elmeron
 RUN npm install
 
+RUN mkdir -p /elmeron/webserver
 COPY ./webserver /elmeron/webserver
 RUN npm run webserver:build
+
+RUN mkdir -p /elmeron/client
+COPY ./webpack.config.babel.js /elmeron
+COPY ./client /elmeron/client
+RUN npm run client:build
 
 EXPOSE 3000
 CMD npm run webserver:start
