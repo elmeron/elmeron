@@ -8,6 +8,7 @@ RUN npm install
 
 RUN mkdir -p /elmeron/webserver
 COPY ./webserver /elmeron/webserver
+COPY ./common /elmeron/common
 RUN npm run webserver:build
 
 RUN mkdir -p /elmeron/client
