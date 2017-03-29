@@ -7,9 +7,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "webserver:build": "babel ./webserver/src -d ./webserver/build",
+    "webserver:build": "babel ./webserver/src -d ./webserver/build && babel ./common -d ./webserver/build",
     "webserver:start": "node ./webserver/build/server.js",
     "client:build": "webpack",
+    "client:dev": "webpack-dev-server --progress --colors",
     "lint": "eslint webpack.config.babel.js ./webserver/src ./client/src",
     "test": "jest"
   },
@@ -20,7 +21,10 @@
     ]
   },
   "eslintConfig": {
-    "extends": "airbnb"
+    "extends": "airbnb",
+    "rules": {
+      "import/no-unresolved": "off"
+    }
   },
   "repository": {
     "type": "git",
@@ -41,11 +45,15 @@
     "eslint-plugin-react": "6.10.3",
     "html-webpack-plugin": "2.28.0",
     "jest": "19.0.2",
-    "webpack": "2.3.2"
+    "webpack": "2.3.2",
+    "webpack-dev-server": "2.4.2"
   },
   "dependencies": {
     "express": "4.15.2",
+    "moment": "2.18.1",
+    "morgan": "1.8.1",
     "react": "15.4.2",
-    "react-dom": "15.4.2"
+    "react-dom": "15.4.2",
+    "winston": "2.3.1"
   }
 }
