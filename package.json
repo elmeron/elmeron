@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "webserver:build": "babel ./webserver/src -d ./webserver/build && babel ./common -d ./webserver/build",
+    "webserver:build": "babel ./webserver/src -d ./webserver/build && babel ./common -d ./webserver/build/common",
     "webserver:start": "node ./webserver/build/server.js",
     "client:build": "webpack",
     "client:dev": "webpack-dev-server --progress --colors",

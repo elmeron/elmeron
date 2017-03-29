@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import morgan from 'morgan';
-import { webserverLogger as logger } from './logger';
+import { webserverLogger as logger } from './common/logger';
 
 const server = express();
 
