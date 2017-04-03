@@ -18,11 +18,11 @@ const initialState = {
   },
 };
 
-export function calculateExtremes(hexagons, zoom) {
+export function calculateExtremes(hexagons) {
   const halfWidth = config.tiles.size;
   const halfHeight = (Math.sqrt(3) / 2) * halfWidth;
   const { q: rQ, r: rR } = hexagons[0] || { q: 0, r: 0 };
-  const { x, y } = hexToPixel(rQ, rR, zoom);
+  const { x, y } = hexToPixel(rQ, rR);
 
   let xMin = x;
   let xMax = x;
@@ -31,7 +31,7 @@ export function calculateExtremes(hexagons, zoom) {
 
   hexagons.forEach((hex) => {
     const { q, r } = hex;
-    const { x: rX, y: rY } = hexToPixel(q, r, zoom);
+    const { x: rX, y: rY } = hexToPixel(q, r);
 
     xMin = Math.min(xMin, rX);
     xMax = Math.max(xMax, rX);

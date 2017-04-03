@@ -16,8 +16,8 @@ class GameView extends React.PureComponent {
   }
 
   componentWillMount() {
-    const { tiles, zoom, calcExtremes } = this.props;
-    calcExtremes(tiles, zoom);
+    const { tiles, calcExtremes } = this.props;
+    calcExtremes(tiles);
   }
 
   onBackgroundClick() {
@@ -46,7 +46,6 @@ class GameView extends React.PureComponent {
 export default connect(
   (state) => ({
     tiles: state.tiles.toIndexedSeq().toJS(),
-    zoom: state.grid.get('zoom'),
   }),
   (dispatch) => ({
     calcExtremes: bindActionCreators(calculateExtremes, dispatch),
