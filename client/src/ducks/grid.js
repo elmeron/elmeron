@@ -6,7 +6,6 @@ import config from '../../config.js';
 const CALCULATE_EXTREMES = 'grid/CALCULATE_EXTREMES';
 
 const initialState = {
-  zoom: 1,
   centerTile: {
     q: 0,
     r: 0,

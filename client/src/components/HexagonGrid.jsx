@@ -1,54 +1,52 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import './HexagonGrid.less';
+import config from '../../config.js';
 import { hexToPixel } from '../services/hex-util.js';
+import './HexagonGrid.less';
 import Hexagon from './Hexagon.jsx';
 
 class HexagonGrid extends React.PureComponent {
   componentWillMount() {
-    const { width, height, centerTile, zoom } = this.props;
+    const { width, height, centerTile } = this.props;
     this.state = {
-      matrix: this.calculateMatrix(width, height, centerTile, zoom),
+      matrix: this.calculateMatrix(width, height, centerTile),
       dragging: false,
     };
   }
 
-  calculateMatrix(width, height, center, zoom, dx = 0, dy = 0) {
+  calculateMatrix(width, height, center) {
     const { q: cQ, r: cR } = center;
-    const { x: cX, y: cY } = hexToPixel(cQ, cR, zoom);
+    const { x: cX, y: cY } = hexToPixel(cQ, cR, 1);
 
-    const offsetX = -cX + width / 2;
-    const offsetY = -cY + height / 2;
+    const offsetX = -cX + (width / 2);
+    const offsetY = -cY + (height / 2);
 
-    const m = [1, 0, 0, 1, offsetX, offsetY];
-    m.map(val => val * zoom);
-
-    m[4] += (1 - zoom) * width / 2 + dx;
-    m[5] += (1 - zoom) * height / 2 + dy;
-
-    return m;
+    return [1, 0, 0, 1, offsetX, offsetY];
   }
 
   pan(dx, dy) {
     const m = this.state.matrix;
-    const { width, height, zoom, extremes } = this.props;
+    const { width, height, extremes } = this.props;
     const { xMin, xMax, yMin, yMax } = extremes;
+    const { padding } = config.grid;
+    const zoom = m[0];
     const x = m[4] + dx;
     const y = m[5] + dy;
-    const xMinScale = xMin * zoom;
-    const xMaxScale = xMax * zoom;
-    const yMinScale = yMin * zoom;
-    const yMaxScale = yMax * zoom;
+
+    const xMinScale = zoom * xMin;
+    const xMaxScale = zoom * xMax;
+    const yMinScale = zoom * yMin;
+    const yMaxScale = zoom * yMax;
 
     const topDiff = (y - Math.abs(yMinScale)).toFixed(2);
     const rightDiff = (width - (x + Math.abs(xMaxScale))).toFixed(2);
     const bottomDiff = (height - (y + Math.abs(yMaxScale))).toFixed(2);
     const leftDiff = (x - Math.abs(xMinScale)).toFixed(2);
 
-    const canMoveUp = topDiff >= 0 || bottomDiff < 0;
-    const canMoveRight = rightDiff >= 0 || leftDiff < 0;
-    const canMoveDown = bottomDiff >= 0 || topDiff < 0;
-    const canMoveLeft = leftDiff >= 0 || rightDiff < 0;
+    const canMoveUp = topDiff >= padding || bottomDiff < padding;
+    const canMoveRight = rightDiff >= padding || leftDiff < padding;
+    const canMoveDown = bottomDiff >= padding || topDiff < padding;
+    const canMoveLeft = leftDiff >= padding || rightDiff < padding;
 
     if (dy < 0 && canMoveUp || dy > 0 && canMoveDown) {
       m[5] = y;
@@ -91,6 +89,21 @@ class HexagonGrid extends React.PureComponent {
     this.setState({ dragging: false });
   }
 
+  onScroll(e) {
+    const m = this.state.matrix;
+    const { zoomMin, zoomMax } = config.grid;
+    const delta = e.deltaY > 0 ? 0.1 : -0.1;
+    const zoom = m[0];
+    let value = zoom + delta;
+
+    value = value >= zoomMin && value <= zoomMax ? value : zoom;
+
+    m[0] = value;
+    m[3] = value;
+
+    this.setState({ matrix: Object.assign([], m) });
+  }
+
   render() {
     const {
       width,
@@ -113,6 +126,7 @@ class HexagonGrid extends React.PureComponent {
         onMouseMove={e => this.onDragMove(e)}
         onMouseUp={() => this.onDragEnd()}
         onMouseLeave={() => this.onDragEnd()}
+        onWheel={e => this.onScroll(e)}
       >
         <rect
           className="background"
@@ -147,7 +161,6 @@ class HexagonGrid extends React.PureComponent {
 HexagonGrid.PropTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
-  zoom: PropTypes.number.isRequired,
   centerTile: PropTypes.object.isRequired,
   hexagons: PropTypes.arrayOf(PropTypes.object).isRequired,
   extremes: PropTypes.objectOf(PropTypes.number).isRequired,
@@ -159,7 +172,6 @@ export default connect(
   (state) => ({
     width: state.ui.get('screenWidth'),
     height: state.ui.get('screenHeight'),
-    zoom: state.grid.get('zoom'),
     centerTile: state.grid.get('centerTile').toJS(),
     extremes: state.grid.get('extremes').toJS(),
     hexagons: state.tiles.toIndexedSeq(),
