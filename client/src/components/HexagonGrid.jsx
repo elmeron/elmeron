@@ -97,6 +97,8 @@ class HexagonGrid extends React.PureComponent {
       height,
       hexagons,
       zoom,
+      onBackgroundClick,
+      onHexClick,
     } = this.props;
     const viewBox = [0, 0, width, height].join(' ');
     const matrix = this.state.matrix.join(' ');
@@ -116,18 +118,22 @@ class HexagonGrid extends React.PureComponent {
           className="background"
           width={width}
           height={height}
+          onClick={() => onBackgroundClick()}
         />
         <g transform={`matrix(${matrix})`}>
           {
             hexagons.map((hex) => {
               const q = hex.get('q');
               const r = hex.get('r');
+              const type = hex.get('type');
               const center = hexToPixel(q, r, zoom);
 
               return (
                 <Hexagon
                   key={`${q}-${r}`}
                   center={center}
+                  type={type}
+                  onClick={elem => onHexClick(elem, hex.toJS())}
                 />
               );
             })
@@ -145,6 +151,8 @@ HexagonGrid.PropTypes = {
   centerTile: PropTypes.object.isRequired,
   hexagons: PropTypes.arrayOf(PropTypes.object).isRequired,
   extremes: PropTypes.objectOf(PropTypes.number).isRequired,
+  onBackgroundClick: PropTypes.func.isRequired,
+  onHexClick: PropTypes.func.isRequired,
 };
 
 export default connect(

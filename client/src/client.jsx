@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import 'bootstrap/less/bootstrap.less';
+import './style.less';
+import '../static/fonts.less';
 import store from './services/store.js';
 import { setScreenDimension } from './ducks/ui.js';
 import ViewDelegate from './components/ViewDelegate.jsx';

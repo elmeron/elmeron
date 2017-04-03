@@ -1,5 +1,10 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+
+const extractLess = new ExtractTextPlugin({
+  filename: 'style.css',
+});
 
 module.exports = {
   entry: './client/src/client.jsx',
@@ -18,11 +23,16 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'less-loader' },
-        ],
+        use: extractLess.extract({
+          use: [
+            {
+              loader: 'css-loader',
+            },
+            {
+              loader: 'less-loader',
+            },
+          ],
+        }),
       },
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
@@ -59,5 +69,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './client/static/index.html',
     }),
+    extractLess,
   ],
 };

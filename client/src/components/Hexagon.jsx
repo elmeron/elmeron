@@ -36,16 +36,19 @@ export default function Hexagon(props) {
   }
 
   const d = roundPathCorners(path(), 0.1, true);
+  const type = props.type || '';
 
   return (
     <path
       d={d}
-      className="hexagon"
-      onClick={props.onClick}
+      className={`hexagon ${type}`}
+      onClick={e => props.onClick(e.target)}
     />
   );
 }
 
 Hexagon.PropTypes = {
   center: PropTypes.object.isRequired,
+  type: PropTypes.string,
+  onClick: PropTypes.func,
 };
