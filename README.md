@@ -54,9 +54,10 @@ style guide will be [airbnb](https://github.com/airbnb/javascript).
 [GitLab runners](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner) will be
 used to deploy and run automatic tests and lints. Any commit on any branch will
 trigger tests and lints. Commits on master will also trigger deployment meaning
-the latest release of the game will be available live all the time (hopefully on
-elmeron.com). The machine doing this will be a Rasberry Pi and
-[Docker](https://www.docker.com/) will be used as a container wrapping all jobs.
+the latest release of the game will be available live all the time at
+[elmeron.natanael.se](http://elmeron.natanael.se). The machine doing this will
+be a Rasberry Pi and [Docker](https://www.docker.com/) will be used as a
+container wrapping all jobs.
 
 ## Scope
 
