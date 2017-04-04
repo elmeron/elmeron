@@ -8,4 +8,12 @@ export default class Tile {
   getId() {
     return this.position.getId();
   }
+
+  getData() {
+    return {
+      q: this.position.q,
+      r: this.position.r,
+      resource: this.resource.name,
+    };
+  }
 }

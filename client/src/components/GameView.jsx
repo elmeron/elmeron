@@ -45,7 +45,7 @@ class GameView extends React.PureComponent {
 
 export default connect(
   (state) => ({
-    tiles: state.tiles.toIndexedSeq().toJS(),
+    tiles: state.world.get('tiles').toJS(),
   }),
   (dispatch) => ({
     calcExtremes: bindActionCreators(calculateExtremes, dispatch),

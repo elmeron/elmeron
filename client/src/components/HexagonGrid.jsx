@@ -139,7 +139,7 @@ class HexagonGrid extends React.PureComponent {
             hexagons.map((hex) => {
               const q = hex.get('q');
               const r = hex.get('r');
-              const type = hex.get('type');
+              const type = hex.get('resource');
               const center = hexToPixel(q, r, zoom);
 
               return (
@@ -174,6 +174,6 @@ export default connect(
     height: state.ui.get('screenHeight'),
     centerTile: state.grid.get('centerTile').toJS(),
     extremes: state.grid.get('extremes').toJS(),
-    hexagons: state.tiles.toIndexedSeq(),
+    hexagons: state.world.get('tiles'),
   })
 )(HexagonGrid);

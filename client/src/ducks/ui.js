@@ -6,7 +6,7 @@ const SET_VIEW = 'ui/SET_VIEW';
 const initialState = {
   screenWidth: 0,
   screenHeight: 0,
-  view: 'game',
+  view: 'loadGame',
 };
 
 export function setScreenDimension(width, height) {

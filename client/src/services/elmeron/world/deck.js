@@ -10,15 +10,14 @@ export default class Deck {
   pick() {
     const size = this.distribution.size;
     const randomIndex = this.rand.integer({ min: 0, max: size });
-    const pickedResource = this.distribution.get(randomIndex);
+    return this.distribution.get(randomIndex);
+  }
 
-    if (pickedResource) {
-      const currentAmount = this.distribution.count(pickedResource);
-
-      this.distribution.set(pickedResource, currentAmount - 1);
-      this.size = this.distribution.size;
-    }
-
+  pickAndRemove() {
+    const pickedResource = this.pick();
+    const amount = this.distribution.count(pickedResource);
+    this.distribution.set(pickedResource, amount - 1);
+    this.size = this.distribution.size;
     return pickedResource;
   }
 }

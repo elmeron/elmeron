@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import Card from './Card.jsx';
 
 export default function TileCard(props) {
-  const { type } = props.tile;
-  const name = type.charAt(0).toUpperCase() + type.slice(1);
+  const { resource } = props.tile;
+  const name = resource.charAt(0).toUpperCase() + resource.slice(1);
 
   return (
     <Card>
@@ -13,5 +13,5 @@ export default function TileCard(props) {
 }
 
 TileCard.PropTypes = {
-  tiles: PropTypes.object.isRequired,
+  tile: PropTypes.object.isRequired,
 };

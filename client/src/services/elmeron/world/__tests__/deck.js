@@ -9,6 +9,6 @@ test('picking should decrease size', () => {
   const deck = new Deck(dist);
 
   expect(deck.size).toBe(10);
-  expect(deck.pick()).toBe(forest);
+  expect(deck.pickAndRemove()).toBe(forest);
   expect(deck.size).toBe(9);
 });

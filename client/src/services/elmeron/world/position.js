@@ -10,4 +10,11 @@ export default class Position {
       r: this.r,
     });
   }
+
+  getData() {
+    return {
+      q: this.q,
+      r: this.r,
+    };
+  }
 }

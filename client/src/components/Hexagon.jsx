@@ -41,7 +41,7 @@ export default function Hexagon(props) {
   return (
     <path
       d={d}
-      className={`hexagon ${type}`}
+      className={`hexagon ${type.toLowerCase()}`}
       onClick={e => props.onClick(e.target)}
     />
   );
