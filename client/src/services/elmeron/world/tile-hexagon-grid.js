@@ -26,7 +26,7 @@ export default class TileHexagonGrid {
   }
 
   getTiles() {
-    return this.tiles.reduce((result, tile, key) =>
+    return this.tiles.reduce((result, tile) =>
       result.push(tile.getData())
     , new List()).toJS();
   }
