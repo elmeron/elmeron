@@ -8,9 +8,9 @@
   },
   "scripts": {
     "webserver:build": "babel ./webserver/src -d ./webserver/build && babel ./common -d ./webserver/build/common",
-    "webserver:start": "node ./webserver/build/server.js",
+    "webserver:start": "NODE_ENV=production node ./webserver/build/server.js",
     "client:build": "webpack",
-    "client:dev": "webpack-dev-server --progress --colors",
+    "client:dev": "webpack-dev-server --progress --colors --define process.env.NODE_ENV=\"'development'\"",
     "lint": "eslint webpack.config.babel.js ./webserver/src ./client/src",
     "test": "jest"
   },
