@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setCardDimension } from '../ducks/card.js';
+import { setCardDimension } from '../../ducks/card.js';
 import './Card.less';
 
 // this must be synced with the .less file

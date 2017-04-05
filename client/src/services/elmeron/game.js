@@ -10,9 +10,13 @@ export default class Game {
     this.players = players;
 
     const distribution = new ResourceDistribution();
-    const resource = new Resource('Forest');
+    const forest = new Resource('Forest');
+    const rock = new Resource('Rock');
+    const sand = new Resource('Sand');
 
-    distribution.set(resource, 10);
+    distribution.set(forest, 10);
+    distribution.set(rock, 5);
+    distribution.set(sand, 2);
 
     const deck = new Deck(distribution);
 

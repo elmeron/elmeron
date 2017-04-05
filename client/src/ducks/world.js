@@ -1,26 +1,28 @@
-import { fromJS } from 'immutable';
+import { fromJS, Map } from 'immutable';
 import { act, reducer } from './util.js';
 
-const SET_TILES = 'world/SET_TILES';
+const MERGE_TILES = 'world/MERGE_TILES';
 
 const initialState = {
-  tiles: [
-    { q: 0, r: 0, type: 'forest' },
-    { q: 0, r: 1, type: 'sand' },
-    { q: 1, r: 0, type: 'rock' },
-  ],
+  tiles: {},
 };
 
-export function setTiles(tiles) {
-  return act(SET_TILES, tiles);
+export function mergeTiles(tiles) {
+  return act(MERGE_TILES, tiles);
 }
 
-function handleSetTiles(state, tiles) {
-  return state.set('tiles', fromJS(tiles));
+function handleMergeTiles(state, tiles) {
+  const reducedTiles = tiles.reduce((result, tile) => {
+    const { q, r } = tile;
+    const key = `${q},${r}`;
+    return result.set(key, fromJS(tile));
+  }, new Map());
+
+  return state.mergeIn(['tiles'], reducedTiles);
 }
 
 const handlers = {
-  [SET_TILES]: handleSetTiles,
+  [MERGE_TILES]: handleMergeTiles,
 };
 
 export default reducer(initialState, handlers);

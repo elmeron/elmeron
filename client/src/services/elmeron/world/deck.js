@@ -9,7 +9,7 @@ export default class Deck {
 
   pick() {
     const size = this.distribution.size;
-    const randomIndex = this.rand.integer({ min: 0, max: size });
+    const randomIndex = this.rand.integer({ min: 0, max: size - 1 });
     return this.distribution.get(randomIndex);
   }
 
@@ -19,5 +19,9 @@ export default class Deck {
     this.distribution.set(pickedResource, amount - 1);
     this.size = this.distribution.size;
     return pickedResource;
+  }
+
+  isEmpty() {
+    return this.size === 0;
   }
 }

@@ -2,6 +2,7 @@ import TileHexagonGrid from '../tile-hexagon-grid.js';
 import Position from '../position.js';
 import Resource from '../resource';
 import Tile from '../tile.js';
+import Unexplored from '../resources/unexplored.js';
 
 test('add tile', () => {
   const tileGrid = new TileHexagonGrid();
@@ -52,7 +53,18 @@ test('populate undefined neighbours', () => {
   const origo = new Position(0, 0);
 
   tileGrid.addTile(new Tile(origo, new Resource('resource')));
-  tileGrid.populateUndefinedNeighbours(origo, new Resource('unexplored'));
+  const neighbours = tileGrid.populateUndefinedNeighbours(origo, new Unexplored());
 
   expect(tileGrid.tiles.size).toBe(7);
+  expect(neighbours.tiles.size).toBe(6);
+});
+
+test('is unexplored tile', () => {
+  const grid = new TileHexagonGrid();
+  const origo = new Position(0, 0);
+  const unexploredTile = new Tile(origo, new Unexplored());
+
+  grid.addTile(unexploredTile);
+
+  expect(grid.isUnexploredTile(origo)).toBeTruthy();
 });

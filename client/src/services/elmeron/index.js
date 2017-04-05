@@ -5,6 +5,7 @@
 import EventEmitter from 'events';
 import Player from './player.js';
 import Game from './game.js';
+import Position from './world/position.js';
 
 class Elmeron extends EventEmitter {
   startGame(nickname) {
@@ -17,6 +18,12 @@ class Elmeron extends EventEmitter {
 
   getTiles() {
     this.emit('getTiles', this.game.world.grid.getTiles());
+  }
+
+  explore(position) {
+    const explorationResult = this.game.world.explore(new Position(position.q, position.r));
+
+    this.emit('explore', explorationResult);
   }
 }
 

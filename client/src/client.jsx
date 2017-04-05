@@ -4,9 +4,30 @@ import { Provider } from 'react-redux';
 import 'bootstrap/less/bootstrap.less';
 import './style.less';
 import '../static/fonts.less';
+import elmeron from './services/elmeron/index.js';
 import store from './services/store.js';
-import { setScreenDimension } from './ducks/ui.js';
+import { closeCard } from './ducks/card.js';
+import { setScreenDimension, showGameView } from './ducks/ui.js';
+import { mergeTiles } from './ducks/world.js';
 import ViewDelegate from './components/ViewDelegate.jsx';
+
+/**
+ * Setup Elmeron listeners.
+ */
+elmeron.on('getTiles', (tiles) => {
+  store.dispatch(mergeTiles(tiles));
+  store.dispatch(showGameView());
+});
+
+elmeron.on('gameStart', () => {
+  elmeron.getTiles();
+});
+
+elmeron.on('explore', (tiles) => {
+  store.dispatch(mergeTiles(tiles));
+  store.dispatch(closeCard());
+});
+
 
 /**
  * Update screen state when window is resized and on initialization.
@@ -18,6 +39,8 @@ function dimension() {
 
 window.onresize = dimension;
 dimension();
+
+elmeron.startGame('Test player');
 
 
 ReactDOM.render(

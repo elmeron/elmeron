@@ -1,5 +1,6 @@
 import config from '../../config.js';
 
+/* eslint-disable */
 export function hexToPixel(q, r) {
   const { size, spacing } = config.tiles;
   const width = (size + spacing) * 2;
@@ -12,3 +13,4 @@ export function hexToPixel(q, r) {
     y: vert * (r + (q / 2)),
   };
 }
+/* eslint-enable */

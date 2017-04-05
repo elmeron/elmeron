@@ -4,9 +4,9 @@ import { bindActionCreators } from 'redux';
 import { calculateExtremes } from '../ducks/grid.js';
 import { openCard as open, closeCard as close } from '../ducks/card.js';
 import './GameView.less';
-import CardWrapper from './CardWrapper.jsx';
+import CardWrapper from './cards/CardWrapper.jsx';
 import HexagonGrid from './HexagonGrid.jsx';
-import TileCard from './TileCard.jsx';
+import TileCard from './cards/TileCard.jsx';
 
 class GameView extends React.PureComponent {
   constructor(props) {
@@ -45,7 +45,7 @@ class GameView extends React.PureComponent {
 
 export default connect(
   (state) => ({
-    tiles: state.world.get('tiles').toJS(),
+    tiles: state.world.get('tiles').toIndexedSeq().toJS(),
   }),
   (dispatch) => ({
     calcExtremes: bindActionCreators(calculateExtremes, dispatch),

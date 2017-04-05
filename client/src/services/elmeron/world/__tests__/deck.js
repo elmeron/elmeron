@@ -12,3 +12,9 @@ test('picking should decrease size', () => {
   expect(deck.pickAndRemove()).toBe(forest);
   expect(deck.size).toBe(9);
 });
+
+test('should be empty in the beginning', () => {
+  const deck = new Deck(new ResourceDistribution());
+
+  expect(deck.isEmpty()).toBeTruthy();
+});

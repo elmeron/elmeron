@@ -174,6 +174,6 @@ export default connect(
     height: state.ui.get('screenHeight'),
     centerTile: state.grid.get('centerTile').toJS(),
     extremes: state.grid.get('extremes').toJS(),
-    hexagons: state.world.get('tiles'),
+    hexagons: state.world.get('tiles').toIndexedSeq(),
   })
 )(HexagonGrid);
