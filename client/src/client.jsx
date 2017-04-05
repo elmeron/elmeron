@@ -7,6 +7,7 @@ import '../static/fonts.less';
 import elmeron from './services/elmeron/index.js';
 import store from './services/store.js';
 import { closeCard } from './ducks/card.js';
+import { updateExtremes } from './ducks/grid.js';
 import { setScreenDimension, showGameView } from './ducks/ui.js';
 import { mergeTiles } from './ducks/world.js';
 import ViewDelegate from './components/ViewDelegate.jsx';
@@ -16,6 +17,7 @@ import ViewDelegate from './components/ViewDelegate.jsx';
  */
 elmeron.on('getTiles', (tiles) => {
   store.dispatch(mergeTiles(tiles));
+  store.dispatch(updateExtremes(tiles));
   store.dispatch(showGameView());
 });
 
@@ -25,6 +27,7 @@ elmeron.on('gameStart', () => {
 
 elmeron.on('explore', (tiles) => {
   store.dispatch(mergeTiles(tiles));
+  store.dispatch(updateExtremes(tiles));
   store.dispatch(closeCard());
 });
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { calculateExtremes } from '../ducks/grid.js';
 import { openCard as open, closeCard as close } from '../ducks/card.js';
 import './GameView.less';
 import CardWrapper from './cards/CardWrapper.jsx';
@@ -13,11 +12,6 @@ class GameView extends React.PureComponent {
     super(props);
     this.onBackgroundClick = this.onBackgroundClick.bind(this);
     this.onHexClick = this.onHexClick.bind(this);
-  }
-
-  componentWillMount() {
-    const { tiles, calcExtremes } = this.props;
-    calcExtremes(tiles);
   }
 
   onBackgroundClick() {
@@ -48,7 +42,6 @@ export default connect(
     tiles: state.world.get('tiles').toIndexedSeq().toJS(),
   }),
   (dispatch) => ({
-    calcExtremes: bindActionCreators(calculateExtremes, dispatch),
     openCard: bindActionCreators(open, dispatch),
     closeCard: bindActionCreators(close, dispatch),
   })
