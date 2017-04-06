@@ -31,4 +31,8 @@ export default class ResourceDistribution {
 
     return resource ? resource.get('resource') : undefined;
   }
+
+  forEach(fn) {
+    this.distribution.forEach(value => fn(value.get('resource'), value.get('amount')));
+  }
 }

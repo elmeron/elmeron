@@ -3,17 +3,17 @@ import TerraformHandler from '../terraform-handler';
 
 /* eslint-disable */
 class Handler1 extends TerraformHandler {
-  canHandle() {
+  static canHandle() {
     return false;
   }
 }
 
 class Handler2 extends TerraformHandler {
-  canHandle() {
+  static canHandle() {
     return true;
   }
 
-  makeTiles() {
+  static makeTiles() {
     return 'Handler2';
   }
 }

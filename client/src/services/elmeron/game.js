@@ -14,9 +14,9 @@ export default class Game {
     const rock = new Resource('Rock');
     const sand = new Resource('Sand');
 
-    distribution.set(forest, 10);
-    distribution.set(rock, 5);
-    distribution.set(sand, 2);
+    distribution.set(forest, 50);
+    distribution.set(rock, 25);
+    distribution.set(sand, 12);
 
     const deck = new Deck(distribution);
 
