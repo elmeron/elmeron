@@ -69,7 +69,7 @@ export default class TileHexagonGrid {
 
   isUnexploredTile(position) {
     const tile = this.getTile(position);
-    return tile && tile.resource.name === new Unexplored().name;
+    return tile && tile.resource.equals(new Unexplored());
   }
 
   populateUndefinedNeighbours(position, resource) {
@@ -98,7 +98,7 @@ export default class TileHexagonGrid {
 
       if (this.tiles.has(positionId)) {
         const tile = this.getTile(neighbour);
-        const inIgnoreList = ignore.find(res => res.name === tile.resource.name);
+        const inIgnoreList = ignore.some(res => tile.resource.equals(res));
 
         if (inIgnoreList) {
           return;
