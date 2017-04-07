@@ -13,6 +13,8 @@ class Elmeron extends EventEmitter {
     this.game = new Game([this.player]);
     this.emit('gameStart', {
       id: this.game.id,
+      name: this.game.world.name,
+      children: this.game.world.children.keySeq().toJS(),
     });
   }
 

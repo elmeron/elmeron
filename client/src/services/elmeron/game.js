@@ -2,7 +2,8 @@ import Chance from 'chance';
 import Resource from './world/resource.js';
 import ResourceDistribution from './world/resource-distribution.js';
 import Deck from './world/deck.js';
-import IslandNode from './world/island-node.js';
+import PlanetNode from './world/planet-node.js';
+// import IslandNode from './world/island-node.js';
 
 export default class Game {
   constructor(players) {
@@ -19,7 +20,6 @@ export default class Game {
     distribution.set(sand, 12);
 
     const deck = new Deck(distribution);
-
-    this.world = new IslandNode(deck);
+    this.world = new PlanetNode(deck);
   }
 }

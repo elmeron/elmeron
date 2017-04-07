@@ -7,11 +7,11 @@ export default class TerraformHandler {
     this.successor = successor;
   }
 
-  handle(position, node) {
-    if (this.constructor.canHandle(position, node)) {
-      return this.constructor.makeTiles(position, node);
+  handle(position, node, neighbours) {
+    if (this.constructor.canHandle(position, node, neighbours)) {
+      return this.constructor.makeTiles(position, node, neighbours);
     }
-    return this.successor.handle(position, node);
+    return this.successor.handle(position, node, neighbours);
   }
 
   static canHandle() {}

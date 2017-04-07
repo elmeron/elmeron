@@ -9,27 +9,18 @@ export default class IslandTileHandler extends TerraformHandler {
   }
 
   static makeTiles(position, node) {
-    const deck = node.deck;
+    const neighbours = node.grid.getDefinedNeighbours(position, [
+      new Ocean(),
+      new Unexplored(),
+    ]).toResourceDistribution();
+    const redistribution = node.deck.redistribute(neighbours);
+    const pickedResource = redistribution.pick();
 
-    if (deck.size > 0) {
-      const grid = node.grid;
-      const neighbours = grid.getDefinedNeighbours(position, [
-        new Ocean(),
-        new Unexplored(),
-      ]).toResourceDistribution();
-      const redistribution = deck.redistribute(neighbours);
-      const pickedResource = redistribution.pick();
+    const tile = new Tile(position, pickedResource);
+    const returnGrid = node.grid.populateUndefinedNeighbours(position, new Unexplored());
 
-      deck.remove(pickedResource);
-      const tile = new Tile(position, pickedResource);
-      const returnGrid = grid.populateUndefinedNeighbours(position, new Unexplored());
+    returnGrid.addTile(tile);
 
-      grid.addTile(tile);
-      returnGrid.addTile(tile);
-
-      return returnGrid;
-    }
-
-    return undefined;
+    return { grid: returnGrid };
   }
 }

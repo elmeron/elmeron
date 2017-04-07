@@ -14,6 +14,7 @@ export default class Tile {
       q: this.position.q,
       r: this.position.r,
       resource: this.resource.name,
+      owner: this.owner,
     };
   }
 }

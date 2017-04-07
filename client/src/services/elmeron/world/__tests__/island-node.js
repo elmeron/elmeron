@@ -16,3 +16,16 @@ test('constructor', () => {
   expect(island.name).toBeDefined();
 });
 
+test('explore until', () => {
+  const distribution = new ResourceDistribution();
+  const resource = new Resource('Resource');
+
+  distribution.set(resource, 1);
+
+  const deck = new Deck(distribution);
+  const island = new IslandNode(deck);
+
+  island.exploreWhile(() => true);
+
+  expect(island.grid.size).toBeGreaterThan(0);
+});

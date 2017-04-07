@@ -16,7 +16,7 @@ export default class Terraformer {
     });
   }
 
-  makeTiles(position, node) {
-    return this.handlers[0].handle(position, node);
+  makeTiles(position, node, neighbours) {
+    return this.handlers[0].handle(position, node, neighbours);
   }
 }

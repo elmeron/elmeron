@@ -21,7 +21,8 @@ elmeron.on('getTiles', (tiles) => {
   store.dispatch(showGameView());
 });
 
-elmeron.on('gameStart', () => {
+elmeron.on('gameStart', ({ id, name, children }) => {
+  console.log(id, name, children);
   elmeron.getTiles();
 });
 

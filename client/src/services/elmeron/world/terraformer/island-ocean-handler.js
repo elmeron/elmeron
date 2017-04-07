@@ -18,13 +18,12 @@ export default class IslandOceanHandler extends TerraformHandler {
     return Math.random() < ratio;
   }
 
-  static makeTiles(position, node) {
+  static makeTiles(position) {
     const returnGrid = new TileHexagonGrid();
     const tile = new Tile(position, new Ocean());
 
-    node.grid.addTile(tile);
     returnGrid.addTile(tile);
 
-    return returnGrid;
+    return { grid: returnGrid };
   }
 }

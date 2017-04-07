@@ -49,6 +49,33 @@ test('get tile', () => {
   expect(tileGrid.getTile(new Position(0, 0))).toBe(tile);
 });
 
+test('filter', () => {
+  const grid = new TileHexagonGrid();
+  const forest = new Tile(new Position(0, 0), new Resource('Forest'));
+  const rock = new Tile(new Position(0, 1), new Resource('Rock'));
+
+  grid.addTile(forest);
+  grid.addTile(rock);
+
+  const filtered = grid.filter(tile => tile.resource.equals(new Resource('Rock')));
+
+  expect(filtered.size).toBe(1);
+});
+
+test('filter out', () => {
+  const grid = new TileHexagonGrid();
+  const forest = new Tile(new Position(0, 0), new Resource('Forest'));
+  const rock = new Tile(new Position(0, 1), new Resource('Rock'));
+
+  grid.addTile(forest);
+  grid.addTile(rock);
+
+  const filtered = grid.filterOut([new Resource('Forest')]);
+
+  expect(filtered.size).toBe(1);
+  expect(filtered.tiles.first().resource.equals(new Resource('Rock'))).toBeTruthy();
+});
+
 test('populate undefined neighbours', () => {
   const tileGrid = new TileHexagonGrid();
   const origo = new Position(0, 0);
@@ -56,7 +83,7 @@ test('populate undefined neighbours', () => {
   tileGrid.addTile(new Tile(origo, new Resource('resource')));
   const neighbours = tileGrid.populateUndefinedNeighbours(origo, new Unexplored());
 
-  expect(tileGrid.tiles.size).toBe(7);
+  expect(tileGrid.tiles.size).toBe(1);
   expect(neighbours.tiles.size).toBe(6);
 });
 
@@ -131,4 +158,20 @@ test('relative origo', () => {
   distance = grid.getDistanceToRelativeOrigo(new Position(0, 5));
 
   expect(distance).toBe(5);
+});
+
+test('get surrounding tiles', () => {
+  const grid = new TileHexagonGrid();
+  const origo = new Position(0, 0);
+  const resource = new Resource('Resource');
+  const neighbours = grid.populateUndefinedNeighbours(origo, new Unexplored());
+
+  grid.addTile(new Tile(origo, resource));
+  grid.addTiles(neighbours.tiles);
+
+  const surrounding = grid.getSurroundingTiles(grid.filter(tile =>
+    tile.resource.equals(resource),
+  ));
+
+  expect(surrounding.size).toBe(6);
 });

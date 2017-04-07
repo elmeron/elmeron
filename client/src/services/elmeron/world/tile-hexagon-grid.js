@@ -49,7 +49,7 @@ export default class TileHexagonGrid {
   addTiles(tiles) {
     const newTiles = tiles.reduce((result, tile) => {
       const id = tile.getId();
-      this.updateExtremes(tile);
+      this.updateExtremes(tile.position);
       return result.set(id, tile);
     }, new Map());
     this.tiles = this.tiles.mergeWith((oldVal, newVal) => newVal, newTiles);
@@ -67,6 +67,32 @@ export default class TileHexagonGrid {
     , new List()).toJS();
   }
 
+  filter(predicate) {
+    const grid = new TileHexagonGrid();
+    const filteredTiles = this.tiles.filter(predicate);
+    grid.addTiles(filteredTiles);
+
+    return grid;
+  }
+
+  filterOut(resources) {
+    const filteredTiles = this.tiles.filterNot(({ resource }) =>
+      resources.some(ignore => resource.equals(ignore))
+    );
+    const grid = new TileHexagonGrid();
+
+    grid.addTiles(filteredTiles);
+    return grid;
+  }
+
+  every(predicate) {
+    return this.tiles.every(predicate);
+  }
+
+  forEach(sideEffect) {
+    return this.tiles.forEach(sideEffect);
+  }
+
   isUnexploredTile(position) {
     const tile = this.getTile(position);
     return tile && tile.resource.equals(new Unexplored());
@@ -82,9 +108,7 @@ export default class TileHexagonGrid {
         return;
       }
 
-      const tile = new Tile(neighbour, resource);
-      this.addTile(tile);
-      returnGrid.addTile(tile);
+      returnGrid.addTile(new Tile(neighbour, resource));
     });
 
     return returnGrid;
@@ -106,6 +130,20 @@ export default class TileHexagonGrid {
 
         returnGrid.addTile(tile);
       }
+    });
+
+    return returnGrid;
+  }
+
+  getSurroundingTiles(grid) {
+    const returnGrid = new TileHexagonGrid();
+
+    grid.tiles.forEach(({ position }) => {
+      const neighbours = this.getDefinedNeighbours(position).filter(tile =>
+        grid.tiles.every(gridTile => tile.position !== gridTile.position)
+      );
+
+      returnGrid.addTiles(neighbours.tiles);
     });
 
     return returnGrid;
