@@ -1,14 +1,16 @@
 import Chance from 'chance';
+import { Map } from 'immutable';
 import Resource from './world/resource.js';
 import ResourceDistribution from './world/resource-distribution.js';
 import Deck from './world/deck.js';
-import PlanetNode from './world/planet-node.js';
-// import IslandNode from './world/island-node.js';
+import Node from './world/planet-node.js';
 
 export default class Game {
   constructor(players) {
     this.id = new Chance().hash({ length: 6 });
-    this.players = players;
+    this.players = players.reduce((result, player) =>
+      result.set(player.nickname, player),
+    new Map());
 
     const distribution = new ResourceDistribution();
     const forest = new Resource('Forest');
@@ -20,6 +22,16 @@ export default class Game {
     distribution.set(sand, 12);
 
     const deck = new Deck(distribution);
-    this.world = new PlanetNode(deck);
+    this.world = new Node(deck);
+
+    /* eslint-disable */
+    this.players.forEach((player) => {
+      player.location = this.world;
+    });
+    /* eslint-enable */
+  }
+
+  getPlayer(nickname) {
+    return this.players.get(nickname);
   }
 }

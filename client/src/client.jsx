@@ -9,29 +9,45 @@ import store from './services/store.js';
 import { closeCard } from './ducks/card.js';
 import { updateExtremes } from './ducks/grid.js';
 import { setScreenDimension, showGameView } from './ducks/ui.js';
-import { mergeTiles } from './ducks/world.js';
+import {
+  setTiles,
+  mergeTiles,
+  setCurrentLocation,
+  setParentLocation,
+  setChildrenLocations,
+  addChildrenLocations,
+  setNodeType,
+} from './ducks/world.js';
 import ViewDelegate from './components/ViewDelegate.jsx';
 
 /**
  * Setup Elmeron listeners.
  */
-elmeron.on('getTiles', (tiles) => {
-  store.dispatch(mergeTiles(tiles));
-  store.dispatch(updateExtremes(tiles));
-  store.dispatch(showGameView());
-});
-
-elmeron.on('gameStart', ({ id, name, children }) => {
-  console.log(id, name, children);
-  elmeron.getTiles();
-});
-
-elmeron.on('explore', (tiles) => {
-  store.dispatch(mergeTiles(tiles));
-  store.dispatch(updateExtremes(tiles));
+elmeron.on('getWorld', ({ children, name, parent, nodeType, tiles }) => {
+  store.dispatch(setCurrentLocation(name));
+  store.dispatch(setParentLocation(parent));
+  store.dispatch(setChildrenLocations(children));
+  store.dispatch(setNodeType(nodeType));
+  store.dispatch(setTiles(tiles));
   store.dispatch(closeCard());
 });
 
+elmeron.on('gameStart', ({ children, name, parent, nodeType, tiles }) => {
+  elmeron.getWorld();
+  store.dispatch(showGameView());
+});
+
+elmeron.on('explore', ({ tiles, worlds }) => {
+  console.log(tiles, worlds);
+
+  store.dispatch(mergeTiles(tiles));
+  store.dispatch(updateExtremes(tiles));
+  store.dispatch(closeCard());
+
+  if (worlds.length > 0) {
+    store.dispatch(addChildrenLocations(worlds));
+  }
+});
 
 /**
  * Update screen state when window is resized and on initialization.
@@ -45,7 +61,6 @@ window.onresize = dimension;
 dimension();
 
 elmeron.startGame('Test player');
-
 
 ReactDOM.render(
   <Provider store={store}>

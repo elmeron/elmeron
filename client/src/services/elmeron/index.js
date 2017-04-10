@@ -11,21 +11,26 @@ class Elmeron extends EventEmitter {
   startGame(nickname) {
     this.player = new Player(nickname);
     this.game = new Game([this.player]);
-    this.emit('gameStart', {
-      id: this.game.id,
-      name: this.game.world.name,
-      children: this.game.world.children.keySeq().toJS(),
-    });
+    this.emit('gameStart', {});
   }
 
-  getTiles() {
-    this.emit('getTiles', this.game.world.grid.getTiles());
+  getWorld() {
+    this.emit('getWorld', this.player.location.getData());
   }
 
   explore(position) {
-    const explorationResult = this.game.world.explore(new Position(position.q, position.r));
+    const explorationResult = this.player.location.explore(new Position(position.q, position.r));
 
     this.emit('explore', explorationResult);
+  }
+
+  zoomIn(childName) {
+    const child = this.player.location.getChild(childName);
+
+    if (child) {
+      this.player.location = child;
+      this.getWorld();
+    }
   }
 }
 

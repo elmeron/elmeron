@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import { Map } from 'immutable';
 import { act, reducer } from './util.js';
 
 const OPEN = 'card/OPEN';
@@ -32,10 +32,11 @@ export function setCardDimension(width, height) {
 
 function handleOpenCard(state, payload) {
   const { anchor, component } = payload;
+  const { left, top, width, height } = anchor.getBoundingClientRect();
 
   return state
     .set('open', true)
-    .set('anchor', fromJS(anchor))
+    .set('anchor', new Map({ left, top, width, height }))
     .set('component', component);
 }
 

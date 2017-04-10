@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import config from '../../config.js';
+import { closeCard as close } from '../ducks/card.js';
 import { hexToPixel } from '../services/hex-util.js';
 import './HexagonGrid.less';
 import Hexagon from './Hexagon.jsx';
@@ -104,13 +106,22 @@ class HexagonGrid extends React.PureComponent {
     this.setState({ matrix: Object.assign([], m) });
   }
 
+  onRectClick() {
+    const { onBackgroundClick, closeCard } = this.props;
+
+    closeCard();
+
+    if (onBackgroundClick) {
+      onBackgroundClick();
+    }
+  }
+
   render() {
     const {
       width,
       height,
       hexagons,
       zoom,
-      onBackgroundClick,
       onHexClick,
     } = this.props;
     const viewBox = [0, 0, width, height].join(' ');
@@ -132,7 +143,7 @@ class HexagonGrid extends React.PureComponent {
           className="background"
           width={width}
           height={height}
-          onClick={() => onBackgroundClick()}
+          onClick={() => this.onRectClick()}
         />
         <g transform={`matrix(${matrix})`}>
           {
@@ -164,7 +175,8 @@ HexagonGrid.PropTypes = {
   centerTile: PropTypes.object.isRequired,
   hexagons: PropTypes.arrayOf(PropTypes.object).isRequired,
   extremes: PropTypes.objectOf(PropTypes.number).isRequired,
-  onBackgroundClick: PropTypes.func.isRequired,
+  closeCard: PropTypes.func.isRequired,
+  onBackgroundClick: PropTypes.func,
   onHexClick: PropTypes.func.isRequired,
 };
 
@@ -175,5 +187,8 @@ export default connect(
     centerTile: state.grid.get('centerTile').toJS(),
     extremes: state.grid.get('extremes').toJS(),
     hexagons: state.world.get('tiles').toIndexedSeq(),
+  }),
+  (dispatch) => ({
+    closeCard: bindActionCreators(close, dispatch),
   })
 )(HexagonGrid);

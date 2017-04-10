@@ -21,13 +21,36 @@ export default class WorldNode {
     this.children = new Map();
   }
 
+  getNodeType() {
+    return this.constructor.name;
+  }
+
   setChild(child) {
-    const name = child.name;
+    const c = child;
+    const name = c.name;
+
+    c.parent = this;
     this.children = this.children.set(name, child);
   }
 
   getChild(name) {
     return this.children.get(name);
+  }
+
+  getChildren() {
+    return this.children.keySeq().toJS();
+  }
+
+  getData() {
+    const parent = this.parent ? this.parent.name : undefined;
+
+    return {
+      name: this.name,
+      parent,
+      tiles: this.grid.getTiles(),
+      children: this.getChildren(),
+      nodeType: this.getNodeType(),
+    };
   }
 
   explore(position) {
@@ -37,15 +60,22 @@ export default class WorldNode {
       const addedResources = grid.filter(tile =>
         !tile.resource.equals(new Unexplored()) && !tile.resource.equals(new Ocean())
       );
+      const addedWorlds = [];
 
       if (worlds) {
-        worlds.forEach(child => this.setChild(child));
+        worlds.forEach((child) => {
+          this.setChild(child);
+          addedWorlds.push(child.name);
+        });
       }
 
       addedResources.forEach(({ resource }) => this.deck.remove(resource));
       this.grid.addTiles(grid.tiles);
 
-      return grid.getTiles();
+      return {
+        tiles: grid.getTiles(),
+        worlds: addedWorlds,
+      };
     }
 
     throw new Error(`

@@ -1,6 +1,4 @@
-/* eslint-disable */
 import React, { PropTypes } from 'react';
-/* eslint-enable */
 import { connect } from 'react-redux';
 import GameView from './GameView.jsx';
 import LoadGameView from './LoadGameView.jsx';
