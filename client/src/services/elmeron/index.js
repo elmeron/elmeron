@@ -32,6 +32,15 @@ class Elmeron extends EventEmitter {
       this.getWorld();
     }
   }
+
+  zoomOut() {
+    const parent = this.player.location.parent;
+
+    if (parent) {
+      this.player.location = parent;
+      this.getWorld();
+    }
+  }
 }
 
 export default new Elmeron();
