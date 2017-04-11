@@ -6,10 +6,10 @@ import * as ui from './ui.js';
 import * as world from './world.js';
 
 export function initListeners() {
-  return dispatch => {
+  return (dispatch) => {
     elmeron.on('getWorld', ({ children, name, parent, nodeType, tiles }) => {
       dispatch(world.setCurrentLocation(name));
-      dispatch(world.setParentLocation(name));
+      dispatch(world.setParentLocation(parent));
       dispatch(world.setChildrenLocations(children));
       dispatch(world.setNodeType(nodeType));
       dispatch(world.setTiles(tiles));
@@ -39,7 +39,7 @@ export function zoomIn({ owner, q, r }) {
   return grid.zoomIn({ q, r });
 }
 
-export function zoomOut(position) {
+export function zoomOut() {
   elmeron.zoomOut();
   return grid.zoomOut();
 }

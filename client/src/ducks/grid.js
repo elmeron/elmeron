@@ -41,10 +41,6 @@ export function zoomOut() {
   };
 }
 
-export function setExtremes(hexagons) {
-  return updateExtremes(hexagons, { xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
-}
-
 export function updateExtremes(hexagons, extremes) {
   return (dispatch, getState) => {
     const current = extremes || getState().grid.get('extremes').toJS();
@@ -64,6 +60,10 @@ export function updateExtremes(hexagons, extremes) {
 
     dispatch(act(UPDATE_EXTREMES, { xMin, xMax, yMin, yMax }));
   };
+}
+
+export function setExtremes(hexagons) {
+  return updateExtremes(hexagons, { xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
 }
 
 function handleSetStack(state, stack) {
