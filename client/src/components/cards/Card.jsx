@@ -8,8 +8,8 @@ import './Card.less';
 const margin = 15;
 
 class Card extends React.PureComponent {
-  componentDidMount() {
-    const { dimension } = this.props;
+  componentWillReceiveProps(props) {
+    const { dimension } = props;
     const { width, height } = this.ref.getBoundingClientRect();
 
     dimension(width + (2 * margin), height + (2 * margin));
@@ -34,7 +34,9 @@ Card.PropTypes = {
 };
 
 export default connect(
-  () => ({}),
+  (state) => ({
+    open: state.card.get('open'),
+  }),
   (dispatch) => ({
     dimension: bindActionCreators(setCardDimension, dispatch),
   })

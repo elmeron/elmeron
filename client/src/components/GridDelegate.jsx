@@ -6,6 +6,7 @@ import PlanetGrid from './PlanetGrid.jsx';
 const gridMapping = {
   IslandNode: <IslandGrid />,
   PlanetNode: <PlanetGrid />,
+  SpaceNode: <PlanetGrid />,
 };
 
 function GridDelegate(props) {

@@ -3,10 +3,10 @@ import { Map } from 'immutable';
 import Resource from './world/resource.js';
 import ResourceDistribution from './world/resource-distribution.js';
 import Deck from './world/deck.js';
-import Node from './world/planet-node.js';
+import SpaceNode from './world/space-node.js';
 
 export default class Game {
-  constructor(players) {
+  constructor(players, onElmeronFound) {
     this.id = new Chance().hash({ length: 6 });
     this.players = players.reduce((result, player) =>
       result.set(player.nickname, player),
@@ -22,7 +22,7 @@ export default class Game {
     distribution.set(sand, 12);
 
     const deck = new Deck(distribution);
-    this.world = new Node(deck);
+    this.world = new SpaceNode(deck, onElmeronFound);
 
     /* eslint-disable */
     this.players.forEach((player) => {

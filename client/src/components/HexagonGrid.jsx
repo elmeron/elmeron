@@ -116,6 +116,14 @@ class HexagonGrid extends React.PureComponent {
     }
   }
 
+  onHexClick(elem, hex) {
+    const { onHexClick } = this.props;
+
+    if (onHexClick) {
+      onHexClick(elem, hex);
+    }
+  }
+
   render() {
     const {
       width,
@@ -158,7 +166,7 @@ class HexagonGrid extends React.PureComponent {
                   key={`${q}-${r}`}
                   center={center}
                   type={type}
-                  onClick={elem => onHexClick(elem, hex.toJS())}
+                  onClick={elem => this.onHexClick(elem, hex.toJS())}
                 />
               );
             })
@@ -177,7 +185,7 @@ HexagonGrid.PropTypes = {
   extremes: PropTypes.objectOf(PropTypes.number).isRequired,
   closeCard: PropTypes.func.isRequired,
   onBackgroundClick: PropTypes.func,
-  onHexClick: PropTypes.func.isRequired,
+  onHexClick: PropTypes.func,
 };
 
 export default connect(

@@ -17,6 +17,10 @@ export function showGameView() {
   return act(SET_VIEW, 'game');
 }
 
+export function showGameOverView() {
+  return act(SET_VIEW, 'gameOver');
+}
+
 function handleSetScreenDimension(state, dimension) {
   const { width, height } = dimension;
 

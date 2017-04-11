@@ -22,6 +22,10 @@ export function initListeners() {
       dispatch(ui.showGameView());
     });
 
+    elmeron.on('elmeronFound', () => {
+      dispatch(ui.showGameOverView());
+    });
+
     elmeron.on('explore', ({ tiles, worlds }) => {
       dispatch(world.mergeTiles(tiles));
       dispatch(grid.updateExtremes(tiles));

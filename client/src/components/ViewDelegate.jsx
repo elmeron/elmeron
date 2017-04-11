@@ -2,10 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import GameView from './GameView.jsx';
 import LoadGameView from './LoadGameView.jsx';
+import GameOverView from './GameOverView.jsx';
 
 const componentMapping = {
   game: <GameView />,
   loadGame: <LoadGameView />,
+  gameOver: <GameOverView />,
 };
 
 function ViewDelegate(props) {
