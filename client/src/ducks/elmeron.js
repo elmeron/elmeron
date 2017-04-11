@@ -50,8 +50,7 @@ export function zoomOut() {
     if (parent) {
       elmeron.zoomOut();
       dispatch(grid.zoomOut());
-    }
-    else {
+    } else {
       dispatch(act());
     }
   };

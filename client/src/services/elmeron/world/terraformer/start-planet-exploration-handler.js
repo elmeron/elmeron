@@ -6,7 +6,7 @@ import TileHexagonGrid from '../tile-hexagon-grid.js';
 import Tile from '../tile.js';
 
 export default class StartPlanetExplorationHandler extends TerraformHandler {
-  static canHandle(position, node, neighbours) {
+  static canHandle(position, node, neighbours) {
     return neighbours.every(tile =>
       tile.resource.equals(new Void()) || tile.resource.equals(new Unexplored())
     ) && node.deck.size > 0;

@@ -2,7 +2,6 @@ import { Set } from 'immutable';
 import TerraformHandler from './terraform-handler.js';
 import Unexplored from '../resources/unexplored.js';
 import Void from '../resources/void.js';
-import TileHexagonGrid from '../tile-hexagon-grid.js';
 import Tile from '../tile.js';
 import PlanetDeck from '../planet-deck.js';
 import PlanetNode from '../planet-node.js';
