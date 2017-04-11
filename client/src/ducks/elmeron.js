@@ -40,8 +40,17 @@ export function zoomIn({ owner, q, r }) {
 }
 
 export function zoomOut() {
-  elmeron.zoomOut();
-  return grid.zoomOut();
+  return (dispatch, getState) => {
+    const parent = getState().world.getIn(['location', 'parent']);
+
+    if (parent) {
+      elmeron.zoomOut();
+      dispatch(grid.zoomOut());
+    }
+    else {
+      dispatch(act());
+    }
+  };
 }
 
 export function explore(tile) {
