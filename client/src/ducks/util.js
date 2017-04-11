@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-export function act(type, payload) {
+export function act(type = '', payload) {
   return { type, payload };
 }
 

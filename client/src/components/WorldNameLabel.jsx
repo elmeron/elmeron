@@ -1,17 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import elmeron from '../services/elmeron/index.js';
+import { bindActionCreators } from 'redux';
+import { zoomOut as zo } from '../ducks/elmeron.js';
 import './WorldNameLabel.less';
 
 function WorldNameLabel(props) {
-  const { name } = props;
+  const { name, zoomOut } = props;
   const properName = name.replace(/\w\S*/g, (txt) => {
     const t = txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     return t;
   });
 
   function onClick() {
-    elmeron.zoomOut();
+    zoomOut();
   }
 
   return (
@@ -24,5 +25,8 @@ function WorldNameLabel(props) {
 export default connect(
   (state) => ({
     name: state.world.getIn(['location', 'current']),
+  }),
+  (dispatch) => ({
+    zoomOut: bindActionCreators(zo, dispatch),
   })
 )(WorldNameLabel);

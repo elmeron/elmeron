@@ -184,7 +184,7 @@ export default connect(
   (state) => ({
     width: state.ui.get('screenWidth'),
     height: state.ui.get('screenHeight'),
-    centerTile: state.grid.get('centerTile').toJS(),
+    centerTile: state.grid.get('centerTileStack').peek().toJS(),
     extremes: state.grid.get('extremes').toJS(),
     hexagons: state.world.get('tiles').toIndexedSeq(),
   }),

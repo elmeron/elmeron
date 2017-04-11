@@ -1,15 +1,16 @@
-import { fromJS } from 'immutable';
+import { fromJS, Map, Stack } from 'immutable';
 import { act, reducer } from './util.js';
 import { hexToPixel } from '../services/hex-util.js';
 import config from '../../config.js';
 
+const SET_STACK = 'grid/SET_STACK';
 const UPDATE_EXTREMES = 'grid/UPDATE_EXTREMES';
 
 const initialState = {
-  centerTile: {
+  centerTileStack: new Stack(fromJS([{
     q: 0,
     r: 0,
-  },
+  }])),
   extremes: {
     xMin: 0,
     xMax: 0,
@@ -18,9 +19,35 @@ const initialState = {
   },
 };
 
-export function updateExtremes(hexagons) {
+// replace the current top of the stack and push a new origo position
+export function zoomIn(position) {
   return (dispatch, getState) => {
-    const current = getState().grid.get('extremes').toJS();
+    const { q, r } = position;
+    let stack = getState().grid.get('centerTileStack');
+
+    stack = stack.pop();
+    stack = stack.push(new Map({ q, r }));
+    stack = stack.push(new Map({ q: 0, r: 0 }));
+
+    dispatch(act(SET_STACK, stack));
+  };
+}
+
+export function zoomOut() {
+  return (dispatch, getState) => {
+    const stack = getState().grid.get('centerTileStack').pop();
+
+    dispatch(act(SET_STACK, stack));
+  };
+}
+
+export function setExtremes(hexagons) {
+  return updateExtremes(hexagons, { xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
+}
+
+export function updateExtremes(hexagons, extremes) {
+  return (dispatch, getState) => {
+    const current = extremes || getState().grid.get('extremes').toJS();
     let { xMin, xMax, yMin, yMax } = current;
 
     hexagons.forEach((hex) => {
@@ -39,11 +66,16 @@ export function updateExtremes(hexagons) {
   };
 }
 
+function handleSetStack(state, stack) {
+  return state.set('centerTileStack', stack);
+}
+
 function handleUpdateExtremes(state, extremes) {
   return state.set('extremes', fromJS(extremes));
 }
 
 const handlers = {
+  [SET_STACK]: handleSetStack,
   [UPDATE_EXTREMES]: handleUpdateExtremes,
 };
 
