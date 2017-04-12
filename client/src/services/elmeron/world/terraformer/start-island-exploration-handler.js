@@ -9,7 +9,7 @@ export default class StartIslandExplorationHandler extends TerraformHandler {
   static canHandle(position, node, neighbours) {
     return neighbours.every(tile =>
       tile.resource.equals(new Ocean()) || tile.resource.equals(new Unexplored())
-    );
+    ) && node.deck.size > 0;
   }
 
   static makeTiles(position, node) {

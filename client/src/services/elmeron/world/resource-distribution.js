@@ -22,6 +22,10 @@ export default class ResourceDistribution {
     return r || 0;
   }
 
+  max() {
+    return this.distribution.maxBy(val => val.get('amount')).get('resource');
+  }
+
   get(index) {
     let i = 0;
     const resource = this.distribution.find((value) => {

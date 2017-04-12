@@ -4,9 +4,7 @@ import Unexplored from '../resources/unexplored.js';
 import Ocean from '../resources/ocean.js';
 import TileHexagonGrid from '../tile-hexagon-grid.js';
 import Tile from '../tile.js';
-import Resource from '../resource.js';
-import ResourceDistribution from '../resource-distribution.js';
-import Deck from '../deck.js';
+import IslandDeck from '../island-deck.js';
 import IslandNode from '../island-node.js';
 
 export default class FinishIslandExplorationHandler extends TerraformHandler {
@@ -52,9 +50,8 @@ export default class FinishIslandExplorationHandler extends TerraformHandler {
       );
 
       if (unexploredSurrounding.size === 1) {
-        const distribution = new ResourceDistribution();
-        distribution.set(new Resource('Forest'), 10);
-        const deck = new Deck(distribution);
+        const biase = ownerTiles.toResourceDistribution();
+        const deck = new IslandDeck(biase);
         const island = new IslandNode(deck, owner);
 
         worlds.push(island);

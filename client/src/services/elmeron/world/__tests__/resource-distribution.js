@@ -18,6 +18,17 @@ test('count', () => {
   expect(dist.count(resource)).toBe(0);
 });
 
+test('max', () => {
+  const dist = new ResourceDistribution();
+  const forest = new Resource('Forest');
+  const rock = new Resource('Rock');
+
+  dist.set(forest, 5);
+  dist.set(rock, 10);
+
+  expect(dist.max()).toBe(rock);
+});
+
 test('get index', () => {
   const dist = new ResourceDistribution();
   const forest = new Resource('forest');

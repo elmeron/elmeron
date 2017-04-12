@@ -7,7 +7,7 @@ import LogarithmicDistribution from './logarithmic-distribution.js';
 
 const chance = new Chance();
 
-export default class PlanetDeck extends Deck {
+export default class IslandDeck extends Deck {
   constructor(biase) {
     const resources = [
       new Forest(),
@@ -18,7 +18,7 @@ export default class PlanetDeck extends Deck {
     const size = (biase.size + 1) * randomInt;
     const distribution = new LogarithmicDistribution(resources, biase, size);
 
-    console.log('Creating new planet');
+    console.log('Creating new island');
     console.log(distribution.distribution.toJS());
 
     super(distribution);

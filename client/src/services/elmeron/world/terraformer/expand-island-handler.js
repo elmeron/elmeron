@@ -10,6 +10,10 @@ export default class ExpandIslandHandler extends TerraformHandler {
       new Ocean(),
     ]);
 
+    if (node.deck.size === 0) {
+      return false;
+    }
+
     if (neighbours.size === 0) {
       return false;
     }

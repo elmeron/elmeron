@@ -4,6 +4,7 @@ import Unexplored from '../resources/unexplored.js';
 import UnknownResource from '../resources/unknown.js';
 import Void from '../resources/void.js';
 import Tile from '../tile.js';
+import ResourceDistribution from '../resource-distribution.js';
 import PlanetDeck from '../planet-deck.js';
 import PlanetNode from '../planet-node.js';
 
@@ -51,13 +52,19 @@ export default class FinishPlanetExplorationHandler extends TerraformHandler {
 
       if (unexploredSurrounding.size === 1) {
         const ownerTile = ownerTiles.tiles.first();
+        let biase;
 
         if (ownerTile.resource.equals(new UnknownResource())) {
           const pickedResource = node.deck.pick();
+          biase = new ResourceDistribution();
+
+          biase.set(pickedResource, 1);
           returnGrid.addTile(new Tile(ownerTile.position, pickedResource, ownerTile.owner));
+        } else {
+          biase = ownerTiles.toResourceDistribution();
         }
 
-        const deck = new PlanetDeck();
+        const deck = new PlanetDeck(biase);
         const planet = new PlanetNode(deck, owner);
 
         worlds.push(planet);

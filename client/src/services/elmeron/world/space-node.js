@@ -22,10 +22,9 @@ export default class SpaceNode extends WorldNode {
 
     const origo = new Position(0, 0);
     const unexploredNeighbours = this.grid.populateUndefinedNeighbours(origo, new Unexplored());
-    const planet = new PlanetNode(new PlanetDeck());
+    const tempPlanet = new WorldNode();
 
-    this.setChild(planet);
-    this.grid.addTile(new Tile(origo, startResource, planet.name));
+    this.grid.addTile(new Tile(origo, startResource, tempPlanet.name));
     this.grid.addTiles(unexploredNeighbours.tiles);
 
     this.exploreWhile((neighbours) => {
