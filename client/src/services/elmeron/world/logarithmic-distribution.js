@@ -1,5 +1,5 @@
 import Chance from 'chance';
-import { fromJS, Range as range } from 'immutable';
+import { fromJS } from 'immutable';
 import ResourceDistribution from './resource-distribution.js';
 
 const chance = new Chance();

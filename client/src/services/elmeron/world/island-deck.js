@@ -18,9 +18,6 @@ export default class IslandDeck extends Deck {
     const size = (biase.size + 1) * randomInt;
     const distribution = new LogarithmicDistribution(resources, biase, size);
 
-    console.log('Creating new island');
-    console.log(distribution.distribution.toJS());
-
     super(distribution);
   }
 }

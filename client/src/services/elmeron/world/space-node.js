@@ -5,8 +5,6 @@ import Unexplored from './resources/unexplored.js';
 import Void from './resources/void.js';
 import ElmeronResource from './resources/elmeron.js';
 import SpaceDeck from './space-deck.js';
-import PlanetDeck from './planet-deck.js';
-import PlanetNode from './planet-node.js';
 import Tile from './tile.js';
 
 export default class SpaceNode extends WorldNode {
