@@ -131,6 +131,7 @@ class HexagonGrid extends React.PureComponent {
       hexagons,
       zoom,
       onHexClick,
+      backgroundClass,
     } = this.props;
     const viewBox = [0, 0, width, height].join(' ');
     const matrix = this.state.matrix.join(' ');
@@ -148,7 +149,7 @@ class HexagonGrid extends React.PureComponent {
         onWheel={e => this.onScroll(e)}
       >
         <rect
-          className="background"
+          className={backgroundClass}
           width={width}
           height={height}
           onClick={() => this.onRectClick()}
@@ -186,6 +187,7 @@ HexagonGrid.PropTypes = {
   closeCard: PropTypes.func.isRequired,
   onBackgroundClick: PropTypes.func,
   onHexClick: PropTypes.func,
+  backgroundClass: PropTypes.string,
 };
 
 export default connect(
