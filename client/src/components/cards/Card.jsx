@@ -8,11 +8,19 @@ import './Card.less';
 const margin = 15;
 
 class Card extends React.PureComponent {
-  componentWillReceiveProps(props) {
+  redimension(props) {
     const { dimension } = props;
     const { width, height } = this.ref.getBoundingClientRect();
 
     dimension(width + (2 * margin), height + (2 * margin));
+  }
+
+  componentDidMount() {
+    this.redimension(this.props);
+  }
+
+  componentWillReceiveProps(props) {
+    this.redimension(props);
   }
 
   render() {
