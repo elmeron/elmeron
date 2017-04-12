@@ -22,7 +22,8 @@ export function initListeners() {
       dispatch(ui.showGameView());
     });
 
-    elmeron.on('elmeronFound', () => {
+    elmeron.on('elmeronFound', ({ q, r }) => {
+      dispatch(grid.focus({ q, r }));
       dispatch(ui.showGameOverView());
     });
 

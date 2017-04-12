@@ -40,12 +40,12 @@ export default class SpaceNode extends WorldNode {
   explore(position) {
     const { tiles, worlds } = super.explore(position);
     const elmeronResourceName = new ElmeronResource().name;
-    const foundElmeron = tiles.find(tile =>
+    const elmeronTile = tiles.find(tile =>
       tile.resource === elmeronResourceName
-    ) !== undefined;
+    );
 
-    if (foundElmeron) {
-      this.onElmeronFound();
+    if (elmeronTile) {
+      this.onElmeronFound(elmeronTile);
     }
 
     return { tiles, worlds };

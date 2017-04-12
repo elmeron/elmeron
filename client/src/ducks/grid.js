@@ -41,6 +41,18 @@ export function zoomOut() {
   };
 }
 
+export function focus(position) {
+  return (dispatch, getState) => {
+    const { q, r } = position;
+    let stack = getState().grid.get('centerTileStack');
+
+    stack = stack.pop();
+    stack = stack.push(new Map({ q, r }));
+
+    dispatch(act(SET_STACK, stack));
+  };
+}
+
 export function updateExtremes(hexagons, extremes) {
   return (dispatch, getState) => {
     const current = extremes || getState().grid.get('extremes').toJS();

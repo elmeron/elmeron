@@ -10,7 +10,7 @@ import Position from './world/position.js';
 class Elmeron extends EventEmitter {
   startGame(nickname) {
     this.player = new Player(nickname);
-    this.game = new Game([this.player], () => this.emit('elmeronFound'));
+    this.game = new Game([this.player], tile => this.emit('elmeronFound', tile));
     this.emit('gameStart', {});
   }
 
