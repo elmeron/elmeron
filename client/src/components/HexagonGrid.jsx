@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import config from '../../config.js';
 import { closeCard as close } from '../ducks/card.js';
+import { explore as ex } from '../ducks/elmeron.js';
 import { hexToPixel } from '../services/hex-util.js';
 import './HexagonGrid.less';
 import Hexagon from './Hexagon.jsx';
@@ -117,7 +118,11 @@ class HexagonGrid extends React.PureComponent {
   }
 
   onHexClick(elem, hex) {
-    const { onHexClick } = this.props;
+    const { onHexClick, explore } = this.props;
+
+    if (hex.resource === 'Unexplored') {
+      return explore(hex);
+    }
 
     if (onHexClick) {
       onHexClick(elem, hex);
@@ -188,6 +193,7 @@ HexagonGrid.PropTypes = {
   onBackgroundClick: PropTypes.func,
   onHexClick: PropTypes.func,
   backgroundClass: PropTypes.string,
+  explore: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -200,5 +206,6 @@ export default connect(
   }),
   (dispatch) => ({
     closeCard: bindActionCreators(close, dispatch),
+    explore: bindActionCreators(ex, dispatch),
   })
 )(HexagonGrid);

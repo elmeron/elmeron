@@ -1,13 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { openCard as open } from '../ducks/card.js';
+import { openCard as open, closeCard as close } from '../ducks/card.js';
 import HexagonGrid from './HexagonGrid.jsx';
-import PlanetTileCard from './cards/PlanetTileCard.jsx';
+import SpaceTileCard from './cards/SpaceTileCard.jsx';
 
 function SpaceGrid(props) {
   function onHexClick(anchor, hex) {
-    props.openCard(anchor, <PlanetTileCard tile={hex} />);
+    if (hex.resource === 'Void') {
+      props.closeCard();
+      return;
+    }
+
+    props.openCard(anchor, <SpaceTileCard tile={hex} />);
   }
 
   return (
@@ -19,5 +24,6 @@ export default connect(
   () => ({}),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),
+    closeCard: bindActionCreators(close, dispatch),
   })
 )(SpaceGrid);

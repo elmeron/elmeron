@@ -6,22 +6,22 @@ import { properCase } from '../../services/utils.js';
 import Card from './Card.jsx';
 import ExploreButton from './ExploreButton.jsx';
 
-function IslandCard(owner, onZoom) {
+function PlanetCard(owner, onZoom) {
   const name = properCase(owner);
 
   return (
     <div>
-      <h1>{`${name} Island`}</h1>
+      <h1>{`${name} Planet`}</h1>
       <button onClick={onZoom}>ZOOM IN</button>
     </div>
   );
 }
 
-function UnknownCard(owner) {
-  return <h1>Unknown Island</h1>;
+function UnknownCard() {
+  return <h1>Unknown Planet</h1>;
 }
 
-function PlanetTileCard(props) {
+function SpaceTileCard(props) {
   const { resource, owner } = props.tile;
   let body = null;
 
@@ -30,26 +30,24 @@ function PlanetTileCard(props) {
   }
 
   if (owner) {
-    if (props.children.includes(owner)) {
-      body = IslandCard(owner, onZoom);
-    } else {
+    if (resource === 'Unknown') {
       body = UnknownCard();
+    } else {
+      body = PlanetCard(owner, onZoom);
     }
   }
 
   return (
     <Card>
-      { body }
+      {body}
       <ExploreButton tile={props.tile} />
     </Card>
   );
 }
 
 export default connect(
-  (state) => ({
-    children: state.world.getIn(['location', 'children']),
-  }),
+  () => ({}),
   (dispatch) => ({
     zoomIn: bindActionCreators(zi, dispatch),
   })
-)(PlanetTileCard);
+)(SpaceTileCard);

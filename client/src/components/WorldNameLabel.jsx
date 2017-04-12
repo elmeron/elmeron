@@ -2,14 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { zoomOut as zo } from '../ducks/elmeron.js';
+import { properCase } from '../services/utils.js';
 import './WorldNameLabel.less';
 
 function WorldNameLabel(props) {
-  const { name, zoomOut } = props;
-  const properName = name.replace(/\w\S*/g, (txt) => {
-    const t = txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    return t;
-  });
+  const { name, nodeType, zoomOut } = props;
+  const properName = properCase(name);
+  const type = nodeType.replace('Node', '');
+  const label = type === 'Space' ? properName : `${properName} ${type}`;
 
   function onClick() {
     zoomOut();
@@ -17,7 +17,7 @@ function WorldNameLabel(props) {
 
   return (
     <div className="world-name-label">
-      <h1 onClick={onClick}>{properName}</h1>
+      <h1 onClick={onClick}>{label}</h1>
     </div>
   );
 }
@@ -25,6 +25,7 @@ function WorldNameLabel(props) {
 export default connect(
   (state) => ({
     name: state.world.getIn(['location', 'current']),
+    nodeType: state.world.get('nodeType'),
   }),
   (dispatch) => ({
     zoomOut: bindActionCreators(zo, dispatch),
