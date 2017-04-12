@@ -7,7 +7,7 @@ export default function LoadGameView() {
       <div className="world-name-label">
         <h1>Elmeron has been found!</h1>
       </div>
-      <HexagonGrid backgroundClass="space-background" />
+      <HexagonGrid backgroundClass="space-background" autoExplore="false" />
     </div>
   );
 }

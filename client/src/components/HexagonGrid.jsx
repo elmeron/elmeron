@@ -118,9 +118,10 @@ class HexagonGrid extends React.PureComponent {
   }
 
   onHexClick(elem, hex) {
-    const { onHexClick, explore } = this.props;
+    const { onHexClick, explore, autoExplore } = this.props;
+    const shouldAutoExplore = autoExplore === undefined || autoExplore === true;
 
-    if (hex.resource === 'Unexplored') {
+    if (hex.resource === 'Unexplored' && shouldAutoExplore) {
       return explore(hex);
     }
 
@@ -194,6 +195,7 @@ HexagonGrid.PropTypes = {
   onHexClick: PropTypes.func,
   backgroundClass: PropTypes.string,
   explore: PropTypes.func.isRequired,
+  autoExplore: PropTypes.bool,
 };
 
 export default connect(
