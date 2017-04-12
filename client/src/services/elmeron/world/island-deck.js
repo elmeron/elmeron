@@ -14,8 +14,8 @@ export default class IslandDeck extends Deck {
       new Rock(),
       new Sand(),
     ];
-    const randomInt = chance.integer({ min: 10, max: 20 });
-    const size = (biase.size + 1) * randomInt;
+    const randomInt = chance.integer({ min: 5, max: 10 });
+    const size = Math.exp(biase.size) * randomInt;
     const distribution = new LogarithmicDistribution(resources, biase, size);
 
     super(distribution);

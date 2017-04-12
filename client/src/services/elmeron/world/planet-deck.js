@@ -14,8 +14,7 @@ export default class PlanetDeck extends Deck {
       new Rock(),
       new Sand(),
     ];
-    const randomInt = chance.integer({ min: 10, max: 20 });
-    const size = (biase.size + 1) * randomInt;
+    const size = chance.integer({ min: 20, max: 50 });
     const distribution = new LogarithmicDistribution(resources, biase, size);
 
     super(distribution);

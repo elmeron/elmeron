@@ -30,8 +30,11 @@ export default class ExpandIslandHandler extends TerraformHandler {
     }
 
     const island = node.grid.filter(tile => tile.owner === owner);
+    const distance = island.getDistanceToRelativeOrigo(position);
+    const distanceExp = Math.exp(distance);
+    const ratio = distanceExp * (island.size / 15);
 
-    return island.size < 3;
+    return Math.random() > ratio;
   }
 
   static makeTiles(position, node) {
