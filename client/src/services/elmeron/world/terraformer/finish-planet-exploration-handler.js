@@ -1,12 +1,13 @@
 import { Set } from 'immutable';
 import TerraformHandler from './terraform-handler.js';
 import Unexplored from '../resources/unexplored.js';
+import UnknownResource from '../resources/unknown.js';
 import Void from '../resources/void.js';
 import Tile from '../tile.js';
 import PlanetDeck from '../planet-deck.js';
 import PlanetNode from '../planet-node.js';
 
-export default class FinishWorldExplorationHandler extends TerraformHandler {
+export default class FinishPlanetExplorationHandler extends TerraformHandler {
   static canHandle(position, node, neighbours) {
     const tileNeighbours = neighbours.filterOut([new Unexplored(), new Void()]);
 
@@ -33,6 +34,7 @@ export default class FinishWorldExplorationHandler extends TerraformHandler {
   static makeTiles(position, node, neighbours) {
     const tileNeighbours = neighbours.filterOut([new Unexplored(), new Void()]);
     const voidTile = new Tile(position, new Void());
+    const returnGrid = node.grid.populateUndefinedNeighbours(position, new Unexplored());
 
     const owners = tileNeighbours.tiles.reduce((result, tile) =>
       result.add(tile.owner),
@@ -48,6 +50,13 @@ export default class FinishWorldExplorationHandler extends TerraformHandler {
       );
 
       if (unexploredSurrounding.size === 1) {
+        const ownerTile = ownerTiles.tiles.first();
+
+        if (ownerTile.resource.equals(new UnknownResource())) {
+          const pickedResource = node.deck.pick();
+          returnGrid.addTile(new Tile(ownerTile.position, pickedResource, ownerTile.owner));
+        }
+
         const deck = new PlanetDeck();
         const planet = new PlanetNode(deck, owner);
 
@@ -55,7 +64,6 @@ export default class FinishWorldExplorationHandler extends TerraformHandler {
       }
     });
 
-    const returnGrid = node.grid.populateUndefinedNeighbours(position, new Unexplored());
     returnGrid.addTile(voidTile);
 
     return { grid: returnGrid, worlds };

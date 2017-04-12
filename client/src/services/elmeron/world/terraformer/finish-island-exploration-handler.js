@@ -9,7 +9,7 @@ import ResourceDistribution from '../resource-distribution.js';
 import Deck from '../deck.js';
 import IslandNode from '../island-node.js';
 
-export default class FinishWorldExplorationHandler extends TerraformHandler {
+export default class FinishIslandExplorationHandler extends TerraformHandler {
   static canHandle(position, node, neighbours) {
     const tileNeighbours = neighbours.filterOut([new Unexplored(), new Ocean()]);
 

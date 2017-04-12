@@ -5,7 +5,7 @@ import TileHexagonGrid from '../tile-hexagon-grid.js';
 import Tile from '../tile.js';
 import WorldNode from '../';
 
-export default class StartWorldExplorationHandler extends TerraformHandler {
+export default class StartIslandExplorationHandler extends TerraformHandler {
   static canHandle(position, node, neighbours) {
     return neighbours.every(tile =>
       tile.resource.equals(new Ocean()) || tile.resource.equals(new Unexplored())

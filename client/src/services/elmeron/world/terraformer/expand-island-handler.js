@@ -3,7 +3,7 @@ import Unexplored from '../resources/unexplored.js';
 import Ocean from '../resources/ocean.js';
 import Tile from '../tile.js';
 
-export default class ExpandWorldHandler extends TerraformHandler {
+export default class ExpandIslandHandler extends TerraformHandler {
   static canHandle(position, node) {
     const neighbours = node.grid.getDefinedNeighbours(position, [
       new Unexplored(),
