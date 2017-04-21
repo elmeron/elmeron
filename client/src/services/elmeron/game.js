@@ -1,8 +1,5 @@
 import Chance from 'chance';
 import { Map } from 'immutable';
-import Resource from './world/resource.js';
-import ResourceDistribution from './world/resource-distribution.js';
-import Deck from './world/deck.js';
 import SpaceNode from './world/space-node.js';
 
 export default class Game {

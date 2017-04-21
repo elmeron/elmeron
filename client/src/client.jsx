@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import 'bootstrap/less/bootstrap.less';
+import 'font-awesome/less/font-awesome.less';
 import './style.less';
 import '../static/fonts.less';
 import elmeron from './services/elmeron/index.js';

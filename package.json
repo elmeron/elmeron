@@ -28,13 +28,16 @@
     "rules": {
       "import/no-unresolved": "off",
       "import/extensions": "off",
-      "comma-dangle": ["error", {
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "always-multiline",
-        "functions": "ignore"
-      }]
+      "comma-dangle": [
+        "error",
+        {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "ignore"
+        }
+      ]
     }
   },
   "repository": {
@@ -70,6 +73,7 @@
     "chance": "1.0.6",
     "express": "4.15.2",
     "file-loader": "0.11.0",
+    "font-awesome": "4.7.0",
     "immutable": "3.8.1",
     "moment": "2.18.1",
     "morgan": "1.8.1",

@@ -7,4 +7,10 @@ export function properCase(text) {
   });
 }
 
+export function getFuelAmount(delta, deltaStart, offset, timeUnit, now) {
+  const time = (now - deltaStart) / timeUnit;
+
+  return Math.round(offset + (delta * time));
+}
+
 /* eslint-enable import/prefer-default-export */

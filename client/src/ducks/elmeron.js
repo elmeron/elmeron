@@ -2,6 +2,7 @@ import { act } from './util.js';
 import elmeron from '../services/elmeron/index.js';
 import * as card from './card.js';
 import * as grid from './grid.js';
+import * as player from './player.js';
 import * as ui from './ui.js';
 import * as world from './world.js';
 
@@ -17,9 +18,16 @@ export function initListeners() {
       dispatch(card.closeCard());
     });
 
-    elmeron.on('gameStart', () => {
+    elmeron.on('getPlayer', ({ fuel }) => {
+      dispatch(player.setFuelData(fuel));
+    });
+
+    elmeron.on('gameStart', (data) => {
+      const { fuel } = data.player;
+
       elmeron.getWorld();
       dispatch(ui.showGameView());
+      dispatch(player.setFuelData(fuel));
     });
 
     elmeron.on('elmeronFound', ({ q, r }) => {

@@ -11,7 +11,6 @@ export default class SpaceNode extends WorldNode {
   constructor(onElmeronFound) {
     super(new SpaceDeck(), SpaceTerraformer, 'space');
     this.onElmeronFound = onElmeronFound;
-
     let startResource = new ElmeronResource();
 
     while (startResource.equals(new ElmeronResource())) {

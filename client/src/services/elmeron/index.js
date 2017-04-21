@@ -11,7 +11,9 @@ class Elmeron extends EventEmitter {
   startGame(nickname) {
     this.player = new Player(nickname);
     this.game = new Game([this.player], tile => this.emit('elmeronFound', tile));
-    this.emit('gameStart', {});
+    this.emit('gameStart', {
+      player: this.player.getData(),
+    });
   }
 
   getWorld() {
@@ -19,9 +21,18 @@ class Elmeron extends EventEmitter {
   }
 
   explore(position) {
-    const explorationResult = this.player.location.explore(new Position(position.q, position.r));
+    const fuelCost = 10;
+    const fuelAmount = this.player.getFuelAmount();
 
-    this.emit('explore', explorationResult);
+    if (fuelAmount >= fuelCost) {
+      const explorationResult = this.player.location.explore(new Position(position.q, position.r));
+      const previousDelta = this.player.fuel.delta;
+
+      this.player.addFuelAmount(-fuelCost);
+      this.player.setFuelDelta(previousDelta + 0.1);
+      this.emit('getPlayer', this.player.getData());
+      this.emit('explore', explorationResult);
+    }
   }
 
   zoomIn(childName) {
