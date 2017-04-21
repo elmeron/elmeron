@@ -13,12 +13,13 @@ function generateWorldName() {
 }
 
 export default class WorldNode {
-  constructor(deck, terraformer, name = generateWorldName()) {
+  constructor(deck, terraformer, name = generateWorldName(), explorationCost = 0) {
     this.deck = deck;
     this.terraformer = terraformer;
     this.name = name;
     this.grid = new TileHexagonGrid();
     this.children = new Map();
+    this.explorationCost = explorationCost;
   }
 
   getNodeType() {

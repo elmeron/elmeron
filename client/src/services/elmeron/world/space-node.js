@@ -9,7 +9,7 @@ import Tile from './tile.js';
 
 export default class SpaceNode extends WorldNode {
   constructor(onElmeronFound) {
-    super(new SpaceDeck(), SpaceTerraformer, 'space');
+    super(new SpaceDeck(), SpaceTerraformer, 'space', 100);
     this.onElmeronFound = onElmeronFound;
     let startResource = new ElmeronResource();
 

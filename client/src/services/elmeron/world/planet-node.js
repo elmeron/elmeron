@@ -7,7 +7,7 @@ import Ocean from './resources/ocean.js';
 
 export default class PlanetNode extends WorldNode {
   constructor(deck, name) {
-    super(deck, PlanetTerraformer, name);
+    super(deck, PlanetTerraformer, name, 50);
 
     const startResource = deck.pick();
     const origo = new Position(0, 0);

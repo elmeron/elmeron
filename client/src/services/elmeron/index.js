@@ -21,14 +21,14 @@ class Elmeron extends EventEmitter {
   }
 
   explore(position) {
-    const fuelCost = 10;
+    const explorationCost = this.player.location.explorationCost;
     const fuelAmount = this.player.getFuelAmount();
 
-    if (fuelAmount >= fuelCost) {
+    if (fuelAmount >= explorationCost) {
       const explorationResult = this.player.location.explore(new Position(position.q, position.r));
       const previousDelta = this.player.fuel.delta;
 
-      this.player.addFuelAmount(-fuelCost);
+      this.player.addFuelAmount(-explorationCost);
       this.player.setFuelDelta(previousDelta + 0.1);
       this.emit('getPlayer', this.player.getData());
       this.emit('explore', explorationResult);

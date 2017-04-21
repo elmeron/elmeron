@@ -6,7 +6,7 @@ import Unexplored from './resources/unexplored.js';
 
 export default class IslandNode extends WorldNode {
   constructor(deck, name) {
-    super(deck, IslandTerraformer, name);
+    super(deck, IslandTerraformer, name, 10);
 
     const startResource = deck.pick();
     const origo = new Position(0, 0);
