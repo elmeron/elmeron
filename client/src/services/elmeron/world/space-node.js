@@ -8,8 +8,8 @@ import SpaceDeck from './space-deck.js';
 import Tile from './tile.js';
 
 export default class SpaceNode extends WorldNode {
-  constructor(players, onElmeronFound) {
-    super(new SpaceDeck(), SpaceTerraformer, 'Space');
+  constructor(onElmeronFound) {
+    super(new SpaceDeck(), SpaceTerraformer, 'space');
     this.onElmeronFound = onElmeronFound;
 
     let startResource = new ElmeronResource();

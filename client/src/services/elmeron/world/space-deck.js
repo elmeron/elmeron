@@ -21,7 +21,7 @@ export default class SpaceDeck extends Deck {
       new Sand(),
       new ElmeronResource(),
     ];
-    const size = chance.integer({ min: 50, max: 100 });
+    const size = chance.integer({ min: 20, max: 40 });
     const biase = new ResourceDistribution();
 
     biase.set(new Forest(), randomBiase());
