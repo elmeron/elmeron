@@ -35,9 +35,14 @@ export function zoomIn(position) {
 
 export function zoomOut() {
   return (dispatch, getState) => {
-    const stack = getState().grid.get('centerTileStack').pop();
+    let stack = getState().grid.get('centerTileStack');
 
-    dispatch(act(SET_STACK, stack));
+    if (stack.size > 1) {
+      stack = stack.pop();
+      dispatch(act(SET_STACK, stack));
+    } else {
+      dispatch(act());
+    }
   };
 }
 

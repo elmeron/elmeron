@@ -4,25 +4,27 @@ import Ocean from '../resources/ocean.js';
 import Tile from '../tile.js';
 
 export default class ExpandIslandHandler extends TerraformHandler {
-  static canHandle(position, node) {
-    const neighbours = node.grid.getDefinedNeighbours(position, [
-      new Unexplored(),
-      new Ocean(),
-    ]);
+  static canHandle(position, node, neighbours) {
+    const tileNeighbours = neighbours.filterOut([new Unexplored(), new Ocean()]);
+    const unexploredNeighbours = neighbours.filter(tile => tile.resource.equals(new Unexplored()));
+
+    if (unexploredNeighbours.size === 0) {
+      return false;
+    }
 
     if (node.deck.size === 0) {
       return false;
     }
 
-    if (neighbours.size === 0) {
+    if (tileNeighbours.size === 0) {
       return false;
     }
 
-    const owner = neighbours.tiles.first().owner;
+    const owner = tileNeighbours.tiles.first().owner;
 
-    if (neighbours.size > 1) {
+    if (tileNeighbours.size > 1) {
       // make sure they point to the same world
-      const sameOwner = neighbours.tiles.every(tile => tile.owner === owner);
+      const sameOwner = tileNeighbours.tiles.every(tile => tile.owner === owner);
 
       if (!sameOwner) {
         return false;

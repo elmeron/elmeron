@@ -24,9 +24,11 @@ export default class Game {
     const deck = new Deck(distribution);
     this.world = new SpaceNode(deck, onElmeronFound);
 
+    const startingIsland = this.world.children.first().children.first();
+
     /* eslint-disable */
     this.players.forEach((player) => {
-      player.location = this.world;
+      player.location = startingIsland;
     });
     /* eslint-enable */
   }

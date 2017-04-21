@@ -160,13 +160,13 @@ test('relative origo', () => {
   expect(distance).toBe(5);
 });
 
-test('get surrounding tiles', () => {
+test.only('get surrounding tiles', () => {
   const grid = new TileHexagonGrid();
   const origo = new Position(0, 0);
   const resource = new Resource('Resource');
-  const neighbours = grid.populateUndefinedNeighbours(origo, new Unexplored());
 
   grid.addTile(new Tile(origo, resource));
+  const neighbours = grid.populateUndefinedNeighbours(origo, new Unexplored());
   grid.addTiles(neighbours.tiles);
 
   const surrounding = grid.getSurroundingTiles(grid.filter(tile =>

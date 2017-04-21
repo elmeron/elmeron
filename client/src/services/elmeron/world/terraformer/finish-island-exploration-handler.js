@@ -2,7 +2,6 @@ import { Set } from 'immutable';
 import TerraformHandler from './terraform-handler.js';
 import Unexplored from '../resources/unexplored.js';
 import Ocean from '../resources/ocean.js';
-import TileHexagonGrid from '../tile-hexagon-grid.js';
 import Tile from '../tile.js';
 import IslandDeck from '../island-deck.js';
 import IslandNode from '../island-node.js';
@@ -33,7 +32,7 @@ export default class FinishIslandExplorationHandler extends TerraformHandler {
 
   static makeTiles(position, node, neighbours) {
     const tileNeighbours = neighbours.filterOut([new Unexplored(), new Ocean()]);
-    const returnGrid = new TileHexagonGrid();
+    const returnGrid = node.grid.populateUndefinedNeighbours(position, new Unexplored());
     const ocean = new Tile(position, new Ocean());
 
     const owners = tileNeighbours.tiles.reduce((result, tile) =>
