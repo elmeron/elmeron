@@ -16,10 +16,11 @@ const initialState = {
   component: null,
   width: 0,
   height: 0,
+  direction: 'left',
 };
 
-export function openCard(anchor, component) {
-  return act(OPEN, { anchor, component });
+export function openCard(anchor, component, direction) {
+  return act(OPEN, { anchor, component, direction });
 }
 
 export function closeCard() {
@@ -31,13 +32,14 @@ export function setCardDimension(width, height) {
 }
 
 function handleOpenCard(state, payload) {
-  const { anchor, component } = payload;
+  const { anchor, component, direction } = payload;
   const { left, top, width, height } = anchor.getBoundingClientRect();
 
   return state
     .set('open', true)
     .set('anchor', new Map({ left, top, width, height }))
-    .set('component', component);
+    .set('component', component)
+    .set('direction', direction);
 }
 
 function handleCloseCard(state) {
