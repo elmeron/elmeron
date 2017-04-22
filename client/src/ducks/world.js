@@ -8,6 +8,7 @@ const SET_PARENT_LOCATION = 'world/SET_PARENT_LOCATION';
 const SET_CHILDREN_LOCATIONS = 'world/SET_CHILDREN_LOCATIONS';
 const ADD_CHILDREN_LOCATIONS = 'world/ADD_CHILDREN_LOCATIONS';
 const SET_NODE_TYPE = 'world/SET_NODE_TYPE';
+const SET_EXPLORATION_COST = 'world/SET_EXPLORATION_COST';
 
 const initialState = {
   tiles: {},
@@ -17,6 +18,7 @@ const initialState = {
     children: new Set(),
   },
   nodeType: undefined,
+  explorationCost: 0,
 };
 
 export function setTiles(tiles) {
@@ -45,6 +47,10 @@ export function addChildrenLocations(children) {
 
 export function setNodeType(type) {
   return act(SET_NODE_TYPE, type);
+}
+
+export function setExplorationCost(cost) {
+  return act(SET_EXPLORATION_COST, cost);
 }
 
 function handleSetTiles(state, tiles) {
@@ -90,6 +96,10 @@ function handleSetNodeType(state, type) {
   return state.set('nodeType', type);
 }
 
+function handleSetExplorationCost(state, cost) {
+  return state.set('explorationCost', cost);
+}
+
 const handlers = {
   [SET_TILES]: handleSetTiles,
   [MERGE_TILES]: handleMergeTiles,
@@ -98,6 +108,7 @@ const handlers = {
   [SET_CHILDREN_LOCATIONS]: handleSetChildrenLocations,
   [ADD_CHILDREN_LOCATIONS]: handleAddChildrenLocations,
   [SET_NODE_TYPE]: handleSetNodeType,
+  [SET_EXPLORATION_COST]: handleSetExplorationCost,
 };
 
 export default reducer(initialState, handlers);

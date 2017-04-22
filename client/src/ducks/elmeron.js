@@ -8,11 +8,12 @@ import * as world from './world.js';
 
 export function initListeners() {
   return (dispatch) => {
-    elmeron.on('getWorld', ({ children, name, parent, nodeType, tiles }) => {
+    elmeron.on('getWorld', ({ children, name, parent, nodeType, tiles, explorationCost }) => {
       dispatch(world.setCurrentLocation(name));
       dispatch(world.setParentLocation(parent));
       dispatch(world.setChildrenLocations(children));
       dispatch(world.setNodeType(nodeType));
+      dispatch(world.setExplorationCost(explorationCost));
       dispatch(world.setTiles(tiles));
       dispatch(grid.setExtremes(tiles));
       dispatch(card.closeCard());

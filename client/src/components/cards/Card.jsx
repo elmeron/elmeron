@@ -24,11 +24,12 @@ class Card extends React.PureComponent {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, customClassName } = this.props;
+    const customName = customClassName || '';
 
     return (
       <div
-        className="card"
+        className={`card ${customClassName}`}
         ref={(r) => { this.ref = r; }}
       >
         {children}
@@ -39,6 +40,7 @@ class Card extends React.PureComponent {
 
 Card.PropTypes = {
   dimension: PropTypes.func.isRequired,
+  customClassName: PropTypes.string,
 };
 
 export default connect(

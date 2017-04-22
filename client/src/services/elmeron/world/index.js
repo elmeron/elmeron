@@ -51,6 +51,7 @@ export default class WorldNode {
       tiles: this.grid.getTiles(),
       children: this.getChildren(),
       nodeType: this.getNodeType(),
+      explorationCost: this.explorationCost,
     };
   }
 

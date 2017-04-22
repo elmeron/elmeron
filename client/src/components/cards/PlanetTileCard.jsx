@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { zoomIn as zi } from '../../ducks/elmeron.js';
 import { properCase } from '../../services/utils.js';
 import Card from './Card.jsx';
-import ExploreButton from './ExploreButton.jsx';
 
 function IslandCard(owner, onZoom) {
   const name = properCase(owner);
@@ -40,7 +39,6 @@ function PlanetTileCard(props) {
   return (
     <Card>
       { body }
-      <ExploreButton tile={props.tile} />
     </Card>
   );
 }
