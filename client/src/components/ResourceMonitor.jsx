@@ -30,7 +30,7 @@ class ResourceMonitor extends React.PureComponent {
   }
 
   onClick() {
-    this.props.openCard(this.fuelIcon, <FuelCard delta={this.props.delta}/>, 'down');
+    this.props.openCard(this.fuelIcon, <FuelCard />, 'down');
   }
 
   render() {

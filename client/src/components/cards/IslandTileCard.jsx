@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { buildRefinery as br } from '../../ducks/elmeron.js';
 import Card from './Card.jsx';
+import GemIcon from '../GemIcon.jsx';
 
 function IslandTileCard(props) {
-  const { name } = props.tile.resource;
+  const { name, offset } = props.tile.resource;
 
   function onBuild() {
     props.buildRefinery([props.tile]);
@@ -14,6 +15,10 @@ function IslandTileCard(props) {
   return (
     <Card>
       <h1>{name}</h1>
+      <p>
+        <GemIcon color={name.toLowerCase()} />
+        {offset}
+      </p>
       <button onClick={onBuild}>REFINE</button>
     </Card>
   );

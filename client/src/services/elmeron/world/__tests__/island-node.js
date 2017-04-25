@@ -1,11 +1,11 @@
-import Resource from '../resource.js';
+import CountableResource from '../countable-resource.js';
 import ResourceDistribution from '../resource-distribution.js';
 import Deck from '../deck.js';
 import IslandNode from '../island-node.js';
 
 test('constructor', () => {
   const distribution = new ResourceDistribution();
-  const resource = new Resource('Resource');
+  const resource = new CountableResource('Resource', 0, 1);
 
   distribution.set(resource, 10);
 
@@ -18,7 +18,7 @@ test('constructor', () => {
 
 test('explore until', () => {
   const distribution = new ResourceDistribution();
-  const resource = new Resource('Resource');
+  const resource = new CountableResource('Resource', 0, 1);
 
   distribution.set(resource, 1);
 

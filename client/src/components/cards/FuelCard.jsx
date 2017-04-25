@@ -1,8 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Card from './Card.jsx';
 import FuelIcon from '../FuelIcon.jsx';
 
-export default function FuelCard(props) {
+function FuelCard(props) {
   return (
     <Card>
       <p>
@@ -12,3 +13,9 @@ export default function FuelCard(props) {
     </Card>
   );
 }
+
+export default connect(
+  (state) => ({
+    delta: state.player.getIn(['fuel', 'delta']),
+  })
+)(FuelCard);

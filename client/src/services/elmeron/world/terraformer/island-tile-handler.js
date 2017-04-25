@@ -16,6 +16,7 @@ export default class IslandTileHandler extends TerraformHandler {
     const redistribution = node.deck.redistribute(neighbours);
     const pickedResource = redistribution.pick();
 
+    pickedResource.generateStartAmount();
     const tile = new Tile(position, pickedResource);
     const returnGrid = node.grid.populateUndefinedNeighbours(position, new Unexplored());
 

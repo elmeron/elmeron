@@ -12,4 +12,8 @@ export default class Resource {
       name: this.name,
     };
   }
+
+  clone() {
+    return new Resource(this.name);
+  }
 }

@@ -102,12 +102,16 @@ export default class TileHexagonGrid {
 
   map(sideEffect) {
     const grid = new TileHexagonGrid();
-    grid.tiles = this.tiles.map(sideEffect);
+    grid.addTiles(this.tiles.map(sideEffect));
     return grid;
   }
 
   forEach(sideEffect) {
     return this.tiles.forEach(sideEffect);
+  }
+
+  min(predicate) {
+    return this.tiles.minBy(predicate);
   }
 
   isUnexploredTile(position) {

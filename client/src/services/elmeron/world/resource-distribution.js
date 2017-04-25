@@ -41,7 +41,7 @@ export default class ResourceDistribution {
       return index < i;
     });
 
-    return resource ? resource.get('resource') : undefined;
+    return resource ? resource.get('resource').clone() : undefined;
   }
 
   forEach(fn) {

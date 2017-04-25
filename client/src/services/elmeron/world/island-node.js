@@ -14,13 +14,17 @@ export default class IslandNode extends WorldNode {
     const neighbours = this.grid.populateUndefinedNeighbours(origo, new Unexplored());
 
     deck.remove(startResource);
+    startResource.generateStartAmount();
     this.grid.addTile(new Tile(origo, startResource));
     this.grid.addTiles(neighbours.tiles);
   }
 
-  buildRefinery(tiles) {
+  buildRefinery(tiles, onRefineryChange = () => {}) {
     const grid = this.grid.getTiles(tiles);
-    const refinery = new Refinery(grid, Date.now(), 1000);
+    const refinery = new Refinery(grid, Date.now(), (deltaChange, updatedGrid) => {
+      this.grid.addTiles(updatedGrid.tiles);
+      onRefineryChange(deltaChange, updatedGrid);
+    });
 
     this.grid.addTiles(refinery.grid.tiles);
 

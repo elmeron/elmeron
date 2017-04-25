@@ -26,11 +26,31 @@ export default class DeltaAmount {
     this.delta = parseFloat(delta.toFixed(1));
   }
 
+  getTimeTo(offsetValue, now = Date.now()) {
+    if (this.delta === 0) {
+      return Number.POSITIVE_INFINITY;
+    }
+
+    const currentAmount = this.getAmount(now);
+
+    return (offsetValue - currentAmount) / this.delta;
+  }
+
   getData() {
     return {
       delta: this.delta,
       deltaStart: this.deltaStart,
       offset: this.offset,
     };
+  }
+
+  clone() {
+    const copy = new DeltaAmount(0, this.timeUnit);
+
+    copy.delta = this.delta;
+    copy.deltaStart = this.deltaStart;
+    copy.offset = this.offset;
+
+    return copy;
   }
 }

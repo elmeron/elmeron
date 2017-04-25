@@ -48,7 +48,12 @@ export function initListeners() {
 
     elmeron.on('refineryBuilt', ({ tiles, fuel }) => {
       dispatch(world.mergeTiles(tiles));
+      dispatch(player.setFuelData(fuel));
       dispatch(card.closeCard());
+    });
+
+    elmeron.on('refineryChange', ({ tiles, fuel }) => {
+      dispatch(world.mergeTiles(tiles));
       dispatch(player.setFuelData(fuel));
     });
   };

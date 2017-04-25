@@ -26,7 +26,7 @@ test('max', () => {
   dist.set(forest, 5);
   dist.set(rock, 10);
 
-  expect(dist.max()).toBe(rock);
+  expect(dist.max()).toEqual(rock);
 });
 
 test('get index', () => {
@@ -35,6 +35,6 @@ test('get index', () => {
 
   dist.set(forest, 10);
 
-  expect(dist.get(0)).toBe(forest);
+  expect(dist.get(0)).toEqual(forest);
   expect(dist.get(10)).not.toBeDefined();
 });

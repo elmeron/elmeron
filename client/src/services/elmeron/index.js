@@ -57,7 +57,14 @@ class Elmeron extends EventEmitter {
     const fuelAmount = this.player.getFuelAmount();
 
     if (fuelAmount >= price) {
-      const { tiles, delta } = this.player.location.buildRefinery(positions);
+      const { tiles, delta } = this.player.location.buildRefinery(
+        positions,
+        (deltaChange, grid) => {
+          this.player.addFuelDelta(deltaChange);
+          const { fuel } = this.player.getData();
+          this.emit('refineryChange', { tiles: grid.getTiles(), fuel });
+        }
+      );
 
       this.player.addFuelAmount(-price);
       this.player.addFuelDelta(delta);
