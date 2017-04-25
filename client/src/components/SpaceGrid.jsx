@@ -7,7 +7,7 @@ import SpaceTileCard from './cards/SpaceTileCard.jsx';
 
 function SpaceGrid(props) {
   function onHexClick(anchor, hex) {
-    if (hex.resource === 'Void') {
+    if (hex.resource.name === 'Void') {
       props.closeCard();
       return;
     }

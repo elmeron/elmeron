@@ -61,7 +61,18 @@ export default class TileHexagonGrid {
     return this.tiles.get(id);
   }
 
-  getTiles() {
+  getTiles(positions = false) {
+    if (positions) {
+      const grid = new TileHexagonGrid();
+
+      positions.forEach(({ q, r }) => {
+        const tile = this.getTile(new Position(q, r));
+        grid.addTile(tile);
+      });
+
+      return grid;
+    }
+
     return this.tiles.reduce((result, tile) =>
       result.push(tile.getData())
     , new List()).toJS();
@@ -87,6 +98,12 @@ export default class TileHexagonGrid {
 
   every(predicate) {
     return this.tiles.every(predicate);
+  }
+
+  map(sideEffect) {
+    const grid = new TileHexagonGrid();
+    grid.tiles = this.tiles.map(sideEffect);
+    return grid;
   }
 
   forEach(sideEffect) {

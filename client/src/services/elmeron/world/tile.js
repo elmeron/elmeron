@@ -10,11 +10,17 @@ export default class Tile {
   }
 
   getData() {
+    let owner = this.owner;
+
+    if (this.owner && this.owner.getData) {
+      owner = this.owner.getData();
+    }
+
     return {
       q: this.position.q,
       r: this.position.r,
-      resource: this.resource.name,
-      owner: this.owner,
+      resource: this.resource.getData(),
+      owner,
     };
   }
 }

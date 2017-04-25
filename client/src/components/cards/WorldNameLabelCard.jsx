@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { zoomOut as zo } from '../../ducks/elmeron.js';
 import './WorldNameLabelCard.less';
 import Card from './Card.jsx';
+import FuelIcon from '../FuelIcon.jsx';
 
 function WorldNameLabelCard(props) {
   function onZoom() {
@@ -16,7 +17,7 @@ function WorldNameLabelCard(props) {
   return (
     <Card customClassName="world-name-label-card">
       <p>
-        <i className="fa fa-tint" aria-hidden="true" />
+        <FuelIcon />
         {explorationCost}
       </p>
       {

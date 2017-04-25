@@ -9,7 +9,6 @@ export default class Player {
     this.fuel = new Fuel(Date.now(), timeUnit);
 
     this.fuel.addAmount(100);
-    this.fuel.setDelta(1, Date.now());
   }
 
   getFuelAmount() {
@@ -17,9 +16,11 @@ export default class Player {
     return this.fuel.getAmount(now);
   }
 
-  setFuelDelta(delta) {
+  addFuelDelta(delta) {
     const now = Date.now();
-    this.fuel.setDelta(delta, now);
+    const { delta: previousDelta } = this.fuel.getData();
+
+    this.fuel.setDelta(delta + previousDelta, now);
   }
 
   addFuelAmount(amount) {

@@ -7,7 +7,7 @@ import PlanetTileCard from './cards/PlanetTileCard.jsx';
 
 function PlanetGrid(props) {
   function onHexClick(anchor, hex) {
-    if (hex.resource === 'Ocean') {
+    if (hex.resource.name === 'Ocean') {
       props.closeCard();
       return;
     }

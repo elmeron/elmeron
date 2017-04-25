@@ -1,14 +1,20 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { buildRefinery as br } from '../../ducks/elmeron.js';
 import Card from './Card.jsx';
-import ExploreButton from './ExploreButton.jsx';
 
-export default function IslandTileCard(props) {
-  const { resource } = props.tile;
+function IslandTileCard(props) {
+  const { name } = props.tile.resource;
+
+  function onBuild() {
+    props.buildRefinery([props.tile]);
+  }
 
   return (
     <Card>
-      <h1>{resource}</h1>
-      <ExploreButton tile={props.tile} />
+      <h1>{name}</h1>
+      <button onClick={onBuild}>REFINE</button>
     </Card>
   );
 }
@@ -16,3 +22,10 @@ export default function IslandTileCard(props) {
 IslandTileCard.PropTypes = {
   tile: PropTypes.object.isRequired,
 };
+
+export default connect(
+  (state) => ({}),
+  (dispatch) => ({
+    buildRefinery: bindActionCreators(br, dispatch),
+  })
+)(IslandTileCard);

@@ -45,6 +45,12 @@ export function initListeners() {
         dispatch(world.addChildrenLocations(worlds));
       }
     });
+
+    elmeron.on('refineryBuilt', ({ tiles, fuel }) => {
+      dispatch(world.mergeTiles(tiles));
+      dispatch(card.closeCard());
+      dispatch(player.setFuelData(fuel));
+    });
   };
 }
 
@@ -68,5 +74,10 @@ export function zoomOut() {
 
 export function explore(tile) {
   elmeron.explore(tile);
+  return act();
+}
+
+export function buildRefinery(tiles) {
+  elmeron.buildRefinery(tiles);
   return act();
 }

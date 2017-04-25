@@ -6,4 +6,10 @@ export default class Resource {
   equals(resource) {
     return this.name === resource.name;
   }
+
+  getData() {
+    return {
+      name: this.name,
+    };
+  }
 }

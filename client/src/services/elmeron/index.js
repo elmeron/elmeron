@@ -6,6 +6,7 @@ import EventEmitter from 'events';
 import Player from './player.js';
 import Game from './game.js';
 import Position from './world/position.js';
+import Refinery from './world/refinery.js';
 
 class Elmeron extends EventEmitter {
   startGame(nickname) {
@@ -26,10 +27,8 @@ class Elmeron extends EventEmitter {
 
     if (fuelAmount >= explorationCost) {
       const explorationResult = this.player.location.explore(new Position(position.q, position.r));
-      const previousDelta = this.player.fuel.delta;
 
       this.player.addFuelAmount(-explorationCost);
-      this.player.setFuelDelta(previousDelta + 0.1);
       this.emit('getPlayer', this.player.getData());
       this.emit('explore', explorationResult);
     }
@@ -50,6 +49,22 @@ class Elmeron extends EventEmitter {
     if (parent) {
       this.player.location = parent;
       this.getWorld();
+    }
+  }
+
+  buildRefinery(positions) {
+    const price = Refinery.getPrice(positions);
+    const fuelAmount = this.player.getFuelAmount();
+
+    if (fuelAmount >= price) {
+      const { tiles, delta } = this.player.location.buildRefinery(positions);
+
+      this.player.addFuelAmount(-price);
+      this.player.addFuelDelta(delta);
+
+      const { fuel } = this.player.getData();
+
+      this.emit('refineryBuilt', { tiles, fuel });
     }
   }
 }

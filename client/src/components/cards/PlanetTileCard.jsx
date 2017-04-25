@@ -21,7 +21,7 @@ function UnknownCard(owner) {
 }
 
 function PlanetTileCard(props) {
-  const { resource, owner } = props.tile;
+  const { owner } = props.tile;
   let body = null;
 
   function onZoom() {

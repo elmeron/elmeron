@@ -121,7 +121,7 @@ class HexagonGrid extends React.PureComponent {
     const { onHexClick, explore, autoExplore } = this.props;
     const shouldAutoExplore = autoExplore === undefined || autoExplore === true;
 
-    if (hex.resource === 'Unexplored' && shouldAutoExplore) {
+    if (hex.resource.name === 'Unexplored' && shouldAutoExplore) {
       return explore(hex);
     }
 
@@ -165,8 +165,16 @@ class HexagonGrid extends React.PureComponent {
             hexagons.map((hex) => {
               const q = hex.get('q');
               const r = hex.get('r');
-              const type = hex.get('resource');
+              const owner = hex.get('owner');
               const center = hexToPixel(q, r, zoom);
+              let type;
+
+              if (owner && owner.toJS) {
+                type = { name: owner.get('type') }; // have to do this because of reasons
+              }
+              else {
+                type = hex.get('resource').toJS();
+              }
 
               return (
                 <Hexagon

@@ -36,7 +36,7 @@ export default function Hexagon(props) {
   }
 
   const d = roundPathCorners(path(), 0.1, true);
-  const type = props.type || '';
+  const type = props.type.name || '';
 
   return (
     <path

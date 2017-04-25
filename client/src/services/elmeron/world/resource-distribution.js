@@ -1,9 +1,17 @@
 import { Map } from 'immutable';
+import Resource from './resource.js';
 
 export default class ResourceDistribution {
-  constructor() {
+  constructor(resources = []) {
     this.distribution = new Map();
     this.size = 0;
+
+    resources.forEach(({ resource }) => {
+      const res = new Resource(resource);
+      const count = this.count(res);
+
+      this.set(res, count + 1);
+    });
   }
 
   set(resource, amount) {
