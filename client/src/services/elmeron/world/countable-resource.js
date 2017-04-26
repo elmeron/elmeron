@@ -12,7 +12,7 @@ export default class CountableResource extends Resource {
   }
 
   generateStartAmount() {
-    this.deltaAmount.offset = chance.integer({ min: 10, max: 100 });
+    this.deltaAmount.offset = chance.integer({ min: 5, max: 15 });
   }
 
   getAmount(now) {

@@ -43,6 +43,7 @@ class RefineryCard extends React.PureComponent {
     const { name } = resource;
     const { amount } = this.state;
     const color = name.toLowerCase();
+    const productionRate = amount > 0 ? delta : 0;
 
     return (
       <Card>
@@ -54,7 +55,7 @@ class RefineryCard extends React.PureComponent {
           </p>
           <p>
             <FuelIcon />
-            {delta}
+            {productionRate}
             <span className="ratio-colon">:</span>
             <GemIcon color={color} />
             1

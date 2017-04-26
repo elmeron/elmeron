@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import config from '../../config.js';
 import { closeCard as close } from '../ducks/card.js';
-import { explore as ex } from '../ducks/elmeron.js';
 import { hexToPixel } from '../services/hex-util.js';
 import './HexagonGrid.less';
-import Hexagon from './Hexagon.jsx';
 
 class HexagonGrid extends React.PureComponent {
   componentWillMount() {
@@ -108,36 +106,21 @@ class HexagonGrid extends React.PureComponent {
   }
 
   onRectClick() {
-    const { onBackgroundClick, closeCard } = this.props;
-
-    closeCard();
+    const { onBackgroundClick } = this.props;
 
     if (onBackgroundClick) {
-      onBackgroundClick();
-    }
-  }
-
-  onHexClick(elem, hex) {
-    const { onHexClick, explore, autoExplore } = this.props;
-    const shouldAutoExplore = autoExplore === undefined || autoExplore === true;
-
-    if (hex.resource.name === 'Unexplored' && shouldAutoExplore) {
-      return explore(hex);
+      return onBackgroundClick();
     }
 
-    if (onHexClick) {
-      onHexClick(elem, hex);
-    }
+    this.props.closeCard();
   }
 
   render() {
     const {
       width,
       height,
-      hexagons,
-      zoom,
-      onHexClick,
       backgroundClass,
+      children
     } = this.props;
     const viewBox = [0, 0, width, height].join(' ');
     const matrix = this.state.matrix.join(' ');
@@ -161,31 +144,7 @@ class HexagonGrid extends React.PureComponent {
           onClick={() => this.onRectClick()}
         />
         <g transform={`matrix(${matrix})`}>
-          {
-            hexagons.map((hex) => {
-              const q = hex.get('q');
-              const r = hex.get('r');
-              const owner = hex.get('owner');
-              const center = hexToPixel(q, r, zoom);
-              let type;
-
-              if (owner && owner.toJS) {
-                type = { name: owner.get('type') }; // have to do this because of reasons
-              }
-              else {
-                type = hex.get('resource').toJS();
-              }
-
-              return (
-                <Hexagon
-                  key={`${q}-${r}`}
-                  center={center}
-                  type={type}
-                  onClick={elem => this.onHexClick(elem, hex.toJS())}
-                />
-              );
-            })
-          }
+          {children}
         </g>
       </svg>
     );
@@ -196,14 +155,10 @@ HexagonGrid.PropTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   centerTile: PropTypes.object.isRequired,
-  hexagons: PropTypes.arrayOf(PropTypes.object).isRequired,
   extremes: PropTypes.objectOf(PropTypes.number).isRequired,
   closeCard: PropTypes.func.isRequired,
-  onBackgroundClick: PropTypes.func,
-  onHexClick: PropTypes.func,
   backgroundClass: PropTypes.string,
-  explore: PropTypes.func.isRequired,
-  autoExplore: PropTypes.bool,
+  onBackgroundClick: PropTypes.func,
 };
 
 export default connect(
@@ -212,10 +167,8 @@ export default connect(
     height: state.ui.get('screenHeight'),
     centerTile: state.grid.get('centerTileStack').peek().toJS(),
     extremes: state.grid.get('extremes').toJS(),
-    hexagons: state.world.get('tiles').toIndexedSeq(),
   }),
   (dispatch) => ({
     closeCard: bindActionCreators(close, dispatch),
-    explore: bindActionCreators(ex, dispatch),
   })
 )(HexagonGrid);

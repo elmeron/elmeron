@@ -1,0 +1,112 @@
+import { Set } from 'immutable';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import config from '../../config.js';
+import { openCard as open, closeCard as close } from '../ducks/card.js';
+import { focus as fo } from '../ducks/grid.js';
+import {
+  stopMonitoring as sm,
+  selectTile as st,
+  deselectTile as dt
+} from '../ducks/refinery.js';
+import { getSurroundingTiles } from '../services/hex-util.js';
+import HexagonGrid from './HexagonGrid.jsx';
+import StandardHexagonGroup from './StandardHexagonGroup.jsx';
+import BuildRefineryCard from './cards/BuildRefineryCard.jsx';
+
+class BuildableGrid extends React.PureComponent {
+  componentWillMount() {
+    const { selectedTiles, focus } = this.props;
+    const focusTile = selectedTiles.first();
+
+    focus(focusTile);
+  }
+
+  componentDidMount() {
+    const { openCard } = this.props;
+    const anchor = this.selection;
+
+    openCard(anchor, <BuildRefineryCard />);
+  }
+
+  componentWillUnmount() {
+    this.props.closeCard();
+  }
+
+  onBackgroundClick() {
+    this.props.stopMonitoring();
+  }
+
+  onSelectedTileClick(elem, tile) {
+    const { selectedTiles, deselectTile} = this.props;
+
+    if (selectedTiles.size > 1) {
+      deselectTile(tile);
+    }
+  }
+
+  onBuildableTileClick(elem, tile) {
+    const { openCard, selectTile } = this.props;
+    const anchor = this.selection;
+
+    selectTile(tile);
+    openCard(anchor, <BuildRefineryCard />);
+  }
+
+  render() {
+    const { allTiles, selectedTiles, buildableTiles } = this.props;
+    const { size } = config.tiles;
+    const selectedTileSize = size - (size * 0.2);
+
+    return (
+      <HexagonGrid onBackgroundClick={() => this.onBackgroundClick()}>
+        <StandardHexagonGroup hexagons={allTiles} customClassName="dimmed" />
+        <StandardHexagonGroup
+          hexagons={selectedTiles}
+          refs={(r) => { this.selection = r; }}
+        />
+        <StandardHexagonGroup
+          hexagons={selectedTiles}
+          size={selectedTileSize}
+          customClassName="refinery"
+          onHexClick={(elem, tile) => this.onSelectedTileClick(elem, tile)}
+        />
+        <StandardHexagonGroup
+          hexagons={buildableTiles}
+          onHexClick={(elem, tile) => this.onBuildableTileClick(elem, tile)}
+        />
+      </HexagonGrid>
+    );
+  }
+}
+
+function filterOutUnexplored(tiles) {
+  return tiles.filterNot(tile => tile.getIn(['resource', 'name']) === 'Unexplored');
+}
+
+function getBuildableTiles(selectedTiles, allTiles) {
+  return getSurroundingTiles(selectedTiles, allTiles, ({ resource, owner }) => {
+    const { name } = resource;
+    const type = owner && owner.type;
+    return name === 'Unexplored' || name === 'Ocean' || type === 'Refinery';
+  });
+}
+
+export default connect(
+  (state) => ({
+    allTiles: filterOutUnexplored(state.world.get('tiles')).toIndexedSeq().toJS(),
+    selectedTiles: state.refinery.get('selectedTiles'),
+    buildableTiles: getBuildableTiles(
+                      state.refinery.get('selectedTiles'),
+                      state.world.get('tiles').toIndexedSeq().toJS()),
+  }),
+  (dispatch) => ({
+    openCard: bindActionCreators(open, dispatch),
+    closeCard: bindActionCreators(close, dispatch),
+    focus: bindActionCreators(fo, dispatch),
+    stopMonitoring: bindActionCreators(sm, dispatch),
+    selectTile: bindActionCreators(st, dispatch),
+    deselectTile: bindActionCreators(dt, dispatch),
+  })
+)(BuildableGrid);

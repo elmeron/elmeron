@@ -19,8 +19,8 @@ class Card extends React.PureComponent {
     this.redimension(this.props);
   }
 
-  componentWillReceiveProps(props) {
-    this.redimension(props);
+  componentDidUpdate() {
+    this.redimension(this.props);
   }
 
   render() {

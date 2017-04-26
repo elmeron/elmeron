@@ -3,7 +3,7 @@ export default class Refinery {
     this.delta = Refinery.calculateDelta(grid);
     this.grid = grid.map((tile) => {
       const t = tile;
-      t.resource.deltaAmount.delta = -this.delta;
+      t.resource.deltaAmount.delta = -1;
       t.resource.deltaAmount.deltaStart = now;
       t.owner = this;
       return t;
@@ -29,7 +29,7 @@ export default class Refinery {
     const timeToZero = minTile.resource.deltaAmount.getTimeTo(0);
     const timeUnit = minTile.resource.deltaAmount.timeUnit;
 
-    return timeToZero * timeUnit;
+    return (timeToZero * timeUnit);
   }
 
   startDeltaChangeTimer() {
@@ -37,29 +37,22 @@ export default class Refinery {
 
     if (minOffsetTile) {
       const timeToZero = Refinery.calculateTimeToDeltaChange(minOffsetTile);
-      const deltaChange = -1;
 
       setTimeout(() => {
-        this.delta = this.delta + deltaChange;
-        this.addDelta(deltaChange, Date.now());
+        minOffsetTile.resource.deltaAmount.zerofy();
+        this.grid.addTile(minOffsetTile);
+
+        const deltaChange = Refinery.calculateDelta(this.grid) - this.delta;
+
+        this.delta += deltaChange;
         this.onDeltaChange(deltaChange, this.grid);
+        this.startDeltaChangeTimer();
       }, timeToZero);
     }
   }
 
-  addDelta(value, now) {
-    this.grid = this.grid.map((tile) => {
-      const t = tile;
-      const delta = t.resource.deltaAmount.delta;
-
-      t.resource.setDelta(delta - value, now);
-
-      return t;
-    });
-  }
-
   static calculateDelta(grid) {
-    return grid.size;
+    return grid.tiles.count(tile => tile.resource.deltaAmount.offset > 0);
   }
 
   static getPrice(tiles) {

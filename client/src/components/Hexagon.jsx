@@ -7,7 +7,7 @@ import config from '../../config.js';
 export default function Hexagon(props) {
   function hexCorner(i) {
     const { center } = props;
-    const { size } = config.tiles;
+    const size = props.size || config.tiles.size;
     const { x, y } = center || { x: 0, y: 0 };
     const angleDeg = 60 * i;
     const angleRad = Math.PI / 180 * angleDeg;
@@ -37,11 +37,12 @@ export default function Hexagon(props) {
 
   const d = roundPathCorners(path(), 0.1, true);
   const type = props.type.name || '';
+  const customClassName = props.customClassName || '';
 
   return (
     <path
       d={d}
-      className={`hexagon ${type.toLowerCase()}`}
+      className={`hexagon ${type.toLowerCase()} ${customClassName}`}
       onClick={e => props.onClick(e.target)}
     />
   );

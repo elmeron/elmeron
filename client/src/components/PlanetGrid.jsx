@@ -2,21 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { openCard as open, closeCard as close } from '../ducks/card.js';
-import HexagonGrid from './HexagonGrid.jsx';
+import ExplorableHexagonGrid from './ExplorableHexagonGrid.jsx';
 import PlanetTileCard from './cards/PlanetTileCard.jsx';
 
 function PlanetGrid(props) {
   function onHexClick(anchor, hex) {
-    if (hex.resource.name === 'Ocean') {
-      props.closeCard();
-      return;
-    }
-
     props.openCard(anchor, <PlanetTileCard tile={hex} />);
   }
 
   return (
-    <HexagonGrid onHexClick={onHexClick} />
+    <ExplorableHexagonGrid onHexClick={onHexClick} />
   );
 }
 

@@ -5,6 +5,7 @@ import * as grid from './grid.js';
 import * as player from './player.js';
 import * as ui from './ui.js';
 import * as world from './world.js';
+import * as refinery from './refinery.js';
 
 export function initListeners() {
   return (dispatch) => {
@@ -49,7 +50,7 @@ export function initListeners() {
     elmeron.on('refineryBuilt', ({ tiles, fuel }) => {
       dispatch(world.mergeTiles(tiles));
       dispatch(player.setFuelData(fuel));
-      dispatch(card.closeCard());
+      dispatch(refinery.stopMonitoring());
     });
 
     elmeron.on('refineryChange', ({ tiles, fuel }) => {
@@ -86,7 +87,7 @@ export function explore(tile) {
   return act();
 }
 
-export function buildRefinery(tiles) {
-  elmeron.buildRefinery(tiles);
+export function buildRefinery(positions) {
+  elmeron.buildRefinery(positions);
   return act();
 }

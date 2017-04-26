@@ -1,6 +1,6 @@
+import { Set } from 'immutable';
 import config from '../../config.js';
 
-/* eslint-disable */
 export function hexToPixel(q, r) {
   const { size, spacing } = config.tiles;
   const width = (size + spacing) * 2;
@@ -13,4 +13,48 @@ export function hexToPixel(q, r) {
     y: vert * (r + (q / 2)),
   };
 }
-/* eslint-enable */
+
+function getNeighbourPositions(position) {
+  const { q, r } = position;
+
+  return [
+    { q, r: r - 1 },
+    { q: q + 1, r: r - 1 },
+    { q: q + 1, r },
+    { q, r: r + 1 },
+    { q: q - 1, r: r + 1 },
+    { q: q - 1, r },
+  ];
+}
+
+export function getDefinedNeighbours(position, tiles, ignore = () => {}) {
+  return getNeighbourPositions(position).reduce((result, { q, r }) => {
+    const tile = tiles.find(t => t.q === q && t.r === r);
+
+    if (tile && !ignore(tile)) {
+      return result.add(tile);
+    }
+
+    return result;
+  }, new Set());
+}
+
+export function getSurroundingTiles(selectedTiles, allTiles, ignore = () => {}) {
+  return selectedTiles.reduce((result, selectedTile) => {
+    const neighbours = getDefinedNeighbours(selectedTile, allTiles, (tile) => {
+      const alreadySelected = selectedTiles.some(t => t.q === tile.q && t.r === tile.r);
+
+      return ignore(tile) || alreadySelected;
+    });
+
+    return result.concat(neighbours);
+  }, new Set());
+}
+
+export function calculateRefineryCost(tiles) {
+  return tiles.size;
+}
+
+export function calculateRefineryProduction(tiles) {
+  return tiles.size;
+}

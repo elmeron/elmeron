@@ -10,6 +10,12 @@ export default class DeltaAmount {
     this.offset = 0;
   }
 
+  zerofy() {
+    this.delta = 0;
+    this.deltaStart = 0;
+    this.offset = 0;
+  }
+
   getAmount(now) {
     const time = Math.round((now - this.deltaStart) / this.timeUnit);
 
@@ -17,13 +23,20 @@ export default class DeltaAmount {
   }
 
   addAmount(amount) {
-    this.offset += amount;
+    const newOffset = this.offset + amount;
+    this.offset = Math.max(newOffset, 0);
   }
 
   setDelta(delta, now) {
     this.offset = this.getAmount(now);
     this.deltaStart = now;
-    this.delta = parseFloat(delta.toFixed(1));
+    const newDelta = parseFloat(delta.toFixed(1));
+
+    if (this.offset <= 0) {
+      this.delta = Math.max(newDelta, 0);
+    } else {
+      this.delta = newDelta;
+    }
   }
 
   getTimeTo(offsetValue, now = Date.now()) {

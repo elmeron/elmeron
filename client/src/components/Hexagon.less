@@ -1,4 +1,5 @@
 @import '../colors.less';
+@dim: 20%;
 
 .hexagon {
   fill: #000000;
@@ -8,16 +9,32 @@
   fill: @forest;
 }
 
+.forest.dimmed {
+  fill: fade(@forest, @dim);
+}
+
 .sand {
   fill: @sand;
+}
+
+.sand.dimmed {
+  fill: fade(@sand, @dim);
 }
 
 .rock {
   fill: @rock;
 }
 
+.rock.dimmed {
+  fill: fade(@rock, @dim);
+}
+
 .ocean {
   fill: @ocean;
+}
+
+.ocean.dimmed {
+  fill: fade(@ocean, @dim);
 }
 
 .void {
@@ -26,6 +43,10 @@
 
 .refinery {
   fill: @refinery;
+}
+
+.refinery.dimmed {
+  fill: fade(@refinery, @dim);
 }
 
 .elmeron {
