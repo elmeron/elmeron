@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getFuelAmount } from '../../services/utils.js';
+import './RefineryCard.less';
 import Card from './Card.jsx';
 import GemIcon from '../GemIcon.jsx';
 import FuelIcon from '../FuelIcon.jsx';
@@ -41,18 +42,24 @@ class RefineryCard extends React.PureComponent {
     const { delta } = owner;
     const { name } = resource;
     const { amount } = this.state;
+    const color = name.toLowerCase();
 
     return (
       <Card>
-        <h1>Refinery</h1>
-        <p>
-          <GemIcon color={name.toLowerCase()} />
-          {amount}
-        </p>
-        <p>
-          <FuelIcon />
-          {delta} / s
-        </p>
+        <div className="refinery-card">
+          <h1>Refinery</h1>
+          <p>
+            <GemIcon color={color} />
+            {amount}
+          </p>
+          <p>
+            <FuelIcon />
+            {delta}
+            <span className="ratio-colon">:</span>
+            <GemIcon color={color} />
+            1
+          </p>
+        </div>
       </Card>
     );
   }

@@ -24,12 +24,11 @@ class Card extends React.PureComponent {
   }
 
   render() {
-    const { children, customClassName } = this.props;
-    const customName = customClassName || '';
+    const { children } = this.props;
 
     return (
       <div
-        className={`card ${customClassName}`}
+        className="card"
         ref={(r) => { this.ref = r; }}
       >
         {children}
@@ -40,13 +39,10 @@ class Card extends React.PureComponent {
 
 Card.PropTypes = {
   dimension: PropTypes.func.isRequired,
-  customClassName: PropTypes.string,
 };
 
 export default connect(
-  (state) => ({
-    open: state.card.get('open'),
-  }),
+  undefined,
   (dispatch) => ({
     dimension: bindActionCreators(setCardDimension, dispatch),
   })

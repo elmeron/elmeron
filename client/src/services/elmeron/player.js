@@ -13,7 +13,6 @@ export default class Player extends EventEmitter {
     this.fuel = new Fuel(Date.now(), timeUnit);
 
     this.fuel.addAmount(100);
-    this.fuel.setDelta(0.1, Date.now());
 
     this.onExplore = this.onExplore.bind(this);
     this.onRefineryChange = this.onRefineryChange.bind(this);
