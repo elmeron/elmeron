@@ -13,11 +13,7 @@ export default class Game {
 
     const startingIsland = this.world.children.first().children.first();
 
-    /* eslint-disable */
-    this.players.forEach((player) => {
-      player.location = startingIsland;
-    });
-    /* eslint-enable */
+    this.players.forEach(player => player.setLocation(startingIsland));
   }
 
   getPlayer(nickname) {

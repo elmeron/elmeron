@@ -5,8 +5,6 @@
 import EventEmitter from 'events';
 import Player from './player.js';
 import Game from './game.js';
-import Position from './world/position.js';
-import Refinery from './world/refinery.js';
 
 class Elmeron extends EventEmitter {
   startGame(nickname) {
@@ -15,6 +13,12 @@ class Elmeron extends EventEmitter {
     this.emit('gameStart', {
       player: this.player.getData(),
     });
+
+    this.player.on('explore', data => this.emit('explore', data));
+    this.player.on('getPlayer', data => this.emit('getPlayer', data));
+    this.player.on('getWorld', data => this.emit('getWorld', data));
+    this.player.on('refineryBuilt', data => this.emit('refineryBuilt', data));
+    this.player.on('refineryChange', data => this.emit('refineryChange', data));
   }
 
   getWorld() {
@@ -22,57 +26,19 @@ class Elmeron extends EventEmitter {
   }
 
   explore(position) {
-    const explorationCost = this.player.location.explorationCost;
-    const fuelAmount = this.player.getFuelAmount();
-
-    if (fuelAmount >= explorationCost) {
-      const explorationResult = this.player.location.explore(new Position(position.q, position.r));
-
-      this.player.addFuelAmount(-explorationCost);
-      this.emit('getPlayer', this.player.getData());
-      this.emit('explore', explorationResult);
-    }
+    this.player.explore(position);
   }
 
   zoomIn(childName) {
-    const child = this.player.location.getChild(childName);
-
-    if (child) {
-      this.player.location = child;
-      this.getWorld();
-    }
+    this.player.zoomIn(childName);
   }
 
   zoomOut() {
-    const parent = this.player.location.parent;
-
-    if (parent) {
-      this.player.location = parent;
-      this.getWorld();
-    }
+    this.player.zoomOut();
   }
 
   buildRefinery(positions) {
-    const price = Refinery.getPrice(positions);
-    const fuelAmount = this.player.getFuelAmount();
-
-    if (fuelAmount >= price) {
-      const { tiles, delta } = this.player.location.buildRefinery(
-        positions,
-        (deltaChange, grid) => {
-          this.player.addFuelDelta(deltaChange);
-          const { fuel } = this.player.getData();
-          this.emit('refineryChange', { tiles: grid.getTiles(), fuel });
-        }
-      );
-
-      this.player.addFuelAmount(-price);
-      this.player.addFuelDelta(delta);
-
-      const { fuel } = this.player.getData();
-
-      this.emit('refineryBuilt', { tiles, fuel });
-    }
+    this.player.buildRefinery(positions);
   }
 }
 

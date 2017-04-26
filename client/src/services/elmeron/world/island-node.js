@@ -23,7 +23,8 @@ export default class IslandNode extends WorldNode {
     const grid = this.grid.getTiles(tiles);
     const refinery = new Refinery(grid, Date.now(), (deltaChange, updatedGrid) => {
       this.grid.addTiles(updatedGrid.tiles);
-      onRefineryChange(deltaChange, updatedGrid);
+      this.emit('refineryChange', { tiles: updatedGrid.getTiles() });
+      onRefineryChange(deltaChange);
     });
 
     this.grid.addTiles(refinery.grid.tiles);

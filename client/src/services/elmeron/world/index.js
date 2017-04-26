@@ -3,6 +3,7 @@
  */
 
 import Chance from 'chance';
+import EventEmitter from 'events';
 import { Map } from 'immutable';
 import TileHexagonGrid from './tile-hexagon-grid.js';
 import Unexplored from './resources/unexplored.js';
@@ -12,8 +13,9 @@ function generateWorldName() {
   return new Chance().word();
 }
 
-export default class WorldNode {
+export default class WorldNode extends EventEmitter {
   constructor(deck, terraformer, name = generateWorldName(), explorationCost = 0) {
+    super();
     this.deck = deck;
     this.terraformer = terraformer;
     this.name = name;
