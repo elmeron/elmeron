@@ -30,7 +30,7 @@ function SpaceTileCard(props) {
   }
 
   if (owner) {
-    if (resource === 'Unknown') {
+    if (resource.name === 'Unknown') {
       body = UnknownCard();
     } else {
       body = PlanetCard(owner, onZoom);

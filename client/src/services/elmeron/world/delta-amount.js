@@ -23,20 +23,13 @@ export default class DeltaAmount {
   }
 
   addAmount(amount) {
-    const newOffset = this.offset + amount;
-    this.offset = Math.max(newOffset, 0);
+    this.offset += amount;
   }
 
   setDelta(delta, now) {
     this.offset = this.getAmount(now);
     this.deltaStart = now;
-    const newDelta = parseFloat(delta.toFixed(1));
-
-    if (this.offset <= 0) {
-      this.delta = Math.max(newDelta, 0);
-    } else {
-      this.delta = newDelta;
-    }
+    this.delta = parseFloat(delta.toFixed(1));
   }
 
   getTimeTo(offsetValue, now = Date.now()) {

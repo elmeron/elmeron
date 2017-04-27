@@ -46,6 +46,7 @@ class BuildableGrid extends React.PureComponent {
 
   onBackgroundClick() {
     this.props.stopMonitoring();
+    this.props.closeCard();
   }
 
   onSelectedTileClick(elem, tile) {
