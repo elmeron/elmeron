@@ -94,6 +94,19 @@ function CardWrapper(props) {
     throw new Error(`Unknown card direction: '${direction}'`);
   }
 
+  function getAnchorDimension(anchor) {
+    if (anchor && anchor.getBoundingClientRect) {
+      return anchor.getBoundingClientRect();
+    }
+
+    return {
+      width: 0,
+      height: 0,
+      top: 0,
+      left: 0,
+    };
+  };
+
   if (props.open) {
     const { anchor,
             component,
@@ -102,15 +115,16 @@ function CardWrapper(props) {
             direction: dir,
             screenWidth,
             screenHeight } = props;
+    const anchorDim = getAnchorDimension(anchor);
     let direction = dir;
 
     if (!direction) {
-      direction = calculateDirection(anchor, width, height, screenWidth, screenHeight);
+      direction = calculateDirection(anchorDim, width, height, screenWidth, screenHeight);
     }
 
     const style = {
-      left: calculateX(anchor, width, direction),
-      top: calculateY(anchor, height, direction),
+      left: calculateX(anchorDim, width, direction),
+      top: calculateY(anchorDim, height, direction),
     };
     const arrowStyle = {
       top: calculateArrowY(height, direction),
@@ -147,7 +161,7 @@ export default connect(
   (state) => ({
     open: state.card.get('open'),
     component: state.card.get('component'),
-    anchor: state.card.get('anchor').toJS(),
+    anchor: state.card.get('anchor'),
     width: state.card.get('width'),
     height: state.card.get('height'),
     direction: state.card.get('direction'),

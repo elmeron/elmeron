@@ -16,6 +16,10 @@ import StandardHexagonGroup from './StandardHexagonGroup.jsx';
 import BuildRefineryCard from './cards/BuildRefineryCard.jsx';
 
 class BuildableGrid extends React.PureComponent {
+  openCard() {
+    this.props.openCard(this.selection, <BuildRefineryCard />);
+  }
+
   componentWillMount() {
     const { selectedTiles, focus } = this.props;
     const focusTile = selectedTiles.first();
@@ -24,14 +28,20 @@ class BuildableGrid extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { openCard } = this.props;
-    const anchor = this.selection;
-
-    openCard(anchor, <BuildRefineryCard />);
+    this.openCard();
   }
 
   componentWillUnmount() {
     this.props.closeCard();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selectedTiles: prevSelectedTiles } = prevProps;
+    const { selectedTiles: newSelectedTiles } = this.props;
+
+    if (prevSelectedTiles.size !== newSelectedTiles.size) {
+      this.openCard();
+    }
   }
 
   onBackgroundClick() {
@@ -39,10 +49,12 @@ class BuildableGrid extends React.PureComponent {
   }
 
   onSelectedTileClick(elem, tile) {
-    const { selectedTiles, deselectTile} = this.props;
+    const { selectedTiles, deselectTile, openCard } = this.props;
+    const anchor = this.selection;
 
     if (selectedTiles.size > 1) {
       deselectTile(tile);
+      // openCard(anchor, <BuildRefineryCard />);
     }
   }
 
@@ -51,7 +63,7 @@ class BuildableGrid extends React.PureComponent {
     const anchor = this.selection;
 
     selectTile(tile);
-    openCard(anchor, <BuildRefineryCard />);
+    // openCard(anchor, <BuildRefineryCard />);
   }
 
   render() {

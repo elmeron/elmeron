@@ -1,4 +1,3 @@
-import { Map } from 'immutable';
 import { act, reducer } from './util.js';
 
 const OPEN = 'card/OPEN';
@@ -7,12 +6,7 @@ const SET_DIMENSION = 'card/SET_DIMENSION';
 
 const initialState = {
   open: false,
-  anchor: {
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-  },
+  anchor: undefined,
   component: null,
   width: 0,
   height: 0,
@@ -31,13 +25,10 @@ export function setCardDimension(width, height) {
   return act(SET_DIMENSION, { width, height });
 }
 
-function handleOpenCard(state, payload) {
-  const { anchor, component, direction } = payload;
-  const { left, top, width, height } = anchor.getBoundingClientRect();
-
+function handleOpenCard(state, { anchor, component, direction }) {
   return state
     .set('open', true)
-    .set('anchor', new Map({ left, top, width, height }))
+    .set('anchor', anchor)
     .set('component', component)
     .set('direction', direction);
 }
