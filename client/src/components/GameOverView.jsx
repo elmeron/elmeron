@@ -1,5 +1,5 @@
 import React from 'react';
-import HexagonGrid from './HexagonGrid.jsx';
+import StandardHexagonGrid from './StandardHexagonGrid.jsx';
 
 export default function LoadGameView() {
   return (
@@ -7,7 +7,7 @@ export default function LoadGameView() {
       <div className="world-name-label">
         <h1>Elmeron has been found!</h1>
       </div>
-      <HexagonGrid backgroundClass="space-background" autoExplore="false" />
+      <StandardHexagonGrid backgroundClass="space-background" />
     </div>
   );
 }
