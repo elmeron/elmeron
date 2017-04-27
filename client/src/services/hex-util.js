@@ -51,6 +51,28 @@ export function getSurroundingTiles(selectedTiles, allTiles, ignore = () => {}) 
   }, new Set());
 }
 
+export function tilesAreConnected(tiles) {
+  const transformed = tiles.map(tile => ({
+    q: tile.q,
+    r: tile.r,
+    visited: false,
+  }));
+
+  function visit(current, all) {
+    const c = current;
+    c.visited = true;
+
+    getDefinedNeighbours(current, all).forEach((neighbour) => {
+      if (!neighbour.visited) {
+        visit(neighbour, all);
+      }
+    });
+  }
+
+  visit(transformed.first(), transformed);
+  return transformed.every(tile => tile.visited);
+}
+
 export function calculateRefineryCost(tiles) {
   return tiles.size;
 }

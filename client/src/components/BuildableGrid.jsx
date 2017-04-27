@@ -10,7 +10,7 @@ import {
   selectTile as st,
   deselectTile as dt
 } from '../ducks/refinery.js';
-import { getSurroundingTiles } from '../services/hex-util.js';
+import { getSurroundingTiles, tilesAreConnected } from '../services/hex-util.js';
 import HexagonGrid from './HexagonGrid.jsx';
 import StandardHexagonGroup from './StandardHexagonGroup.jsx';
 import BuildRefineryCard from './cards/BuildRefineryCard.jsx';
@@ -49,21 +49,18 @@ class BuildableGrid extends React.PureComponent {
   }
 
   onSelectedTileClick(elem, tile) {
-    const { selectedTiles, deselectTile, openCard } = this.props;
-    const anchor = this.selection;
+    const { selectedTiles, deselectTile } = this.props;
+    const afterDeselect = selectedTiles.delete(tile);
 
-    if (selectedTiles.size > 1) {
+    if (selectedTiles.size > 1 && tilesAreConnected(afterDeselect)) {
       deselectTile(tile);
-      // openCard(anchor, <BuildRefineryCard />);
     }
   }
 
   onBuildableTileClick(elem, tile) {
-    const { openCard, selectTile } = this.props;
-    const anchor = this.selection;
+    const { selectTile } = this.props;
 
     selectTile(tile);
-    // openCard(anchor, <BuildRefineryCard />);
   }
 
   render() {

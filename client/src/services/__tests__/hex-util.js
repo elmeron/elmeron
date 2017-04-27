@@ -1,5 +1,9 @@
 import { Set } from 'immutable';
-import { getDefinedNeighbours, getSurroundingTiles } from '../hex-util';
+import {
+  getDefinedNeighbours,
+  getSurroundingTiles,
+  tilesAreConnected,
+} from '../hex-util';
 
 function makeTile(q, r, resource) {
   return {
@@ -122,5 +126,33 @@ describe('get surrounding tiles', () => {
     });
 
     expect(result.size).toBe(0);
+  });
+});
+
+describe('tiles are connected', () => {
+  test('single tile', () => {
+    const tiles = new Set([
+      makeTile(0, 0),
+    ]);
+
+    expect(tilesAreConnected(tiles)).toBeTruthy();
+  });
+
+  test('connected set', () => {
+    const tiles = new Set([
+      makeTile(0, 0),
+      makeTile(0, 1),
+    ]);
+
+    expect(tilesAreConnected(tiles)).toBeTruthy();
+  });
+
+  test('unconnected set', () => {
+    const tiles = new Set([
+      makeTile(0, 0),
+      makeTile(0, 2),
+    ]);
+
+    expect(tilesAreConnected(tiles)).toBeFalsy();
   });
 });
