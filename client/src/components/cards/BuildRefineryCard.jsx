@@ -1,13 +1,16 @@
+import { Set } from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { calculateRefineryCost, calculateRefineryProduction } from '../../services/hex-util.js';
+import { calculateRefineryCost, calculateRefineryProduction } from '../../services/refinery.js';
 import { closeCard as close } from '../../ducks/card.js';
 import { buildRefinery as br } from '../../ducks/elmeron.js';
 import { stopMonitoring as sm } from '../../ducks/refinery.js';
 import './BuildRefineryCard.less';
 import Card from './Card.jsx';
 import FuelIcon from '../FuelIcon.jsx';
+
+const availableTypes = new Set(['Forest', 'Rock', 'Sand']);
 
 function BuildRefineryCard(props) {
   function onBuild() {
@@ -18,8 +21,8 @@ function BuildRefineryCard(props) {
     props.stopMonitoring();
   }
 
-  const cost = calculateRefineryCost(props.selectedTiles);
-  const production = calculateRefineryProduction(props.selectedTiles);
+  const cost = calculateRefineryCost(props.selectedTiles, availableTypes);
+  const production = calculateRefineryProduction(props.selectedTiles, availableTypes);
 
   return (
     <Card>

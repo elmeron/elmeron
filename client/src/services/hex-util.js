@@ -72,11 +72,3 @@ export function tilesAreConnected(tiles) {
   visit(transformed.first(), transformed);
   return transformed.every(tile => tile.visited);
 }
-
-export function calculateRefineryCost(tiles) {
-  return tiles.size;
-}
-
-export function calculateRefineryProduction(tiles) {
-  return tiles.size;
-}
