@@ -71,7 +71,7 @@ export function calculateRefineryConstant(tiles, availableResourceTypes) {
   const vectorFactor = calculateVectorFactor(vectorLength, availableTypes, smallestAngle);
   const variationFactor = calculateVariationFactor(usedTypes, availableTypes);
 
-  return parseFloat((1 + (vectorFactor * variationFactor)).toFixed(1));
+  return parseFloat((vectorFactor * variationFactor).toFixed(1));
 }
 
 export function calculateRefineryCost(tiles, availableTypes) {

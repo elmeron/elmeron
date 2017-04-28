@@ -23,4 +23,11 @@ export default class Tile {
       owner,
     };
   }
+
+  clone() {
+    const resource = this.resource.clone();
+    const owner = this.owner && this.owner.clone ? this.owner.clone() : this.owner;
+
+    return new Tile(this.position, resource, owner);
+  }
 }

@@ -17,6 +17,7 @@ function ExplorableHexagonGrid(props) {
     }
 
     if (resource === 'Unexplored') {
+      props.closeCard();
       return explore(hex);
     }
 
@@ -28,6 +29,7 @@ function ExplorableHexagonGrid(props) {
   return (
     <HexagonGrid backgroundClass={props.backgroundClass}>
       <StandardHexagonGroup hexagons={props.hexagons} onHexClick={onHexClick} />
+      {props.children}
     </HexagonGrid>
   );
 }

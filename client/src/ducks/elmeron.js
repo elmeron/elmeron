@@ -40,9 +40,8 @@ export function initListeners() {
     elmeron.on('explore', ({ tiles, worlds }) => {
       dispatch(world.mergeTiles(tiles));
       dispatch(grid.updateExtremes(tiles));
-      dispatch(card.closeCard());
 
-      if (worlds.length > 0) {
+      if (worlds && worlds.length > 0) {
         dispatch(world.addChildrenLocations(worlds));
       }
     });

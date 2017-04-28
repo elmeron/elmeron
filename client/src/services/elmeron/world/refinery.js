@@ -7,10 +7,11 @@ export default class Refinery {
   constructor(grid, now, onDeltaChange = () => {}) {
     this.delta = Refinery.calculateDelta(grid);
     this.grid = grid.map((tile) => {
-      const t = tile;
+      const t = tile.clone();
       t.resource.deltaAmount.delta = -1;
       t.resource.deltaAmount.deltaStart = now;
       t.owner = this;
+      t.resource.canPickGem = false;
       return t;
     });
     this.onDeltaChange = onDeltaChange;
