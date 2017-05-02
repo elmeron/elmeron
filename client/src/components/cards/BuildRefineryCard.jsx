@@ -55,11 +55,13 @@ function BuildRefineryCard(props) {
     props.stopMonitoring();
   }
 
-  const cost = calculateRefineryCost(props.selectedTiles, availableTypes)
-    .reduce((result, amount, resource) =>
-      result.push({ amount, resource })
-    , new List());
+  const costMap = calculateRefineryCost(props.selectedTiles, availableTypes);
+  const cost = costMap
+    .reduce((result, amount, resource) => result.push({ amount, resource }), new List());
   const production = calculateRefineryProduction(props.selectedTiles, availableTypes);
+  const cannotAfford = costMap.some((amount, resource) =>
+    !props.gems.get(resource) || props.gems.get(resource) < amount
+  );
 
   return (
     <Card>
@@ -71,7 +73,7 @@ function BuildRefineryCard(props) {
           {`${production} / s`}
         </p>
         {costBody(cost, props.gems)}
-        <button onClick={onBuild}>BUILD</button>
+        <button disabled={cannotAfford} onClick={onBuild}>BUILD</button>
         <button onClick={onCancel}>CANCEL</button>
       </div>
     </Card>
