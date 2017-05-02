@@ -100,6 +100,10 @@ export default class TileHexagonGrid {
     return this.tiles.every(predicate);
   }
 
+  some(predicate) {
+    return this.tiles.some(predicate);
+  }
+
   map(sideEffect) {
     const grid = new TileHexagonGrid();
     grid.addTiles(this.tiles.map(sideEffect));

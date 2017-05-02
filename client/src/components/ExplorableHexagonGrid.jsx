@@ -28,15 +28,25 @@ function ExplorableHexagonGrid(props) {
 
   return (
     <HexagonGrid backgroundClass={props.backgroundClass}>
-      <StandardHexagonGroup hexagons={props.hexagons} onHexClick={onHexClick} />
+      <StandardHexagonGroup hexagons={props.tiles} onHexClick={onHexClick} />
       {props.children}
     </HexagonGrid>
   );
 }
 
+function filterOutUnexplored(isExplored, tiles) {
+  if (isExplored) {
+    return tiles.filterNot(tile => tile.getIn(['resource', 'name']) === 'Unexplored');
+  }
+  return tiles;
+}
+
 export default connect(
   (state) => ({
-    hexagons: state.world.get('tiles').toIndexedSeq().toJS(),
+    tiles: filterOutUnexplored(
+      state.world.get('isExplored'),
+      state.world.get('tiles')
+    ).toIndexedSeq().toJS(),
   }),
   (dispatch) => ({
     explore: bindActionCreators(ex, dispatch),

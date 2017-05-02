@@ -100,4 +100,8 @@ export default class IslandNode extends WorldNode {
       delta: refinery.delta,
     };
   }
+
+  checkIfExplored() {
+    return this.grid.filter(tile => tile.resource.equals(new Unexplored())).size === 0;
+  }
 }

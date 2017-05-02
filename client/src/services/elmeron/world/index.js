@@ -22,6 +22,7 @@ export default class WorldNode extends EventEmitter {
     this.grid = new TileHexagonGrid();
     this.children = new Map();
     this.explorationCost = explorationCost;
+    this.isExplored = false;
   }
 
   getNodeType() {
@@ -54,6 +55,7 @@ export default class WorldNode extends EventEmitter {
       children: this.getChildren(),
       nodeType: this.getNodeType(),
       explorationCost: this.explorationCost,
+      isExplored: this.isExplored,
     };
   }
 
@@ -75,10 +77,12 @@ export default class WorldNode extends EventEmitter {
 
       addedResources.forEach(({ resource }) => this.deck.remove(resource));
       this.grid.addTiles(grid.tiles);
+      this.isExplored = this.checkIfExplored();
 
       return {
         tiles: grid.getTiles(),
         worlds: addedWorlds,
+        isExplored: this.isExplored,
       };
     }
 
@@ -106,5 +110,9 @@ export default class WorldNode extends EventEmitter {
         this.exploreWhile(shouldExplore);
       }
     }
+  }
+
+  checkIfExplored() {
+    return this.isExplored;
   }
 }

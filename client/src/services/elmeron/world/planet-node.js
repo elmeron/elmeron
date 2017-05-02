@@ -27,4 +27,14 @@ export default class PlanetNode extends WorldNode {
       return islandNeighbours.size > 0;
     });
   }
+
+  checkIfExplored() {
+    const allIslandsAreExplored = this.grid
+      .filterOut([new Unexplored(), new Ocean()])
+      .every(tile =>
+        this.children.has(tile.owner)
+      );
+
+    return this.deck.size === 0 && allIslandsAreExplored;
+  }
 }

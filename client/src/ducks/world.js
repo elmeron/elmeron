@@ -9,6 +9,7 @@ const SET_CHILDREN_LOCATIONS = 'world/SET_CHILDREN_LOCATIONS';
 const ADD_CHILDREN_LOCATIONS = 'world/ADD_CHILDREN_LOCATIONS';
 const SET_NODE_TYPE = 'world/SET_NODE_TYPE';
 const SET_EXPLORATION_COST = 'world/SET_EXPLORATION_COST';
+const SET_IS_EXPLORED = 'world/SET_IS_EXPLORED';
 
 const initialState = {
   tiles: {},
@@ -19,6 +20,7 @@ const initialState = {
   },
   nodeType: undefined,
   explorationCost: 0,
+  isExplored: false,
 };
 
 export function setTiles(tiles) {
@@ -51,6 +53,10 @@ export function setNodeType(type) {
 
 export function setExplorationCost(cost) {
   return act(SET_EXPLORATION_COST, cost);
+}
+
+export function setIsExplored(value = false) {
+  return act(SET_IS_EXPLORED, value);
 }
 
 function handleSetTiles(state, tiles) {
@@ -100,6 +106,10 @@ function handleSetExplorationCost(state, cost) {
   return state.set('explorationCost', cost);
 }
 
+function handleSetIsExplored(state, value) {
+  return state.set('isExplored', value);
+}
+
 const handlers = {
   [SET_TILES]: handleSetTiles,
   [MERGE_TILES]: handleMergeTiles,
@@ -109,6 +119,7 @@ const handlers = {
   [ADD_CHILDREN_LOCATIONS]: handleAddChildrenLocations,
   [SET_NODE_TYPE]: handleSetNodeType,
   [SET_EXPLORATION_COST]: handleSetExplorationCost,
+  [SET_IS_EXPLORED]: handleSetIsExplored,
 };
 
 export default reducer(initialState, handlers);

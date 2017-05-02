@@ -8,15 +8,16 @@ import * as world from './world.js';
 import * as refinery from './refinery.js';
 
 export function initListeners() {
-  return (dispatch) => {
-    elmeron.on('getWorld', ({ children, name, parent, nodeType, tiles, explorationCost }) => {
-      dispatch(world.setCurrentLocation(name));
-      dispatch(world.setParentLocation(parent));
-      dispatch(world.setChildrenLocations(children));
-      dispatch(world.setNodeType(nodeType));
-      dispatch(world.setExplorationCost(explorationCost));
-      dispatch(world.setTiles(tiles));
-      dispatch(grid.setExtremes(tiles));
+  return (dispatch, getState) => {
+    elmeron.on('getWorld', (data) => {
+      dispatch(world.setCurrentLocation(data.name));
+      dispatch(world.setParentLocation(data.parent));
+      dispatch(world.setChildrenLocations(data.children));
+      dispatch(world.setNodeType(data.nodeType));
+      dispatch(world.setExplorationCost(data.explorationCost));
+      dispatch(world.setTiles(data.tiles));
+      dispatch(grid.setExtremes(data.tiles));
+      dispatch(world.setIsExplored(data.isExplored));
       dispatch(card.closeCard());
     });
 
@@ -38,9 +39,16 @@ export function initListeners() {
       dispatch(ui.showGameOverView());
     });
 
-    elmeron.on('explore', ({ tiles, worlds }) => {
+    elmeron.on('explore', ({ tiles, worlds, isExplored }) => {
+      const hasExploredFirstIsland = getState().player.get('hasExploredFirstIsland');
+
+      if (!hasExploredFirstIsland && isExplored) {
+        dispatch(player.setHasExploredFirstIsland());
+      }
+
       dispatch(world.mergeTiles(tiles));
       dispatch(grid.updateExtremes(tiles));
+      dispatch(world.setIsExplored(isExplored));
 
       if (worlds && worlds.length > 0) {
         dispatch(world.addChildrenLocations(worlds));

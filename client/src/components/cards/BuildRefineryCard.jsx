@@ -13,14 +13,6 @@ import GemIcon from '../GemIcon.jsx';
 
 const availableTypes = new Set(['Forest', 'Rock', 'Sand']);
 
-function cannotAffordBody(amount, available) {
-  if (available < amount) {
-    return <span className="message">({available})</span>
-  }
-
-  return null;
-}
-
 function costBody(cost, available) {
   const isFree = cost.isEmpty() || cost.every(({ amount }) => amount === 0);
 
@@ -32,13 +24,20 @@ function costBody(cost, available) {
     <div className="cost-body">
       {cost.map(({ amount, resource }, index) => {
         const availableGem = available.get(resource) || 0;
+        const cannotAfford = availableGem < amount;
+        let amountClass = '';
+
+        if (cannotAfford) {
+          amountClass = 'cannot-afford';
+        }
 
         return (
           <p key={index}>
             -
             <GemIcon color={resource.toLowerCase()} />
-            {amount}
-            {cannotAffordBody(amount, availableGem)}
+            <span className={amountClass}>
+              {`${amount} / ${availableGem}`}
+            </span>
           </p>
         );
       })}

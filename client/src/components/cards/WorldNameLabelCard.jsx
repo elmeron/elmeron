@@ -12,7 +12,8 @@ function WorldNameLabelCard(props) {
   }
 
   const { nodeType, explorationCost } = props;
-  const canZoomOut = nodeType && !nodeType.startsWith('Space');
+  const isSpace = nodeType && nodeType.startsWith('Space');
+  const canZoomOut = !isSpace && props.hasExploredFirstIsland;
 
   return (
     <Card customClassName="world-name-label-card">
@@ -20,10 +21,12 @@ function WorldNameLabelCard(props) {
         <FuelIcon />
         {explorationCost}
       </p>
-      {
-        canZoomOut &&
-        <button onClick={onZoom}>ZOOM OUT</button>
+      {!props.hasExploredFirstIsland &&
+        <p>
+          You must explore the island before you can zoom out
+        </p>
       }
+      <button disabled={!canZoomOut} onClick={onZoom}>ZOOM OUT</button>
     </Card>
   );
 }
@@ -32,6 +35,7 @@ export default connect(
   (state) => ({
     nodeType: state.world.get('nodeType'),
     explorationCost: state.world.get('explorationCost'),
+    hasExploredFirstIsland: state.player.get('hasExploredFirstIsland'),
   }),
   (dispatch) => ({
     zoomOut: bindActionCreators(zo, dispatch),

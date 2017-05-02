@@ -24,11 +24,12 @@ class Card extends React.PureComponent {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, customClassName } = this.props;
+    const className = `card ${customClassName || ''}`;
 
     return (
       <div
-        className="card"
+        className={className}
         ref={(r) => { this.ref = r; }}
       >
         {children}
