@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import config from '../../config.js';
 import { openCard as open, closeCard as close } from '../ducks/card.js';
+import { pickGem as pg } from '../ducks/elmeron.js';
 import ExplorableHexagonGrid from './ExplorableHexagonGrid.jsx';
 import StandardHexagonGroup from './StandardHexagonGroup.jsx';
 import RefineryCard from './cards/RefineryCard.jsx';
@@ -12,15 +13,15 @@ import Gem from './Gem.jsx';
 function IslandGrid(props) {
   function onHexClick(anchor, hex) {
     if (hex.owner && hex.owner.type === 'Refinery') {
-      props.openCard(anchor, <RefineryCard tile={hex} />);
-      return;
+      return props.openCard(anchor, <RefineryCard tile={hex} />);
     }
 
     props.openCard(anchor, <IslandTileCard tile={hex} anchor={anchor} />);
   }
 
-  function onGemClick() {
-    // console.log('Clicked on gem!');
+  function onGemClick(elem, tile) {
+    props.closeCard();
+    props.pickGem(tile);
   }
 
   const { size } = config.tiles;
@@ -48,5 +49,6 @@ export default connect(
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),
     closeCard: bindActionCreators(close, dispatch),
+    pickGem: bindActionCreators(pg, dispatch),
   })
 )(IslandGrid);

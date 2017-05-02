@@ -1,4 +1,4 @@
-import { Set } from 'immutable';
+import { Set, List } from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,8 +9,42 @@ import { stopMonitoring as sm } from '../../ducks/refinery.js';
 import './BuildRefineryCard.less';
 import Card from './Card.jsx';
 import FuelIcon from '../FuelIcon.jsx';
+import GemIcon from '../GemIcon.jsx';
 
 const availableTypes = new Set(['Forest', 'Rock', 'Sand']);
+
+function cannotAffordBody(amount, available) {
+  if (available < amount) {
+    return <span className="message">({available})</span>
+  }
+
+  return null;
+}
+
+function costBody(cost, available) {
+  const isFree = cost.isEmpty() || cost.every(({ amount }) => amount === 0);
+
+  if (isFree) {
+    return <p>Free</p>;
+  }
+
+  return (
+    <div className="cost-body">
+      {cost.map(({ amount, resource }, index) => {
+        const availableGem = available.get(resource) || 0;
+
+        return (
+          <p key={index}>
+            -
+            <GemIcon color={resource.toLowerCase()} />
+            {amount}
+            {cannotAffordBody(amount, availableGem)}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
 
 function BuildRefineryCard(props) {
   function onBuild() {
@@ -21,7 +55,10 @@ function BuildRefineryCard(props) {
     props.stopMonitoring();
   }
 
-  const cost = calculateRefineryCost(props.selectedTiles, availableTypes);
+  const cost = calculateRefineryCost(props.selectedTiles, availableTypes)
+    .reduce((result, amount, resource) =>
+      result.push({ amount, resource })
+    , new List());
   const production = calculateRefineryProduction(props.selectedTiles, availableTypes);
 
   return (
@@ -33,11 +70,7 @@ function BuildRefineryCard(props) {
           <FuelIcon />
           {`${production} / s`}
         </p>
-        <p>
-          -
-          <FuelIcon />
-          {cost}
-        </p>
+        {costBody(cost, props.gems)}
         <button onClick={onBuild}>BUILD</button>
         <button onClick={onCancel}>CANCEL</button>
       </div>
@@ -48,6 +81,7 @@ function BuildRefineryCard(props) {
 export default connect(
   (state) => ({
     selectedTiles: state.refinery.get('selectedTiles'),
+    gems: state.player.get('gems'),
   }),
   (dispatch) => ({
     closeCard: bindActionCreators(close, dispatch),

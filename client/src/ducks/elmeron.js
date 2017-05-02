@@ -20,8 +20,9 @@ export function initListeners() {
       dispatch(card.closeCard());
     });
 
-    elmeron.on('getPlayer', ({ fuel }) => {
+    elmeron.on('getPlayer', ({ fuel, gems }) => {
       dispatch(player.setFuelData(fuel));
+      dispatch(player.setGemData(gems));
     });
 
     elmeron.on('gameStart', (data) => {
@@ -46,9 +47,10 @@ export function initListeners() {
       }
     });
 
-    elmeron.on('refineryBuilt', ({ tiles, fuel }) => {
+    elmeron.on('refineryBuilt', ({ tiles, fuel, gems }) => {
       dispatch(world.mergeTiles(tiles));
       dispatch(player.setFuelData(fuel));
+      dispatch(player.setGemData(gems));
       dispatch(refinery.stopMonitoring());
       dispatch(card.closeCard());
     });
@@ -89,5 +91,10 @@ export function explore(tile) {
 
 export function buildRefinery(positions) {
   elmeron.buildRefinery(positions);
+  return act();
+}
+
+export function pickGem(position) {
+  elmeron.pickGem(position);
   return act();
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import './Gem.less';
 import Circle from './Circle.jsx';
+import Hexagon from './Hexagon.jsx';
 
 export default class Gem extends React.PureComponent {
   componentWillMount() {
@@ -42,7 +43,7 @@ export default class Gem extends React.PureComponent {
     };
 
     return (
-      <g className="gem-wrapper" onClick={e => this.onClick(e)}>
+      <g className="gem-wrapper">
         <Circle
           center={shadowCenter}
           radius={radius}
@@ -53,6 +54,9 @@ export default class Gem extends React.PureComponent {
           radius={radius}
           customClassName={`gem ${animationStatus}`}
         />
+        <Hexagon center={center} customClassName="transparent" onClick={(t, e) =>
+          this.onClick(e)
+        }/>
       </g>
     );
   }

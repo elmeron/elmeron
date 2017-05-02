@@ -18,7 +18,13 @@ export function openCard(anchor, component, direction) {
 }
 
 export function closeCard() {
-  return act(CLOSE);
+  return (dispatch, getState) => {
+    if (getState().card.get('open')) {
+      return dispatch(act(CLOSE));
+    }
+
+    return dispatch(act());
+  };
 }
 
 export function setCardDimension(width, height) {

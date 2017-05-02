@@ -1,5 +1,8 @@
 import { Set } from 'immutable';
-import { calculateRefineryConstant } from '../../refinery.js';
+import {
+  calculateRefineryProduction,
+  calculateRefineryCost,
+} from '../../refinery.js';
 
 const availableTypes = new Set(['Forest', 'Rock', 'Sand']);
 
@@ -59,14 +62,11 @@ export default class Refinery {
 
   static calculateDelta(grid) {
     const tiles = grid.tiles.filter(tile => tile.resource.deltaAmount.offset > 0);
-    const refineryConstant = calculateRefineryConstant(tiles, availableTypes);
 
-    return parseFloat((tiles.size * refineryConstant).toFixed(1));
+    return calculateRefineryProduction(tiles, availableTypes);
   }
 
   static getPrice(tiles) {
-    const refineryConstant = calculateRefineryConstant(new Set(tiles), availableTypes);
-
-    return Math.round(tiles.length * refineryConstant);
+    return calculateRefineryCost(new Set(tiles), availableTypes);
   }
 }

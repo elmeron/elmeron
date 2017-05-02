@@ -6,6 +6,8 @@ import { openCard as open } from '../ducks/card.js';
 import './ResourceMonitor.less';
 import FuelCard from './cards/FuelCard.jsx';
 import FuelIcon from './FuelIcon.jsx';
+import GemIcon from './GemIcon.jsx';
+import GemCard from './cards/GemCard.jsx';
 
 const timeUnit = 1000;
 
@@ -29,15 +31,23 @@ class ResourceMonitor extends React.PureComponent {
     this.setState({ amount: getFuelAmount(delta, deltaStart, offset, timeUnit, now) });
   }
 
-  onClick() {
+  onFuelClick() {
     this.props.openCard(this.fuelIcon, <FuelCard />, 'down');
+  }
+
+  onGemClick() {
+    this.props.openCard(this.gemIcon, <GemCard />, 'down');
   }
 
   render() {
     return (
       <div className="resource-monitor">
-        <p onClick={e => this.onClick(e)} className="fuel-monitor">
-          <FuelIcon refs={(r) => { this.fuelIcon = r; }}/>
+        <p onClick={() => this.onGemClick()} className="gem-monitor">
+          <GemIcon refs={(r) => { this.gemIcon = r; }} />
+          {this.props.gems}
+        </p>
+        <p onClick={() => this.onFuelClick()} className="fuel-monitor">
+          <FuelIcon refs={(r) => { this.fuelIcon = r; }} />
           {this.state.amount}
         </p>
       </div>
@@ -45,11 +55,20 @@ class ResourceMonitor extends React.PureComponent {
   }
 }
 
+function countGems(gems) {
+  return gems.reduce((result, amount) => {
+    let r = result;
+    r += amount;
+    return r;
+  }, 0);
+}
+
 export default connect(
   (state) => ({
     delta: state.player.getIn(['fuel', 'delta']),
     deltaStart: state.player.getIn(['fuel', 'deltaStart']),
     offset: state.player.getIn(['fuel', 'offset']),
+    gems: countGems(state.player.get('gems')),
   }),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),

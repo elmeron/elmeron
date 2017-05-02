@@ -1,7 +1,9 @@
 import EventEmitter from 'events';
 import Fuel from './world/resources/fuel.js';
+import GemInventory from './gem-inventory.js';
 import Position from './world/position.js';
 import Refinery from './world/refinery.js';
+import Resource from './world/resource.js';
 
 const timeUnit = 1000;
 
@@ -11,6 +13,7 @@ export default class Player extends EventEmitter {
     this.nickname = nickname;
     this.location = undefined;
     this.fuel = new Fuel(Date.now(), timeUnit);
+    this.gems = new GemInventory();
 
     this.fuel.addAmount(100);
 
@@ -58,10 +61,14 @@ export default class Player extends EventEmitter {
   }
 
   buildRefinery(positions) {
-    const price = Refinery.getPrice(positions);
-    const fuelAmount = this.getFuelAmount();
+    const gemCost = Refinery.getPrice(positions);
+    const canAfford = gemCost.every((amount, resourceName) => {
+      const resource = new Resource(resourceName);
 
-    if (fuelAmount >= price) {
+      return this.gems.count(resource) >= amount;
+    });
+
+    if (canAfford) {
       const { tiles, delta } = this.location.buildRefinery(
         positions,
         (deltaChange) => {
@@ -71,12 +78,17 @@ export default class Player extends EventEmitter {
         }
       );
 
-      this.addFuelAmount(-price);
+      gemCost.forEach((amount, resourceName) => {
+        const resource = new Resource(resourceName);
+
+        this.gems.add(resource, -amount);
+      });
+
       this.addFuelDelta(delta);
 
-      const { fuel } = this.getData();
+      const { fuel, gems } = this.getData();
 
-      this.emit('refineryBuilt', { tiles, fuel });
+      this.emit('refineryBuilt', { tiles, fuel, gems });
     }
   }
 
@@ -107,9 +119,18 @@ export default class Player extends EventEmitter {
     this.fuel.addAmount(amount);
   }
 
+  pickGem({ q, r }) {
+    const position = new Position(q, r);
+    const pickedResource = this.location.pickGem(position, Date.now());
+
+    this.gems.add(pickedResource, 1);
+    this.emit('getPlayer', this.getData());
+  }
+
   getData() {
     return {
       fuel: this.fuel.getData(),
+      gems: this.gems.getData(),
     };
   }
 }

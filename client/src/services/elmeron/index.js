@@ -40,6 +40,10 @@ class Elmeron extends EventEmitter {
   buildRefinery(positions) {
     this.player.buildRefinery(positions);
   }
+
+  pickGem(position) {
+    this.player.pickGem(position);
+  }
 }
 
 export default new Elmeron();

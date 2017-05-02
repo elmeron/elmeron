@@ -25,11 +25,17 @@ export default class IslandNode extends WorldNode {
     this.generateGems();
   }
 
+  static calculateLikelihood(grid) {
+    const likelihood = 10 / Math.sqrt(grid.size);
+
+    return chance.bool({ likelihood });
+  }
+
   static getAffectedTiles(grid) {
     return grid.tiles.reduce((result, tile) => {
       const t = tile.clone();
 
-      if (chance.bool({ likelihood: 5 })) {
+      if (IslandNode.calculateLikelihood(grid)) {
         t.resource.canPickGem = !t.resource.canPickGem;
         return result.add(t);
       }
@@ -58,6 +64,25 @@ export default class IslandNode extends WorldNode {
         this.emit('explore', { tiles: returnGrid.getTiles() });
       }
     }, 1000);
+  }
+
+  pickGem(position, now) {
+    const tile = this.grid.getTile(position);
+    const amount = tile.resource.getAmount(now);
+
+    if (amount >= 1) {
+      const grid = new TileHexagonGrid();
+
+      tile.resource.addAmount(-1);
+      tile.resource.canPickGem = false;
+      grid.addTile(tile);
+      this.grid.addTile(tile);
+      this.emit('explore', { tiles: grid.getTiles() });
+
+      return tile.resource;
+    }
+
+    throw new Error('Cannot pick gem: Not enough resources');
   }
 
   buildRefinery(tiles, onRefineryChange = () => {}) {

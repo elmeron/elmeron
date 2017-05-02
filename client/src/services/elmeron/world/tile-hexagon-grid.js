@@ -58,7 +58,7 @@ export default class TileHexagonGrid {
 
   getTile(position) {
     const id = position.getId();
-    return this.tiles.get(id);
+    return this.tiles.get(id).clone();
   }
 
   getTiles(positions = false) {

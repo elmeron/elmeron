@@ -75,7 +75,14 @@ export function calculateRefineryConstant(tiles, availableResourceTypes) {
 }
 
 export function calculateRefineryCost(tiles, availableTypes) {
-  return Math.round(tiles.size * calculateRefineryConstant(tiles, availableTypes));
+  const refineryConstant = Math.round(calculateRefineryConstant(tiles, availableTypes));
+
+  return tiles.reduce((result, tile) => {
+    const { name } = tile.resource;
+    const amount = result.get(name) || 0;
+
+    return result.set(name, amount + refineryConstant);
+  }, new Map());
 }
 
 export function calculateRefineryProduction(tiles, availableTypes) {

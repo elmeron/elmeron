@@ -36,14 +36,14 @@ export default function Hexagon(props) {
   }
 
   const d = roundPathCorners(path(), 0.1, true);
-  const type = props.type.name || '';
+  const type = props.type && props.type.name || '';
   const customClassName = props.customClassName || '';
 
   return (
     <path
       d={d}
       className={`hexagon ${type.toLowerCase()} ${customClassName}`}
-      onClick={e => props.onClick(e.target)}
+      onClick={e => props.onClick(e.target, e)}
     />
   );
 }
