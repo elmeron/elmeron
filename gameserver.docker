@@ -1,0 +1,15 @@
+FROM hypriot/rpi-node:7.4
+
+RUN mkdir /elmeron
+WORKDIR /elmeron
+
+COPY ./package.json /elmeron
+RUN npm install
+
+RUN mkdir -p /elmeron/gameserver
+COPY ./gameserver /elmeron/gameserver
+COPY ./common /elmeron/common
+RUN npm run gameserver:build
+
+EXPOSE 3000
+CMD npm run gameserver:start
