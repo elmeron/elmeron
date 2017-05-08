@@ -18,10 +18,9 @@ const initialState = {
 
 export function initListeners() {
   return (dispatch, getState) => {
-    elmeron = new Elmeron(url, () => {
-      dispatch(act(SET_CONNECTED, true));
-      // startGame('Test Player');
-    });
+    elmeron = new Elmeron(url, () =>
+      dispatch(act(SET_CONNECTED, true))
+    );
 
     elmeron.on('getWorld', (data) => {
       dispatch(world.setCurrentLocation(data.name));
@@ -53,7 +52,7 @@ export function initListeners() {
       dispatch(player.setFuelData(playerData.fuel));
       dispatch(player.setGemData(playerData.gems));
 
-      dispatch(ui.showGameView());
+      dispatch(ui.showLobbyCountdownView());
     });
 
     elmeron.on('elmeronFound', ({ q, r }) => {
@@ -97,7 +96,7 @@ export function initListeners() {
 }
 
 export function startGame(nickname) {
-  setTimeout(() => elmeron.startGame(nickname), 2000);
+  elmeron.startGame(nickname);
   return act();
 }
 

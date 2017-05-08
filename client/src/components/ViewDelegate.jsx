@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import MainMenuView from './MainMenuView.jsx';
 import LobbyView from './LobbyView.jsx';
+import LobbyCountdownView from './LobbyCountdownView.jsx';
 import GameView from './GameView.jsx';
 import LoadGameView from './LoadGameView.jsx';
 import GameOverView from './GameOverView.jsx';
@@ -9,6 +10,7 @@ import GameOverView from './GameOverView.jsx';
 const componentMapping = {
   mainMenu: <MainMenuView />,
   lobby: <LobbyView />,
+  lobbyCountdown: <LobbyCountdownView />,
   game: <GameView />,
   loadGame: <LoadGameView />,
   gameOver: <GameOverView />,

@@ -17,6 +17,10 @@ export function showLobbyView() {
   return act(SET_VIEW, 'lobby');
 }
 
+export function showLobbyCountdownView() {
+  return act(SET_VIEW, 'lobbyCountdown');
+}
+
 export function showGameView() {
   return act(SET_VIEW, 'game');
 }

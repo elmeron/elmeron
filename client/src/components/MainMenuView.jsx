@@ -6,13 +6,31 @@ import { showLobbyView as slw } from '../ducks/ui.js';
 import logo from '../../static/logo.png';
 import './MainMenuView.less';
 
+const validNickname = /^[a-z]{4,}$/i;
+const explanations = [
+  'Psst! Try a nickname with at least 4 word characters.',
+  'Maybe a longer nickname will suffice?',
+  'Tip: Your nickname should only contain letters.',
+];
+
 class MainMenuView extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = { nickname: '', hasPressedPlay: false };
+    this.state = {
+      nickname: '',
+      hasPressedPlay: false,
+      nonvalidNickname: false,
+      bounceExplanationText: false,
+      explanation: MainMenuView.getRandomExplanation(),
+    };
+    this.onLogoClick = this.onLogoClick.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onNicknameChange = this.onNicknameChange.bind(this);
     this.onPlay = this.onPlay.bind(this);
+  }
+
+  static getRandomExplanation() {
+    return explanations[Math.floor(Math.random() * explanations.length)];
   }
 
   componentDidUpdate() {
@@ -21,18 +39,54 @@ class MainMenuView extends React.PureComponent {
     }
   }
 
+  onLogoClick() {
+    this.setState({ hasPressedPlay: false });
+  }
+
   onNicknameChange({ target }) {
     this.setState({ nickname: target.value });
   }
 
   onSubmit(event) {
+    const { nickname } = this.state;
+
     event.preventDefault();
-    this.props.startGame(this.state.nickname);
-    this.props.showLobbyView();
+
+    if (nickname && validNickname.test(nickname)) {
+      this.props.startGame(nickname.trim());
+      this.props.showLobbyView();
+    } else {
+      const { bounceExplanationText } = this.state;
+
+      if (!bounceExplanationText) {
+        setTimeout(() =>
+          this.setState({ bounceExplanationText: false })
+        , 200); // match this with .less
+      }
+
+      this.setState({
+        nonvalidNickname: true,
+        bounceExplanationText: true,
+        explanation: MainMenuView.getRandomExplanation(),
+      });
+    }
   }
 
   nicknameInput() {
-    const { nickname } = this.state;
+    const {
+      nickname,
+      nonvalidNickname,
+      bounceExplanationText,
+      explanation,
+    } = this.state;
+    const bounceClassName = bounceExplanationText ? 'bounce' : '';
+    const explanationParagraph = nonvalidNickname ?
+      <p>
+        <small className={bounceClassName}>
+          {explanation}
+        </small>
+      </p> :
+      null;
 
     return (
       <form onSubmit={this.onSubmit}>
@@ -45,6 +99,7 @@ class MainMenuView extends React.PureComponent {
           onChange={this.onNicknameChange}
           ref={(r) => { this.nickname = r; }}
         />
+        {nonvalidNickname && explanationParagraph }
       </form>
     );
   }
@@ -54,8 +109,20 @@ class MainMenuView extends React.PureComponent {
   }
 
   playButton() {
+    const { connected } = this.props;
+    const loadingClassName = connected ? '' : 'loading';
+
     return (
-      <button onClick={this.onPlay}>Play</button>
+      <button
+        className={loadingClassName}
+        onClick={this.onPlay}
+        disabled={!connected}
+      >
+        Play
+        {!connected &&
+          <i className="fa fa-cog fa-spin" />
+        }
+      </button>
     );
   }
 
@@ -64,7 +131,7 @@ class MainMenuView extends React.PureComponent {
 
     return (
       <div className="main-menu">
-        <img className="logo" src={logo} />
+        <img onClick={this.onLogoClick} className="logo" src={logo} />
         <div className="play">
         {hasPressedPlay && this.nicknameInput()}
         {!hasPressedPlay && this.playButton()}
@@ -75,7 +142,9 @@ class MainMenuView extends React.PureComponent {
 }
 
 export default connect(
-  undefined,
+  (state) => ({
+    connected: state.elmeron.get('connected'),
+  }),
   (dispatch) => ({
     startGame: bindActionCreators(sg, dispatch),
     showLobbyView: bindActionCreators(slw, dispatch),

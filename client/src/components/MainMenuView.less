@@ -25,12 +25,21 @@
   border: none;
   border-radius: 5px;
   font-size: 34px;
-  padding: 15px;
+  padding: 15px 30px;
   box-shadow: 3px 3px #333;
 }
 
+.main-menu button.loading {
+  background-color: fade(@forest, 50%);
+  color: fade(white, 50%);
+}
+
+.main-menu button i {
+  margin-left: 10px;
+}
+
 .main-menu form > input {
-  display: block;
+  display: inline-block;
   text-align: center;
   font-size: 28px;
   background-color: transparent;
@@ -43,4 +52,22 @@
 
 .main-menu form > input::placeholder {
   color: fade(white, 50%);
+}
+
+@keyframes bounce {
+  0% { font-size: 85%; }
+  33% { font-size: 95%; }
+  66% { font-size: 80%; }
+  100% { font-size: 85%; }
+}
+
+.main-menu form small {
+  color: fade(@gem, 75%);
+  text-shadow: 1px 1px #333;
+}
+
+.main-menu form small.bounce {
+  animation-name: bounce;
+  animation-duration: 200ms;
+  animation-timing-function: ease;
 }
