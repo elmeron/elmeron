@@ -5,10 +5,9 @@ import 'bootstrap/less/bootstrap.less';
 import 'font-awesome/less/font-awesome.less';
 import './style.less';
 import '../static/fonts.less';
-import elmeron from './services/elmeron/index.js';
 import store from './services/store.js';
 import { setScreenDimension } from './ducks/ui.js';
-import { initListeners } from './ducks/elmeron.js';
+import { initListeners, startGame } from './ducks/elmeron.js';
 import ViewDelegate from './components/ViewDelegate.jsx';
 
 /**
@@ -26,8 +25,6 @@ function dimension() {
 
 window.onresize = dimension;
 dimension();
-
-elmeron.startGame('Test player');
 
 ReactDOM.render(
   <Provider store={store}>

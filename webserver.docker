@@ -1,5 +1,8 @@
 FROM hypriot/rpi-node:7.4
 
+ARG GAMESERVER_URL
+ARG PORT=3000
+
 RUN mkdir /elmeron
 WORKDIR /elmeron
 
@@ -8,13 +11,12 @@ RUN npm install
 
 RUN mkdir -p /elmeron/webserver
 COPY ./webserver /elmeron/webserver
-COPY ./common /elmeron/common
 RUN npm run webserver:build
 
 RUN mkdir -p /elmeron/client
 COPY ./webpack.config.babel.js /elmeron
 COPY ./client /elmeron/client
-RUN npm run client:build
+RUN GAMESERVER_URL=$GAMESERVER_URL npm run client:build
 
-EXPOSE 3000
-CMD npm run webserver:start
+EXPOSE $PORT
+CMD PORT=$PORT npm run webserver:start

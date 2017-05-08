@@ -1,3 +1,4 @@
+import webpack from 'webpack';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -70,5 +71,6 @@ module.exports = {
       template: './client/static/index.html',
     }),
     extractLess,
+    new webpack.EnvironmentPlugin(['GAMESERVER_URL']),
   ],
 };

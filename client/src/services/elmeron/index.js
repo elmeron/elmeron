@@ -3,47 +3,68 @@
  */
 
 import EventEmitter from 'events';
-import Player from './player.js';
-import Game from './game.js';
+import io from 'socket.io-client';
 
-class Elmeron extends EventEmitter {
+function pipeChannels(events, from, to) {
+  events.forEach(event =>
+    from.on(event, data => to.emit(event, data))
+  );
+}
+
+export default class Elmeron extends EventEmitter {
+  constructor(url, ready) {
+    super();
+    this.url = url;
+    this.client = io(this.url);
+    this.client.once('connect', ready);
+  }
+
   startGame(nickname) {
-    this.player = new Player(nickname);
-    this.game = new Game([this.player], tile => this.emit('elmeronFound', tile));
-    this.emit('gameStart', {
-      player: this.player.getData(),
-    });
+    this.client.once('gameReady', ({ id }) => {
+      this.client = io(`${this.url}/${id}`);
+      this.client.once('connect', () => {
+        this.client.emit('joinGame', { nickname }, data =>
+          this.emit('gameStart', data)
+        );
 
-    this.player.on('explore', data => this.emit('explore', data));
-    this.player.on('getPlayer', data => this.emit('getPlayer', data));
-    this.player.on('getWorld', data => this.emit('getWorld', data));
-    this.player.on('refineryBuilt', data => this.emit('refineryBuilt', data));
-    this.player.on('refineryChange', data => this.emit('refineryChange', data));
+        pipeChannels([
+          'getPlayer',
+          'getWorld',
+          'explore',
+          'refineryBuilt',
+          'refineryChange',
+        ], this.client, this);
+      });
+    });
+    this.client.emit('startGame', { nickname });
+  }
+
+  getPlayer() {
+    this.client.emit('getPlayer');
   }
 
   getWorld() {
-    this.emit('getWorld', this.player.location.getData());
+    this.client.emit('getWorld');
   }
 
   explore(position) {
-    this.player.explore(position);
+    this.client.emit('explore', { position });
   }
 
   zoomIn(childName) {
-    this.player.zoomIn(childName);
+    this.client.emit('zoomIn', { childName });
   }
 
   zoomOut() {
-    this.player.zoomOut();
+    this.client.emit('zoomOut');
   }
 
   buildRefinery(positions) {
-    this.player.buildRefinery(positions);
+    this.client.emit('buildRefinery', ({ positions }));
   }
 
   pickGem(position) {
-    this.player.pickGem(position);
+    this.client.emit('pickGem', ({ position }));
   }
 }
 
-export default new Elmeron();

@@ -26,7 +26,7 @@ function WorldNameLabel(props) {
 export default connect(
   (state) => ({
     name: state.world.getIn(['location', 'current']),
-    nodeType: state.world.get('nodeType'),
+    nodeType: state.world.get('nodeType') || '',
   }),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),

@@ -1,15 +1,28 @@
+import EventEmitter from 'events';
 import http from 'http';
 import io from 'socket.io';
 
-const httpServer = http.createServer();
-const server = io(httpServer);
+export default class Server extends EventEmitter {
+  constructor(port) {
+    super();
+    this.httpServer = http.createServer();
+    this.socketServer = io(this.httpServer);
 
-httpServer.listen(3000);
+    this.socketServer.on('connection', socket =>
+      this.emit('connection', socket)
+    );
 
-server.on('connection', (socket) => {
-  console.log('got connection!');
+    this.httpServer.listen(port, () =>
+      this.emit('listening', this.httpServer.address())
+    );
+  }
 
-  socket.on('hello', () => {
-    socket.emit('new', { hello: 'world' });
-  });
-});
+  of(namespace) {
+    return this.socketServer.of(namespace);
+  }
+
+  close() {
+    this.socketServer.close();
+    this.httpServer.close();
+  }
+}

@@ -7,12 +7,12 @@
     "doc": "docs"
   },
   "scripts": {
-    "gameserver:build": "babel ./gameserver/src -d ./gameserver/build && babel ./common -d ./gameserver/build/common",
-    "gameserver:start": "NODE_ENV=production node ./gameserver/build/server.js",
-    "gameserver:dev": "nodemon --exec \"npm run gameserver:build && npm run gameserver:start\" --watch gameserver/src",
-    "webserver:build": "babel ./webserver/src -d ./webserver/build && babel ./common -d ./webserver/build/common",
+    "gameserver:build": "babel ./gameserver/src -d ./gameserver/build --ignore **/__tests__/** && babel ./client/src/services/refinery.js -o ./gameserver/build/refinery.js",
+    "gameserver:start": "NODE_ENV=production node ./gameserver/build/main.js",
+    "gameserver:dev": "nodemon --exec \"npm run gameserver:build && NODE_ENV=development node ./gameserver/build/main.js\" --watch gameserver/src --watch common",
+    "webserver:build": "babel ./webserver/src -d ./webserver/build",
     "webserver:start": "NODE_ENV=production node ./webserver/build/server.js",
-    "client:build": "webpack",
+    "client:build": "NODE_ENV=production webpack",
     "client:dev": "webpack-dev-server --progress --colors --define process.env.NODE_ENV=\"'development'\"",
     "lint": "eslint webpack.config.babel.js ./webserver/src ./client/src",
     "test": "jest"
@@ -21,9 +21,6 @@
     "presets": [
       "es2015",
       "react"
-    ],
-    "ignore": [
-      "**/__tests__/**"
     ]
   },
   "eslintConfig": {
@@ -89,6 +86,7 @@
     "redux": "3.6.0",
     "redux-thunk": "2.2.0",
     "socket.io": "1.7.3",
+    "socket.io-client": "1.7.3",
     "url-loader": "0.5.8",
     "winston": "2.3.1"
   }

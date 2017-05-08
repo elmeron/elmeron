@@ -18,7 +18,11 @@ winston.loggers.add('webserver', {
   },
 });
 
-export const webserverLogger = winston.loggers.get('webserver');
-webserverLogger.stream = {
-  write: message => webserverLogger.info(message.slice(0, -1)),
+const logger = winston.loggers.get('webserver');
+
+// used by morgan in express
+logger.stream = {
+  write: message => logger.info(message.slice(0, -1)),
 };
+
+export default logger;

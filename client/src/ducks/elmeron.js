@@ -1,5 +1,5 @@
-import { act } from './util.js';
-import elmeron from '../services/elmeron/index.js';
+import { act, reducer } from './util.js';
+import Elmeron from '../services/elmeron/index.js';
 import * as card from './card.js';
 import * as grid from './grid.js';
 import * as player from './player.js';
@@ -7,8 +7,22 @@ import * as ui from './ui.js';
 import * as world from './world.js';
 import * as refinery from './refinery.js';
 
+const url = process.env.GAMESERVER_URL || 'http://localhost:3000';
+let elmeron;
+
+const SET_CONNECTED = 'elmeron/SET_CONNECTED';
+
+const initialState = {
+  connected: false,
+};
+
 export function initListeners() {
   return (dispatch, getState) => {
+    elmeron = new Elmeron(url, () => {
+      dispatch(act(SET_CONNECTED, true));
+      startGame('Test Player');
+    });
+
     elmeron.on('getWorld', (data) => {
       dispatch(world.setCurrentLocation(data.name));
       dispatch(world.setParentLocation(data.parent));
@@ -26,12 +40,20 @@ export function initListeners() {
       dispatch(player.setGemData(gems));
     });
 
-    elmeron.on('gameStart', (data) => {
-      const { fuel } = data.player;
+    elmeron.on('gameStart', ({ player: playerData, world: worldData }) => {
+      dispatch(world.setCurrentLocation(worldData.name));
+      dispatch(world.setParentLocation(worldData.parent));
+      dispatch(world.setChildrenLocations(worldData.children));
+      dispatch(world.setNodeType(worldData.nodeType));
+      dispatch(world.setExplorationCost(worldData.explorationCost));
+      dispatch(world.setTiles(worldData.tiles));
+      dispatch(grid.setExtremes(worldData.tiles));
+      dispatch(world.setIsExplored(worldData.isExplored));
 
-      elmeron.getWorld();
+      dispatch(player.setFuelData(playerData.fuel));
+      dispatch(player.setGemData(playerData.gems));
+
       dispatch(ui.showGameView());
-      dispatch(player.setFuelData(fuel));
     });
 
     elmeron.on('elmeronFound', ({ q, r }) => {
@@ -74,6 +96,10 @@ export function initListeners() {
   };
 }
 
+export function startGame(nickname) {
+  elmeron.startGame(nickname);
+}
+
 export function zoomIn({ owner, q, r }) {
   elmeron.zoomIn(owner);
   return grid.zoomIn({ q, r });
@@ -106,3 +132,13 @@ export function pickGem(position) {
   elmeron.pickGem(position);
   return act();
 }
+
+function handleSetConnected(state, value) {
+  return state.set('connected', value);
+}
+
+const handlers = {
+  [SET_CONNECTED]: handleSetConnected,
+};
+
+export default reducer(initialState, handlers);
