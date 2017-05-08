@@ -20,7 +20,7 @@ export function initListeners() {
   return (dispatch, getState) => {
     elmeron = new Elmeron(url, () => {
       dispatch(act(SET_CONNECTED, true));
-      startGame('Test Player');
+      // startGame('Test Player');
     });
 
     elmeron.on('getWorld', (data) => {
@@ -97,7 +97,8 @@ export function initListeners() {
 }
 
 export function startGame(nickname) {
-  elmeron.startGame(nickname);
+  setTimeout(() => elmeron.startGame(nickname), 2000);
+  return act();
 }
 
 export function zoomIn({ owner, q, r }) {

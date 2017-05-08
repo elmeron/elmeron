@@ -1,0 +1,46 @@
+@import '../colors.less';
+
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: @background;
+  color: white;
+}
+
+.main-menu > .logo {
+  margin-top: -100px;
+  height: 150px;
+}
+
+.main-menu > .play {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.main-menu button {
+  background-color: @forest;
+  border: none;
+  border-radius: 5px;
+  font-size: 34px;
+  padding: 15px;
+  box-shadow: 3px 3px #333;
+}
+
+.main-menu form > input {
+  display: block;
+  text-align: center;
+  font-size: 28px;
+  background-color: transparent;
+  border: none;
+}
+
+.main-menu form > input:focus {
+  outline: none;
+}
+
+.main-menu form > input::placeholder {
+  color: fade(white, 50%);
+}

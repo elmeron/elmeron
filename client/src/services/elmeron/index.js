@@ -36,7 +36,11 @@ export default class Elmeron extends EventEmitter {
         ], this.client, this);
       });
     });
-    this.client.emit('startGame', { nickname });
+    this.client.emit('startGame', { nickname }, (err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
   }
 
   getPlayer() {

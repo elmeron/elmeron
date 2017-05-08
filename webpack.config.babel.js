@@ -63,6 +63,10 @@ module.exports = {
           mimetype: 'image/svg+xml',
         },
       },
+      {
+        test: /\.png$/,
+        loader: 'file-loader',
+      },
     ],
   },
 
