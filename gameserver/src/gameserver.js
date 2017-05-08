@@ -35,7 +35,11 @@ export default function createGameServer(port, ready, lobbyPolicy) {
     });
 
     server.of(game.id).on('connection', (socket) => {
-      logger.info(`New socket connection to game (${game.id})`);
+      logger.info(`(${socket.id}) connected to game (${game.id})`);
+
+      socket.on('disconnected', (reason) => {
+        logger.info(`(${socket.id}) disconnected from game (${game.id}): ${reason}`);
+      });
 
       // pipe socket events to the player object
       socket.on('joinGame', ({ nickname }, ack = () => {}) => {
