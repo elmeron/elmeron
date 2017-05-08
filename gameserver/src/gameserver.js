@@ -66,10 +66,11 @@ export default function createGameServer(port, ready, lobbyPolicy) {
   server.on('connection', (socket) => {
     logger.info(`New socket connection to main namespace (${socket.id})`);
 
-    socket.on('startGame', ({ nickname }, ack) => {
+    socket.on('startGame', ({ nickname }, ack = () => {}) => {
       if (nickname && nickname.length > 0) {
         logger.info(`${nickname} joins the lobby`);
         lobby.registerPlayer(nickname, socket);
+
         ack(null);
       } else {
         ack('Cannot start game: Not a valid nickname');

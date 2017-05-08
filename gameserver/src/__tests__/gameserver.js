@@ -25,7 +25,6 @@ describe('one player game start', () => {
         client = io(`${url}/${id}`);
 
         client.once('getPlayer', data => {
-          console.log(data);
           done();
         });
 

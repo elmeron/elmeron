@@ -13,5 +13,5 @@ server.use(express.static(path.join(__dirname, 'static')));
 
 const listener = server.listen(port, () => {
   const p = listener.address().port;
-  logger.info(`Elmeron Web Server running on port ${p}`)
+  logger.info(`Elmeron Web Server running on port ${p}`);
 });
