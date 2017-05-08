@@ -16,7 +16,7 @@ class LobbyCountdownView extends React.PureComponent {
     this.interval = setInterval(() => {
       const { count } = this.state;
 
-      if (this.interval && count <= 0) {
+      if (this.interval && count <= 1) {
         clearInterval(this.interval);
         this.props.showGameView();
       } else {
