@@ -19,4 +19,8 @@ export default class Game {
   getPlayer(nickname) {
     return this.players.get(nickname);
   }
+
+  allPlayersHasLeft() {
+    return this.players.every(player => player.hasLeftGame);
+  }
 }

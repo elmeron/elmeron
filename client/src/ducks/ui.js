@@ -13,6 +13,10 @@ export function setScreenDimension(width, height) {
   return act(SET_SCREEN_DIMENSION, { width, height });
 }
 
+export function showMainMenuView() {
+  return act(SET_VIEW, 'mainMenu');
+}
+
 export function showLobbyView() {
   return act(SET_VIEW, 'lobby');
 }

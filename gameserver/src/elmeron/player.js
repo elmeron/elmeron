@@ -11,6 +11,7 @@ export default class Player extends EventEmitter {
   constructor(nickname) {
     super();
     this.nickname = nickname;
+    this.hasLeftGame = false;
     this.location = undefined;
     this.fuel = new Fuel(Date.now(), timeUnit);
     this.gems = new GemInventory();

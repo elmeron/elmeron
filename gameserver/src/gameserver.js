@@ -1,3 +1,4 @@
+import { fromJS } from 'immutable';
 import Server from './server.js';
 import Lobby from './lobby.js';
 import Player from './elmeron/player.js';
@@ -21,19 +22,6 @@ export default function createGameServer(port, ready, lobbyPolicy) {
   lobby.on('gameReady', (game) => {
     logger.info(`Game ${game.id} ready to play`);
 
-    // pipe player events to the room specified by the player nickname
-    game.players.forEach((player, nickname) => {
-      const channel = server.of(game.id).to(nickname);
-
-      pipeChannels([
-        'getPlayer',
-        'getWorld',
-        'explore',
-        'refineryBuilt',
-        'refineryChange',
-      ], player, channel);
-    });
-
     server.of(game.id).on('connection', (socket) => {
       logger.info(`(${socket.id}) connected to game (${game.id})`);
 
@@ -46,8 +34,15 @@ export default function createGameServer(port, ready, lobbyPolicy) {
         const player = game.getPlayer(nickname);
 
         if (player) {
-          server.of(game.id).to(nickname).emit('forceLeave');
-          socket.join(nickname);
+          logger.info(`${nickname} joined game (${game.id})`);
+
+          pipeChannels([
+            'getPlayer',
+            'getWorld',
+            'explore',
+            'refineryBuilt',
+            'refineryChange',
+          ], player, socket);
 
           socket.on('getPlayer', () => player.emit('getPlayer', player.getData()));
           socket.on('getWorld', () => player.emit('getWorld', player.location.getData()));
@@ -67,8 +62,19 @@ export default function createGameServer(port, ready, lobbyPolicy) {
         const player = game.getPlayer(nickname);
 
         if (player) {
-          socket.leave(nickname);
-          ack(true);
+          logger.info(`${nickname} left game (${game.id})`);
+
+          player.hasLeftGame = true;
+          player.removeAllListeners();
+          ack(null);
+
+          if (game.allPlayersHasLeft()) {
+            const namespace = server.of(game.id);
+
+            logger.info(`All players has left game ${(game.id)}: deconstructing it`);
+            fromJS(namespace.connected).forEach(sock => sock.disconnect());
+            namespace.removeAllListeners();
+          }
         } else {
           ack('Cannot leave game: No such player');
         }
@@ -92,6 +98,12 @@ export default function createGameServer(port, ready, lobbyPolicy) {
       } else {
         ack('Cannot start game: Not a valid nickname');
       }
+    });
+
+    socket.on('hasGame', ({ id }, ack) => {
+      const games = fromJS(Object.keys(server.socketServer.nsps));
+      const hasGame = games.some(game => game === `/${id}`);
+      ack(hasGame);
     });
   });
 

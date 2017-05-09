@@ -4,6 +4,7 @@
 
 import EventEmitter from 'events';
 import io from 'socket.io-client';
+import LocalStorage from './local-storage.js';
 
 function pipeChannels(events, from, to) {
   events.forEach(event =>
@@ -36,6 +37,30 @@ export default class Elmeron extends EventEmitter {
     this.client.on('reconnecting', () => this.emit('connecting'));
   }
 
+  hasGame(id, ack) {
+    this.client.emit('hasGame', { id }, ack);
+  }
+
+  joinGame(gameId, nickname) {
+    this.client.disconnect();
+    this.client = io(`${this.url}/${gameId}`, ioOptions);
+    this.initConnectionListeners();
+
+    this.client.once('connect', () => {
+      this.client.emit('joinGame', { nickname }, data =>
+        this.emit('gameStart', data)
+      );
+
+      pipeChannels([
+        'getPlayer',
+        'getWorld',
+        'explore',
+        'refineryBuilt',
+        'refineryChange',
+      ], this.client, this);
+    });
+  }
+
   startGame(nickname, ack) {
     this.client.emit('startGame', { nickname }, (err) => {
       if (err) {
@@ -43,25 +68,24 @@ export default class Elmeron extends EventEmitter {
       }
 
       this.client.once('gameReady', ({ id }) => {
-        this.client.disconnect();
-        this.client = io(`${this.url}/${id}`, ioOptions);
-        this.initConnectionListeners();
-
-        this.client.once('connect', () => {
-          this.client.emit('joinGame', { nickname }, data =>
-            this.emit('gameStart', data)
-          );
-
-          pipeChannels([
-            'getPlayer',
-            'getWorld',
-            'explore',
-            'refineryBuilt',
-            'refineryChange',
-          ], this.client, this);
-        });
+        LocalStorage.saveData(id, nickname);
+        this.joinGame(id, nickname);
       });
 
+      return ack();
+    });
+  }
+
+  leaveGame(nickname, ack) {
+    this.client.emit('leaveGame', { nickname }, (err) => {
+      if (err) {
+        throw new Error(err);
+      }
+
+      LocalStorage.deleteData();
+      this.client.disconnect();
+      this.client = io(this.url, ioOptions);
+      this.initConnectionListeners();
       ack();
     });
   }

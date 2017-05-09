@@ -1,5 +1,6 @@
 import { act, reducer } from './util.js';
-import Elmeron from '../services/elmeron/index.js';
+import Elmeron from '../services/elmeron.js';
+import LocalStorage from '../services/local-storage.js';
 import * as card from './card.js';
 import * as grid from './grid.js';
 import * as player from './player.js';
@@ -10,22 +11,29 @@ import * as refinery from './refinery.js';
 const url = process.env.GAMESERVER_URL || 'http://localhost:3000';
 let elmeron;
 
+const SET_NICKNAME = 'elmeron/SET_NICKNAME';
 const SET_CONNECTED = 'elmeron/SET_CONNECTED';
 const SET_CONNECTING = 'elmeron/SET_CONNECTING';
 const SET_ERROR = 'elmeron/SET_ERROR';
 
 const initialState = {
+  nickname: undefined,
   connected: false,
   connecting: true,
   error: undefined,
 };
 
+export function setNickname(nickname) {
+  return act(SET_NICKNAME, nickname);
+}
+
 export function initListeners() {
   return (dispatch, getState) => {
     elmeron = new Elmeron(url);
+    const { gameId, nickname } = LocalStorage.getData();
 
     elmeron.on('connect', () => dispatch(act(SET_CONNECTED, true)));
-    elmeron.on('disonnect', () => dispatch(act(SET_CONNECTED, false)));
+    elmeron.on('disconnect', () => dispatch(act(SET_CONNECTED, false)));
     elmeron.on('connecting', () => dispatch(act(SET_CONNECTING, true)));
     elmeron.on('connect_timeout', () => dispatch(act(SET_CONNECTING, false)));
     elmeron.on('error', error => dispatch(act(SET_ERROR, error)));
@@ -100,12 +108,30 @@ export function initListeners() {
         dispatch(player.setFuelData(fuel));
       }
     });
+
+    if (gameId && nickname) {
+      elmeron.hasGame(gameId, (val) => {
+        if (val) {
+          elmeron.joinGame(gameId, nickname);
+          dispatch(setNickname(nickname));
+        } else {
+          LocalStorage.deleteData();
+        }
+      });
+    }
   };
 }
 
 export function startGame(nickname, ack) {
   elmeron.startGame(nickname, ack);
   return act();
+}
+
+export function leaveGame(ack) {
+  return (dispatch, getState) => {
+    const nickname = getState().elmeron.get('nickname');
+    elmeron.leaveGame(nickname, ack);
+  };
 }
 
 export function zoomIn({ owner, q, r }) {
@@ -141,6 +167,10 @@ export function pickGem(position) {
   return act();
 }
 
+function handleSetNickname(state, nickname) {
+  return state.set('nickname', nickname);
+}
+
 function handleSetConnected(state, value) {
   return state
     .set('connected', value)
@@ -164,6 +194,7 @@ function handleSetError(state, value) {
 }
 
 const handlers = {
+  [SET_NICKNAME]: handleSetNickname,
   [SET_CONNECTED]: handleSetConnected,
   [SET_CONNECTING]: handleSetConnecting,
   [SET_ERROR]: handleSetError,

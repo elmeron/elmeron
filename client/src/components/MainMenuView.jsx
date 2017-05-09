@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { startGame as sg } from '../ducks/elmeron.js';
+import { startGame as sg, setNickname as snn } from '../ducks/elmeron.js';
 import { showLobbyView as slw } from '../ducks/ui.js';
 import logo from '../../static/logo.png';
 import './MainMenuView.less';
@@ -74,6 +74,7 @@ class MainMenuView extends React.PureComponent {
         if (err) {
           this.bounceMessage(err);
         } else {
+          this.props.setNickname(nickname.trim());
           this.props.showLobbyView();
         }
       });
@@ -161,6 +162,7 @@ export default connect(
   }),
   (dispatch) => ({
     startGame: bindActionCreators(sg, dispatch),
+    setNickname: bindActionCreators(snn, dispatch),
     showLobbyView: bindActionCreators(slw, dispatch),
   })
 )(MainMenuView);

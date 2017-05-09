@@ -19,6 +19,9 @@ function lobbyPolicy(players, ready) {
   timer = setTimeout(ready, IDLE_TIME_BEFORE_START);
 }
 
+const policy = process.env.NODE_ENV === 'development' ?
+  undefined : lobbyPolicy;
+
 createGameServer(PORT, ({ port }) => {
   logger.info(`Gameserver listening on port ${port}`);
 }, lobbyPolicy);
