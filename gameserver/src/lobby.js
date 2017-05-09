@@ -12,18 +12,21 @@ export default class Lobby extends EventEmitter {
 
   registerPlayer(nickname, socket) {
     this.players = this.players.set(nickname, socket);
-
-    if (this.readyToPlay()) {
+    this.policy(this.players, () => {
       const game = this.createGame();
 
       this.notifyPlayersGameReady(game.id);
       this.emit('gameReady', game);
       this.players = this.players.clear();
-    }
+    });
   }
 
-  static defaultPolicy(players) {
-    return true;
+  hasPlayer(nickname) {
+    return this.players.has(nickname);
+  }
+
+  static defaultPolicy(players, ready) {
+    return ready();
   }
 
   createGame() {
@@ -38,9 +41,5 @@ export default class Lobby extends EventEmitter {
     this.players.forEach(socket =>
       socket.emit('gameReady', { id })
     );
-  }
-
-  readyToPlay() {
-    return this.policy(this.players);
   }
 }

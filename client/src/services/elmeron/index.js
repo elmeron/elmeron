@@ -36,30 +36,33 @@ export default class Elmeron extends EventEmitter {
     this.client.on('reconnecting', () => this.emit('connecting'));
   }
 
-  startGame(nickname) {
-    this.client.once('gameReady', ({ id }) => {
-      this.client.disconnect();
-      this.client = io(`${this.url}/${id}`, ioOptions);
-      this.initConnectionListeners();
-
-      this.client.once('connect', () => {
-        this.client.emit('joinGame', { nickname }, data =>
-          this.emit('gameStart', data)
-        );
-
-        pipeChannels([
-          'getPlayer',
-          'getWorld',
-          'explore',
-          'refineryBuilt',
-          'refineryChange',
-        ], this.client, this);
-      });
-    });
+  startGame(nickname, ack) {
     this.client.emit('startGame', { nickname }, (err) => {
       if (err) {
-        throw new Error(err);
+        return ack(err);
       }
+
+      this.client.once('gameReady', ({ id }) => {
+        this.client.disconnect();
+        this.client = io(`${this.url}/${id}`, ioOptions);
+        this.initConnectionListeners();
+
+        this.client.once('connect', () => {
+          this.client.emit('joinGame', { nickname }, data =>
+            this.emit('gameStart', data)
+          );
+
+          pipeChannels([
+            'getPlayer',
+            'getWorld',
+            'explore',
+            'refineryBuilt',
+            'refineryChange',
+          ], this.client, this);
+        });
+      });
+
+      ack();
     });
   }
 

@@ -46,6 +46,7 @@ export default function createGameServer(port, ready, lobbyPolicy) {
         const player = game.getPlayer(nickname);
 
         if (player) {
+          server.of(game.id).to(nickname).emit('forceLeave');
           socket.join(nickname);
 
           socket.on('getPlayer', () => player.emit('getPlayer', player.getData()));
@@ -61,6 +62,17 @@ export default function createGameServer(port, ready, lobbyPolicy) {
           ack(false);
         }
       });
+
+      socket.on('leaveGame', ({ nickname }, ack = () => {}) => {
+        const player = game.getPlayer(nickname);
+
+        if (player) {
+          socket.leave(nickname);
+          ack(true);
+        } else {
+          ack('Cannot leave game: No such player');
+        }
+      });
     });
   });
 
@@ -71,11 +83,12 @@ export default function createGameServer(port, ready, lobbyPolicy) {
     logger.info(`New socket connection to main namespace (${socket.id})`);
 
     socket.on('startGame', ({ nickname }, ack = () => {}) => {
-      if (nickname && nickname.length > 0) {
+      if (lobby.hasPlayer(nickname)) {
+        ack('Nickname is already in use');
+      } else if (nickname && nickname.length > 0) {
         logger.info(`${nickname} joins the lobby`);
-        lobby.registerPlayer(nickname, socket);
-
         ack(null);
+        lobby.registerPlayer(nickname, socket);
       } else {
         ack('Cannot start game: Not a valid nickname');
       }

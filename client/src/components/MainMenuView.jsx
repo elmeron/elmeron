@@ -48,28 +48,37 @@ class MainMenuView extends React.PureComponent {
     this.setState({ nickname: target.value });
   }
 
+  bounceMessage(message) {
+    const { bounceExplanationText } = this.state;
+
+    if (!bounceExplanationText) {
+      setTimeout(() =>
+        this.setState({ bounceExplanationText: false })
+      , 200); // match this with .less
+    }
+
+    this.setState({
+      nonvalidNickname: true,
+      bounceExplanationText: true,
+      explanation: message,
+    });
+  }
+
   onSubmit(event) {
     const { nickname } = this.state;
 
     event.preventDefault();
 
     if (nickname && validNickname.test(nickname)) {
-      this.props.startGame(nickname.trim());
-      this.props.showLobbyView();
-    } else {
-      const { bounceExplanationText } = this.state;
-
-      if (!bounceExplanationText) {
-        setTimeout(() =>
-          this.setState({ bounceExplanationText: false })
-        , 200); // match this with .less
-      }
-
-      this.setState({
-        nonvalidNickname: true,
-        bounceExplanationText: true,
-        explanation: MainMenuView.getRandomExplanation(),
+      this.props.startGame(nickname.trim(), (err) => {
+        if (err) {
+          this.bounceMessage(err);
+        } else {
+          this.props.showLobbyView();
+        }
       });
+    } else {
+      this.bounceMessage(MainMenuView.getRandomExplanation());
     }
   }
 

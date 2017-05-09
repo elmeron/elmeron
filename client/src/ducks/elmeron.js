@@ -103,8 +103,8 @@ export function initListeners() {
   };
 }
 
-export function startGame(nickname) {
-  elmeron.startGame(nickname);
+export function startGame(nickname, ack) {
+  elmeron.startGame(nickname, ack);
   return act();
 }
 
