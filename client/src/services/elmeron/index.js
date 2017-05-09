@@ -11,17 +11,37 @@ function pipeChannels(events, from, to) {
   );
 }
 
+const ioOptions = {
+  reconnectionAttempts: 10,
+  timeout: 5000,
+};
+
 export default class Elmeron extends EventEmitter {
-  constructor(url, ready) {
+  constructor(url) {
     super();
     this.url = url;
-    this.client = io(this.url);
-    this.client.once('connect', ready);
+    this.client = io(this.url, ioOptions);
+    this.initConnectionListeners();
+  }
+
+  initConnectionListeners() {
+    this.client.on('connect', () => this.emit('connect'));
+    this.client.on('error', error => this.emit('error', error));
+    this.client.on('connect_error', error => this.emit('error', error));
+    this.client.on('reconnect_error', error => this.emit('error', error));
+    this.client.on('connect_timeout', () => this.emit('connect_timeout'));
+    this.client.on('reconnect_failed', () => this.emit('connect_timeout'));
+    this.client.on('disconnect', () => this.emit('disconnect'));
+    this.client.on('reconnect', () => this.emit('connect'));
+    this.client.on('reconnecting', () => this.emit('connecting'));
   }
 
   startGame(nickname) {
     this.client.once('gameReady', ({ id }) => {
-      this.client = io(`${this.url}/${id}`);
+      this.client.disconnect();
+      this.client = io(`${this.url}/${id}`, ioOptions);
+      this.initConnectionListeners();
+
       this.client.once('connect', () => {
         this.client.emit('joinGame', { nickname }, data =>
           this.emit('gameStart', data)

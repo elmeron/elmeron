@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { showGameView as sgw } from '../ducks/ui.js';
-import './LobbyView.less';
+import FullFlexCover from './FullFlexCover.jsx';
 
 const WAIT_SECONDS = 3;
 
@@ -29,9 +29,9 @@ class LobbyCountdownView extends React.PureComponent {
     const { count } = this.state;
 
     return (
-      <div className="lobby">
+      <FullFlexCover>
         <h1>Game start in {count}...</h1>
-      </div>
+      </FullFlexCover>
     );
   }
 }

@@ -1,11 +1,12 @@
 import React from 'react';
-import './LobbyView.less';
+import FullFlexCover from './FullFlexCover.jsx';
+import LoadingCog from './LoadingCog.jsx';
 
 export default function LobbyView() {
   return (
-    <div className="lobby">
-      <i className="fa fa-cog fa-spin fa-3x"/>
+    <FullFlexCover>
+      <LoadingCog size="3x" />
       <h1>Waiting for game to start...</h1>
-    </div>
+    </FullFlexCover>
   );
 }

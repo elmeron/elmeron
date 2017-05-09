@@ -11,16 +11,24 @@ const url = process.env.GAMESERVER_URL || 'http://localhost:3000';
 let elmeron;
 
 const SET_CONNECTED = 'elmeron/SET_CONNECTED';
+const SET_CONNECTING = 'elmeron/SET_CONNECTING';
+const SET_ERROR = 'elmeron/SET_ERROR';
 
 const initialState = {
   connected: false,
+  connecting: true,
+  error: undefined,
 };
 
 export function initListeners() {
   return (dispatch, getState) => {
-    elmeron = new Elmeron(url, () =>
-      dispatch(act(SET_CONNECTED, true))
-    );
+    elmeron = new Elmeron(url);
+
+    elmeron.on('connect', () => dispatch(act(SET_CONNECTED, true)));
+    elmeron.on('disonnect', () => dispatch(act(SET_CONNECTED, false)));
+    elmeron.on('connecting', () => dispatch(act(SET_CONNECTING, true)));
+    elmeron.on('connect_timeout', () => dispatch(act(SET_CONNECTING, false)));
+    elmeron.on('error', error => dispatch(act(SET_ERROR, error)));
 
     elmeron.on('getWorld', (data) => {
       dispatch(world.setCurrentLocation(data.name));
@@ -134,11 +142,28 @@ export function pickGem(position) {
 }
 
 function handleSetConnected(state, value) {
-  return state.set('connected', value);
+  return state.set('connected', value).set('connecting', false);
+}
+
+function handleSetConnecting(state, value) {
+  let connectedState = state;
+
+  // only set connected to false if connecting will be set to true
+  if (value) {
+    connectedState = state.set('connected', false);
+  }
+
+  return connectedState.set('connecting', value);
+}
+
+function handleSetError(state, value) {
+  return state.set('error', value);
 }
 
 const handlers = {
   [SET_CONNECTED]: handleSetConnected,
+  [SET_CONNECTING]: handleSetConnecting,
+  [SET_ERROR]: handleSetError,
 };
 
 export default reducer(initialState, handlers);

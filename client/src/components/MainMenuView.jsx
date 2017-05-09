@@ -5,6 +5,7 @@ import { startGame as sg } from '../ducks/elmeron.js';
 import { showLobbyView as slw } from '../ducks/ui.js';
 import logo from '../../static/logo.png';
 import './MainMenuView.less';
+import LoadingCog from './LoadingCog.jsx';
 
 const validNickname = /^[a-z]{4,}$/i;
 const explanations = [
@@ -109,7 +110,7 @@ class MainMenuView extends React.PureComponent {
   }
 
   playButton() {
-    const { connected } = this.props;
+    const { connected, connecting } = this.props;
     const loadingClassName = connected ? '' : 'loading';
 
     return (
@@ -119,8 +120,11 @@ class MainMenuView extends React.PureComponent {
         disabled={!connected}
       >
         Play
-        {!connected &&
-          <i className="fa fa-cog fa-spin" />
+        {!connected && connecting &&
+          <LoadingCog />
+        }
+        {!connected && !connecting &&
+          <i className="fa fa-times" />
         }
       </button>
     );
@@ -144,6 +148,7 @@ class MainMenuView extends React.PureComponent {
 export default connect(
   (state) => ({
     connected: state.elmeron.get('connected'),
+    connecting: state.elmeron.get('connecting'),
   }),
   (dispatch) => ({
     startGame: bindActionCreators(sg, dispatch),
