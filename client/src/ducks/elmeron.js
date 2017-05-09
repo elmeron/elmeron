@@ -142,7 +142,10 @@ export function pickGem(position) {
 }
 
 function handleSetConnected(state, value) {
-  return state.set('connected', value).set('connecting', false);
+  return state
+    .set('connected', value)
+    .set('connecting', false)
+    .set('error', undefined);
 }
 
 function handleSetConnecting(state, value) {

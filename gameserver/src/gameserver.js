@@ -37,7 +37,7 @@ export default function createGameServer(port, ready, lobbyPolicy) {
     server.of(game.id).on('connection', (socket) => {
       logger.info(`(${socket.id}) connected to game (${game.id})`);
 
-      socket.on('disconnected', (reason) => {
+      socket.on('disconnect', (reason) => {
         logger.info(`(${socket.id}) disconnected from game (${game.id}): ${reason}`);
       });
 
