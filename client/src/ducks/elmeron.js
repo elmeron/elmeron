@@ -69,7 +69,7 @@ export function initListeners() {
       dispatch(player.setGemData(gems));
     });
 
-    elmeron.on('gameStart', ({ player: playerData, world: worldData }) => {
+    elmeron.on('gameStart', ({ player: playerData, world: worldData, elmeronFound }) => {
       dispatch(world.setCurrentLocation(worldData.name));
       dispatch(world.setParentLocation(worldData.parent));
       dispatch(world.setChildrenLocations(worldData.children));
@@ -82,12 +82,23 @@ export function initListeners() {
       dispatch(player.setFuelData(playerData.fuel));
       dispatch(player.setGemData(playerData.gems));
 
-      dispatch(ui.showLobbyCountdownView());
+      if (elmeronFound) {
+        const elmeronTile = getState().world.get('tiles').find(tile =>
+          tile.getIn(['resource', 'name']) === 'Elmeron'
+        );
+
+        elmeron.emit('elmeronFound', elmeronTile.toJS());
+      } else {
+        dispatch(ui.showLobbyCountdownView());
+      }
     });
 
     elmeron.on('elmeronFound', ({ q, r }) => {
-      dispatch(grid.focus({ q, r }));
-      dispatch(ui.showGameOverView());
+      elmeron.getWorld().then((data) => {
+        elmeron.emit('getWorld', data);
+        dispatch(grid.focus({ q, r }));
+        dispatch(ui.showGameOverView());
+      });
     });
 
     elmeron.on('explore', ({ tiles, worlds, isExplored }) => {

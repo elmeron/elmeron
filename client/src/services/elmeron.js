@@ -57,6 +57,7 @@ export default class Elmeron extends EventEmitter {
           'explore',
           'refineryBuilt',
           'refineryChange',
+          'elmeronFound',
         ], this.client, this);
 
         return this.rmi.joinGame(nickname)
@@ -88,11 +89,11 @@ export default class Elmeron extends EventEmitter {
   }
 
   getPlayer() {
-    this.client.emit('getPlayer');
+    return this.rmi.getPlayer();
   }
 
   getWorld() {
-    this.client.emit('getWorld');
+    return this.rmi.getWorld();
   }
 
   explore(position) {

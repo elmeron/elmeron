@@ -29,6 +29,16 @@ class GameAPI {
     this.game = game;
     this.namespace = namespace;
     this.socketMap = new Map();
+
+    this.game.on('elmeronFound', (data, space) => {
+      this.socketMap.forEach((nickname, id) => {
+        const player = this.game.getPlayer(nickname);
+        const socket = this.namespace.connected[id];
+
+        player.setLocation(space);
+        socket.emit('elmeronFound', data);
+      });
+    });
   }
 
   getPlayerBySocket(socket) {
@@ -73,7 +83,11 @@ class GameAPI {
         'refineryChange',
       ], player, socket);
 
-      return { player: player.getData(), world: player.location.getData() };
+      return {
+        player: player.getData(),
+        world: player.location.getData(),
+        elmeronFound: this.game.elmeronFound,
+      };
     }
 
     throw new Error(`Cannot join game: No such player '${nickname}'`);
