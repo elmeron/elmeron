@@ -73,6 +73,7 @@
     "webpack-dev-server": "2.4.2"
   },
   "dependencies": {
+    "bluebird": "3.5.0",
     "bootstrap": "3.3.7",
     "chance": "1.0.6",
     "express": "4.15.2",

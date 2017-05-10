@@ -6,6 +6,7 @@ winston.loggers.add('gameserver', {
   console: {
     colorize: true,
     timestamp: () => moment().format(),
+    level: 'debug',
   },
 
   file: {

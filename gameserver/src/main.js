@@ -9,7 +9,7 @@ let timer = 0;
 
 function lobbyPolicy(players, ready) {
   if (timer) {
-    clearInterval(timer);
+    clearTimeout(timer);
   }
 
   if (players.size === MAX_PLAYERS) {

@@ -30,7 +30,21 @@ export function setNickname(nickname) {
 export function initListeners() {
   return (dispatch, getState) => {
     elmeron = new Elmeron(url);
-    const { gameId, nickname } = LocalStorage.getData();
+
+    elmeron.once('connect', () => {
+      const { gameId, nickname } = LocalStorage.getData();
+
+      if (gameId && nickname) {
+        elmeron.hasGame(gameId).then((val) => {
+          if (val) {
+            elmeron.joinGame(gameId, nickname);
+            dispatch(setNickname(nickname));
+          } else {
+            LocalStorage.deleteData();
+          }
+        });
+      }
+    });
 
     elmeron.on('connect', () => dispatch(act(SET_CONNECTED, true)));
     elmeron.on('disconnect', () => dispatch(act(SET_CONNECTED, false)));
@@ -108,30 +122,16 @@ export function initListeners() {
         dispatch(player.setFuelData(fuel));
       }
     });
-
-    if (gameId && nickname) {
-      elmeron.hasGame(gameId, (val) => {
-        if (val) {
-          elmeron.joinGame(gameId, nickname);
-          dispatch(setNickname(nickname));
-        } else {
-          LocalStorage.deleteData();
-        }
-      });
-    }
   };
 }
 
-export function startGame(nickname, ack) {
-  elmeron.startGame(nickname, ack);
-  return act();
+export function startGame(nickname) {
+  return () => elmeron.startGame(nickname);
 }
 
-export function leaveGame(ack) {
-  return (dispatch, getState) => {
-    const nickname = getState().elmeron.get('nickname');
-    elmeron.leaveGame(nickname, ack);
-  };
+export function leaveGame() {
+  return () =>
+    elmeron.leaveGame();
 }
 
 export function zoomIn({ owner, q, r }) {

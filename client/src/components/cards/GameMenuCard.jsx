@@ -7,7 +7,7 @@ import Card from './Card.jsx';
 
 function GameMenuCard(props) {
   function onLeaveGame() {
-    props.leaveGame(() =>
+    props.leaveGame().then(() =>
       props.showMainMenuView()
     );
   }

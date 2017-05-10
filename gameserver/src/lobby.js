@@ -3,30 +3,48 @@ import { Map, List } from 'immutable';
 import Game from './elmeron/game.js';
 import Player from './elmeron/player.js';
 
-export default class Lobby extends EventEmitter {
-  constructor(lobbyPolicy) {
+class DefaultLobbyPolicy extends EventEmitter {
+  constructor(maxPlayers = 2, timeout = 5000) {
     super();
-    this.players = new Map();
-    this.policy = lobbyPolicy || Lobby.defaultPolicy;
+    this.timeout = timeout;
+    this.maxPlayers = maxPlayers;
+    this.timer = 0;
   }
 
-  registerPlayer(nickname, socket) {
-    this.players = this.players.set(nickname, socket);
-    this.policy(this.players, () => {
-      const game = this.createGame();
+  check(players) {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
 
+    if (players.size >= this.maxPlayers) {
+      process.nextTick(() => this.emit('gameReady'));
+    } else {
+      this.timer = setTimeout(() => this.emit('gameReady'), this.timeout);
+    }
+  }
+}
+
+export default class Lobby extends EventEmitter {
+  constructor(maxPlayers, timeout) {
+    super();
+    this.players = new Map();
+    this.policy = new DefaultLobbyPolicy(maxPlayers, timeout);
+
+    this.policy.on('gameReady', () => {
+      const game = this.createGame();
       this.notifyPlayersGameReady(game.id);
       this.emit('gameReady', game);
       this.players = this.players.clear();
     });
   }
 
-  hasPlayer(nickname) {
-    return this.players.has(nickname);
+  registerPlayer(nickname, socket) {
+    this.players = this.players.set(nickname, socket);
+    this.policy.check(this.players);
   }
 
-  static defaultPolicy(players, ready) {
-    return ready();
+  hasPlayer(nickname) {
+    return this.players.has(nickname);
   }
 
   createGame() {

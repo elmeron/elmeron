@@ -5,6 +5,7 @@
 import EventEmitter from 'events';
 import io from 'socket.io-client';
 import LocalStorage from './local-storage.js';
+import RMI from './rmi.js';
 
 function pipeChannels(events, from, to) {
   events.forEach(event =>
@@ -23,6 +24,7 @@ export default class Elmeron extends EventEmitter {
     this.url = url;
     this.client = io(this.url, ioOptions);
     this.initConnectionListeners();
+    this.rmi = RMI(this.client);
   }
 
   initConnectionListeners() {
@@ -37,57 +39,52 @@ export default class Elmeron extends EventEmitter {
     this.client.on('reconnecting', () => this.emit('connecting'));
   }
 
-  hasGame(id, ack) {
-    this.client.emit('hasGame', { id }, ack);
+  hasGame(id) {
+    return this.rmi.hasGame(id);
   }
 
   joinGame(gameId, nickname) {
     this.client.disconnect();
     this.client = io(`${this.url}/${gameId}`, ioOptions);
+    this.rmi = RMI(this.client);
     this.initConnectionListeners();
 
-    this.client.once('connect', () => {
-      this.client.emit('joinGame', { nickname }, data =>
-        this.emit('gameStart', data)
-      );
+    return this.rmi.once('connect')
+      .then(() => {
+        pipeChannels([
+          'getPlayer',
+          'getWorld',
+          'explore',
+          'refineryBuilt',
+          'refineryChange',
+        ], this.client, this);
 
-      pipeChannels([
-        'getPlayer',
-        'getWorld',
-        'explore',
-        'refineryBuilt',
-        'refineryChange',
-      ], this.client, this);
-    });
-  }
-
-  startGame(nickname, ack) {
-    this.client.emit('startGame', { nickname }, (err) => {
-      if (err) {
-        return ack(err);
-      }
-
-      this.client.once('gameReady', ({ id }) => {
-        LocalStorage.saveData(id, nickname);
-        this.joinGame(id, nickname);
+        return this.rmi.joinGame(nickname)
+          .then(data =>
+            this.emit('gameStart', data)
+          );
       });
-
-      return ack();
-    });
   }
 
-  leaveGame(nickname, ack) {
-    this.client.emit('leaveGame', { nickname }, (err) => {
-      if (err) {
-        throw new Error(err);
-      }
+  startGame(nickname) {
+    return this.rmi.startGame(nickname)
+      .then(() => this.rmi.once('gameReady'))
+      .then(({ id }) => {
+        LocalStorage.saveData(id, nickname);
+        return this.joinGame(id, nickname);
+      });
+  }
 
-      LocalStorage.deleteData();
-      this.client.disconnect();
-      this.client = io(this.url, ioOptions);
-      this.initConnectionListeners();
-      ack();
-    });
+  leaveGame() {
+    this.rmi.leaveGame();
+
+    LocalStorage.deleteData();
+    this.client.disconnect();
+    this.client = io(this.url, ioOptions);
+    this.rmi = RMI(this.client);
+    this.initConnectionListeners();
+
+    return this.rmi.once('connect');
   }
 
   getPlayer() {
@@ -99,23 +96,23 @@ export default class Elmeron extends EventEmitter {
   }
 
   explore(position) {
-    this.client.emit('explore', { position });
+    this.rmi.explore(position);
   }
 
   zoomIn(childName) {
-    this.client.emit('zoomIn', { childName });
+    this.rmi.zoomIn(childName);
   }
 
   zoomOut() {
-    this.client.emit('zoomOut');
+    this.rmi.zoomOut();
   }
 
   buildRefinery(positions) {
-    this.client.emit('buildRefinery', ({ positions }));
+    this.rmi.buildRefinery(positions);
   }
 
   pickGem(position) {
-    this.client.emit('pickGem', ({ position }));
+    this.rmi.pickGem(position);
   }
 }
 

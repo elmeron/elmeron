@@ -9,6 +9,15 @@ class LocalStorage {
     };
     this.storage = typeof Storage === 'undefined' ?
       mockStorage : localStorage;
+
+    // make sure storage can be set
+    try {
+      this.storage.setItem('dummy', '');
+      this.storage.removeItem('dummy');
+    } catch (e) {
+      // storage could not be set, use mock
+      this.storage = mockStorage;
+    }
   }
 
   saveData(gameId, nickname) {
