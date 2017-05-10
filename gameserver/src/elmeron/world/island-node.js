@@ -94,6 +94,7 @@ export default class IslandNode extends WorldNode {
     });
 
     this.grid.addTiles(refinery.grid.tiles);
+    this.emit('refineryChange', { tiles: refinery.grid.getTiles() });
 
     return {
       tiles: refinery.grid.getTiles(),

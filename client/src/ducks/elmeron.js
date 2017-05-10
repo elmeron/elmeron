@@ -130,8 +130,10 @@ export function startGame(nickname) {
 }
 
 export function leaveGame() {
-  return () =>
-    elmeron.leaveGame();
+  return dispatch =>
+    elmeron.leaveGame().then(() =>
+      dispatch(player.resetData())
+    );
 }
 
 export function zoomIn({ owner, q, r }) {
