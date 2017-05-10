@@ -26,7 +26,7 @@ export default class IslandNode extends WorldNode {
   }
 
   static calculateLikelihood(grid) {
-    const likelihood = 10 / Math.sqrt(grid.size);
+    const likelihood = (10 * Math.sqrt(grid.size)) / grid.size;
 
     return chance.bool({ likelihood });
   }
