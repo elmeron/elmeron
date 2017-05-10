@@ -30,7 +30,7 @@ export default class Gem extends React.PureComponent {
 
   onClick(e) {
     e.persist();
-    this.animate('ease-out', '', () => this.props.onClick(e.target));
+    this.animate('ease-out', 'gone', () => this.props.onClick(e.target));
   }
 
   render() {
