@@ -2,6 +2,7 @@ import Chance from 'chance';
 import EventEmitter from 'events';
 import { Map } from 'immutable';
 import SpaceNode from './world/space-node.js';
+import Market from './market.js';
 
 export default class Game extends EventEmitter {
   constructor(players, onElmeronFound) {
@@ -12,6 +13,9 @@ export default class Game extends EventEmitter {
       result.set(player.nickname, player),
     new Map());
 
+    this.market = new Market(this.players);
+    this.market.on('marketUpdate', data => this.emit('marketUpdate', data));
+
     this.world = new SpaceNode(onElmeronFound);
     this.world.on('elmeronFound', (data) => {
       this.elmeronFound = true;
@@ -20,7 +24,10 @@ export default class Game extends EventEmitter {
 
     const startingIsland = this.world.children.first().children.first();
 
-    this.players.forEach(player => player.setLocation(startingIsland));
+    this.players.forEach(player => {
+      player.setLocation(startingIsland);
+      player.market = this.market;
+    });
   }
 
   getPlayer(nickname) {

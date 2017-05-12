@@ -7,6 +7,7 @@ import * as player from './player.js';
 import * as ui from './ui.js';
 import * as world from './world.js';
 import * as refinery from './refinery.js';
+import * as market from './market.js';
 
 const url = process.env.GAMESERVER_URL || 'http://localhost:3000';
 let elmeron;
@@ -69,7 +70,12 @@ export function initListeners() {
       dispatch(player.setGemData(gems));
     });
 
-    elmeron.on('gameStart', ({ player: playerData, world: worldData, elmeronFound }) => {
+    elmeron.on('gameStart', ({
+      player: playerData,
+      world: worldData,
+      elmeronFound,
+      market: marketData,
+    }) => {
       dispatch(world.setCurrentLocation(worldData.name));
       dispatch(world.setParentLocation(worldData.parent));
       dispatch(world.setChildrenLocations(worldData.children));
@@ -81,6 +87,8 @@ export function initListeners() {
 
       dispatch(player.setFuelData(playerData.fuel));
       dispatch(player.setGemData(playerData.gems));
+
+      dispatch(market.updateMarket(marketData));
 
       dispatch(card.closeCard());
 
@@ -134,6 +142,10 @@ export function initListeners() {
       if (fuel) {
         dispatch(player.setFuelData(fuel));
       }
+    });
+
+    elmeron.on('marketUpdate', (gems) => {
+      dispatch(market.updateMarket(gems));
     });
   };
 }

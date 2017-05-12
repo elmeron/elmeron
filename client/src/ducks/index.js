@@ -5,3 +5,4 @@ export { default as card } from './card.js';
 export { default as player } from './player.js';
 export { default as refinery } from './refinery.js';
 export { default as elmeron } from './elmeron.js';
+export { default as market } from './market.js';

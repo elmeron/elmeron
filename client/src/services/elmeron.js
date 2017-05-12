@@ -58,6 +58,7 @@ export default class Elmeron extends EventEmitter {
           'refineryBuilt',
           'refineryChange',
           'elmeronFound',
+          'marketUpdate',
         ], this.client, this);
 
         return this.rmi.joinGame(nickname)

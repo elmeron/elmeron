@@ -39,6 +39,14 @@ class GameAPI {
         socket.emit('elmeronFound', data);
       });
     });
+
+    this.game.on('marketUpdate', data =>
+      this.socketMap.forEach((nickname, id) => {
+        const socket = this.namespace.connected[id];
+
+        socket.emit('marketUpdate', data);
+      })
+    );
   }
 
   getPlayerBySocket(socket) {
@@ -88,6 +96,7 @@ class GameAPI {
         player: player.getData(),
         world: player.location.getData(),
         elmeronFound: this.game.elmeronFound,
+        market: this.game.market.getData(),
       };
     }
 

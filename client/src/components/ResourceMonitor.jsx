@@ -44,7 +44,7 @@ class ResourceMonitor extends React.PureComponent {
       <div className="resource-monitor">
         <p onClick={() => this.onGemClick()} className="gem-monitor">
           <GemIcon refs={(r) => { this.gemIcon = r; }} />
-          {this.props.gems}
+          {this.props.gems} / {this.props.marketGems}
         </p>
         <p onClick={() => this.onFuelClick()} className="fuel-monitor">
           <FuelIcon refs={(r) => { this.fuelIcon = r; }} />
@@ -69,6 +69,7 @@ export default connect(
     deltaStart: state.player.getIn(['fuel', 'deltaStart']),
     offset: state.player.getIn(['fuel', 'offset']),
     gems: countGems(state.player.get('gems')),
+    marketGems: countGems(state.market),
   }),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),

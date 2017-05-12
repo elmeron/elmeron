@@ -11,20 +11,28 @@ function GemCard(props) {
 
   return (
     <Card>
-      {props.gems.map(({ amount, resource }, index) =>
+      {props.gems.map(({ resource, globalAmount, localAmount }, index) =>
         <p key={index}>
           <GemIcon color={resource.toLowerCase()} />
-          {amount}
+          {localAmount} / {globalAmount}
         </p>
       )}
     </Card>
   );
 }
 
+function mapLocalGemsToGlobal(local, global) {
+  return global.reduce((result, globalAmount, resource) => {
+    const localAmount = local.get(resource) || 0;
+    return result.push({ resource, globalAmount, localAmount })
+  }, new List());
+}
+
 export default connect(
   (state) => ({
-    gems: state.player.get('gems').reduce((result, amount, resource) =>
-      result.push({ amount, resource })
-    , new List()),
+    gems: mapLocalGemsToGlobal(
+      state.player.get('gems'),
+      state.market
+    ),
   })
 )(GemCard);

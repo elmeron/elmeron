@@ -15,11 +15,18 @@ export default class Player extends EventEmitter {
     this.location = undefined;
     this.fuel = new Fuel(Date.now(), timeUnit);
     this.gems = new GemInventory();
+    this.market = undefined;
 
     this.fuel.addAmount(100);
 
     this.onExplore = this.onExplore.bind(this);
     this.onRefineryChange = this.onRefineryChange.bind(this);
+  }
+
+  notifyMarket() {
+    if (this.market) {
+      this.market.notifyUpdate();
+    }
   }
 
   zoomIn(childName) {
@@ -90,6 +97,7 @@ export default class Player extends EventEmitter {
       const { fuel, gems } = this.getData();
 
       this.emit('refineryBuilt', { tiles, fuel, gems });
+      this.notifyMarket();
     }
   }
 
@@ -126,6 +134,19 @@ export default class Player extends EventEmitter {
 
     this.gems.add(pickedResource, 1);
     this.emit('getPlayer', this.getData());
+    this.notifyMarket();
+  }
+
+  sellGem({ name }, amount, fuel) {
+    const gem = new Resource(name);
+
+    if (this.gems.count(gem) >= amount) {
+      this.gems.add(gem, -amount);
+      this.fuel.addAmount(fuel);
+      this.emit('getPlayer', this.getData());
+    } else {
+      throw new Error('Cannot sell gem: Not enough gems in inventory');
+    }
   }
 
   getData() {
