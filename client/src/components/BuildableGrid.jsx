@@ -98,10 +98,11 @@ function getBuildableTiles(selectedTiles, allTiles, nickname) {
   return getSurroundingTiles(selectedTiles, allTiles, ({ resource, owner, player }) => {
     const { name } = resource;
     const type = owner && owner.type;
+    const differentNickname = player && player !== nickname;
     return  name === 'Unexplored' ||
             name === 'Ocean' ||
             type === 'Refinery' ||
-            player !== nickname;
+            differentNickname;
   });
 }
 
