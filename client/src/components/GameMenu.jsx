@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { openCard as open } from '../ducks/card.js';
 import './GameMenu.less';
 import GameMenuCard from './cards/GameMenuCard.jsx';
+import PlayerIcon from './PlayerIcon.jsx';
 
 function GameMenu(props) {
   function onClick({ target }) {
@@ -12,13 +13,18 @@ function GameMenu(props) {
 
   return (
     <div className="game-menu">
-      <p onClick={onClick}>MENU</p>
+      <p onClick={onClick}>
+        <PlayerIcon />
+        {props.nickname}
+      </p>
     </div>
   );
 }
 
 export default connect(
-  undefined,
+  (state) => ({
+    nickname: state.elmeron.get('nickname'),
+  }),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),
   })

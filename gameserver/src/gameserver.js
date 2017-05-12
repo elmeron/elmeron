@@ -72,6 +72,7 @@ class GameAPI {
 
       socket.on('disconnect', (reason) => {
         logger.info(`${nickname} disconnected (${reason})`);
+        player.removeAllListeners();
         this.socketMap = this.socketMap.delete(socket.id);
       });
 
@@ -141,9 +142,9 @@ class GameAPI {
 }
 
 class MainAPI {
-  constructor(server, lobbyPolicy) {
+  constructor(server, maxPlayers, timeout) {
     this.server = server;
-    this.lobby = new Lobby(lobbyPolicy);
+    this.lobby = new Lobby(maxPlayers, timeout);
 
     this.lobby.on('gameReady', (game) => {
       const gameApi = new GameAPI(game, this.server.of(game.id));
@@ -185,82 +186,11 @@ class MainAPI {
 }
 
 
-export default function createGameServer(port, ready, lobbyPolicy) {
+export default function createGameServer(port, ready, maxPlayers, timeout) {
   const server = new Server(port);
-  const lobby = new Lobby(lobbyPolicy);
-  const mainApi = new MainAPI(server, lobbyPolicy);
+  const mainApi = new MainAPI(server, maxPlayers, timeout);
 
   server.once('listening', ready);
-
-  /**
-   * Game specific connections.
-   */
-  lobby.on('gameReady', (game) => {
-    logger.info(`Game ${game.id} ready to play`);
-
-    server.of(game.id).on('connection', (socket) => {
-      logger.info(`(${socket.id}) connected to game (${game.id})`);
-
-      socket.on('disconnect', (reason) => {
-        logger.info(`(${socket.id}) disconnected from game (${game.id}): ${reason}`);
-      });
-
-      // pipe socket events to the player object
-      socket.on('joinGame', ({ nickname }, ack = () => {}) => {
-        const player = game.getPlayer(nickname);
-
-        if (player) {
-          logger.info(`${nickname} joined game (${game.id})`);
-
-          pipeChannels([
-            'getPlayer',
-            'getWorld',
-            'explore',
-            'refineryBuilt',
-            'refineryChange',
-          ], player, socket);
-
-          socket.on('getPlayer', () => player.emit('getPlayer', wrapException(player.getData)));
-          socket.on('getWorld', () => player.emit('getWorld', player.location.getData()));
-          socket.on('explore', ({ position }) => player.explore(position));
-          socket.on('zoomIn', ({ childName }) => player.zoomIn(childName));
-          socket.on('zoomOut', () => player.zoomOut());
-          socket.on('buildRefinery', ({ positions }) => player.buildRefinery(positions));
-          socket.on('pickGem', ({ position }) => player.pickGem(position));
-
-          ack({ player: player.getData(), world: player.location.getData() });
-        } else {
-          ack(false);
-        }
-      });
-
-      socket.on('leaveGame', ({ nickname }, ack = () => {}) => {
-        const player = game.getPlayer(nickname);
-
-        if (player) {
-          logger.info(`${nickname} left game (${game.id})`);
-
-          player.hasLeftGame = true;
-          player.removeAllListeners();
-          ack(null);
-
-          if (game.allPlayersHasLeft()) {
-            const namespace = server.of(game.id);
-
-            logger.info(`All players has left game ${(game.id)}: deconstructing it`);
-            fromJS(namespace.connected).forEach(sock => sock.disconnect());
-            namespace.removeAllListeners();
-          }
-        } else {
-          ack('Cannot leave game: No such player');
-        }
-      });
-    });
-  });
-
-  /**
-   * Non-game specific connections.
-   */
   server.on('connection', (socket) => {
     logger.info(`New socket connection to main namespace (${socket.id})`);
 

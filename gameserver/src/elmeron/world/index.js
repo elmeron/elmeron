@@ -59,10 +59,10 @@ export default class WorldNode extends EventEmitter {
     };
   }
 
-  explore(position) {
+  explore(position, player) {
     if (this.grid.isUnexploredTile(position)) {
       const neighbours = this.grid.getDefinedNeighbours(position);
-      const { grid, worlds } = this.terraformer.makeTiles(position, this, neighbours);
+      const { grid, worlds } = this.terraformer.makeTiles(position, this, neighbours, player);
       const addedResources = grid.filter(tile =>
         !tile.resource.equals(new Unexplored()) && !tile.resource.equals(new Ocean())
       );

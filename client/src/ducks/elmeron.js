@@ -82,6 +82,8 @@ export function initListeners() {
       dispatch(player.setFuelData(playerData.fuel));
       dispatch(player.setGemData(playerData.gems));
 
+      dispatch(card.closeCard());
+
       if (elmeronFound) {
         const elmeronTile = getState().world.get('tiles').find(tile =>
           tile.getIn(['resource', 'name']) === 'Elmeron'

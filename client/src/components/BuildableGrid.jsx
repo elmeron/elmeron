@@ -94,11 +94,14 @@ function filterOutUnexplored(tiles) {
   return tiles.filterNot(tile => tile.getIn(['resource', 'name']) === 'Unexplored');
 }
 
-function getBuildableTiles(selectedTiles, allTiles) {
-  return getSurroundingTiles(selectedTiles, allTiles, ({ resource, owner }) => {
+function getBuildableTiles(selectedTiles, allTiles, nickname) {
+  return getSurroundingTiles(selectedTiles, allTiles, ({ resource, owner, player }) => {
     const { name } = resource;
     const type = owner && owner.type;
-    return name === 'Unexplored' || name === 'Ocean' || type === 'Refinery';
+    return  name === 'Unexplored' ||
+            name === 'Ocean' ||
+            type === 'Refinery' ||
+            player !== nickname;
   });
 }
 
@@ -108,7 +111,8 @@ export default connect(
     selectedTiles: state.refinery.get('selectedTiles'),
     buildableTiles: getBuildableTiles(
                       state.refinery.get('selectedTiles'),
-                      state.world.get('tiles').toIndexedSeq().toJS()),
+                      state.world.get('tiles').toIndexedSeq().toJS(),
+                      state.elmeron.get('nickname')),
   }),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),

@@ -4,7 +4,7 @@ import Game from './elmeron/game.js';
 import Player from './elmeron/player.js';
 
 class DefaultLobbyPolicy extends EventEmitter {
-  constructor(maxPlayers = 2, timeout = 5000) {
+  constructor(maxPlayers = 10, timeout = 5000) {
     super();
     this.timeout = timeout;
     this.maxPlayers = maxPlayers;

@@ -8,7 +8,7 @@ export default class IslandTileHandler extends TerraformHandler {
     return true;
   }
 
-  static makeTiles(position, node) {
+  static makeTiles(position, node, otherNeighbours, player) {
     const neighbours = node.grid.getDefinedNeighbours(position, [
       new Ocean(),
       new Unexplored(),
@@ -17,7 +17,7 @@ export default class IslandTileHandler extends TerraformHandler {
     const pickedResource = redistribution.pick();
 
     pickedResource.generateStartAmount();
-    const tile = new Tile(position, pickedResource);
+    const tile = new Tile(position, pickedResource, undefined, player);
     const returnGrid = node.grid.populateUndefinedNeighbours(position, new Unexplored());
 
     returnGrid.addTile(tile);

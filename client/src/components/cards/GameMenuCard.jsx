@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { leaveGame as lg } from '../../ducks/elmeron.js';
 import { showMainMenuView as smmv } from '../../ducks/ui.js';
 import Card from './Card.jsx';
+import PlayerIcon from '../PlayerIcon.jsx';
 
 function GameMenuCard(props) {
   function onLeaveGame() {
@@ -21,7 +22,9 @@ function GameMenuCard(props) {
 }
 
 export default connect(
-  undefined,
+  (state) => ({
+    nickname: state.elmeron.get('nickname'),
+  }),
   (dispatch) => ({
     leaveGame: bindActionCreators(lg, dispatch),
     showMainMenuView: bindActionCreators(smmv, dispatch),

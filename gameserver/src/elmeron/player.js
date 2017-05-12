@@ -45,7 +45,7 @@ export default class Player extends EventEmitter {
     const fuelAmount = this.getFuelAmount();
 
     if (fuelAmount >= explorationCost) {
-      const explorationResult = this.location.explore(new Position(position.q, position.r));
+      const explorationResult = this.location.explore(new Position(position.q, position.r), this);
 
       this.addFuelAmount(-explorationCost);
       this.emit('getPlayer', this.getData());
