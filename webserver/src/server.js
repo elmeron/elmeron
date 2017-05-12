@@ -1,11 +1,13 @@
 import express from 'express';
 import path from 'path';
 import morgan from 'morgan';
+import helmet from 'helmet';
 import logger from './logger';
 
 const server = express();
 const port = process.env.PORT || 3000;
 
+server.use(helmet());
 server.use(morgan('dev', {
   stream: logger.stream,
 }));
