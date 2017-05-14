@@ -2,6 +2,7 @@ import { Set } from 'immutable';
 import {
   calculateRefineryProduction,
   calculateRefineryCost,
+  calculateFuelPrice,
 } from '../../refinery.js';
 
 const availableTypes = new Set(['Forest', 'Rock', 'Sand']);
@@ -63,6 +64,10 @@ export default class Refinery {
   static calculateDelta(grid) {
     const tiles = grid.tiles.filter(tile => tile.resource.deltaAmount.offset > 0);
 
+    return calculateRefineryProduction(tiles, availableTypes);
+  }
+
+  static calculateProductionValue(tiles) {
     return calculateRefineryProduction(tiles, availableTypes);
   }
 

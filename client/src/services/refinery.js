@@ -88,3 +88,17 @@ export function calculateRefineryCost(tiles, availableTypes) {
 export function calculateRefineryProduction(tiles, availableTypes) {
   return parseFloat((tiles.size * calculateRefineryConstant(tiles, availableTypes)).toFixed(1));
 }
+
+export function calculateFuelPrice(refineryProduction, required, available) {
+  if (available > 0) {
+    if (required === 0) {
+      return 0;
+    }
+
+    const price = Math.round((required * required * refineryProduction) / available);
+
+    return Math.max(price, 1);
+  }
+
+  throw new Error('Cannot calculate fuel price: No gems available globally');
+}

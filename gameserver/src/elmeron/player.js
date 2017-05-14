@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import { Set } from 'immutable';
 import Fuel from './world/resources/fuel.js';
 import GemInventory from './gem-inventory.js';
 import Position from './world/position.js';
@@ -21,6 +22,10 @@ export default class Player extends EventEmitter {
 
     this.onExplore = this.onExplore.bind(this);
     this.onRefineryChange = this.onRefineryChange.bind(this);
+  }
+
+  equals(player) {
+    return this.nickname === player.nickname;
   }
 
   notifyMarket() {
@@ -70,13 +75,13 @@ export default class Player extends EventEmitter {
 
   buildRefinery(positions) {
     const gemCost = Refinery.getPrice(positions);
-    const canAfford = gemCost.every((amount, resourceName) => {
+    const canAffordWithGems = gemCost.every((amount, resourceName) => {
       const resource = new Resource(resourceName);
 
       return this.gems.count(resource) >= amount;
     });
 
-    if (canAfford) {
+    if (canAffordWithGems) {
       const { tiles, delta } = this.location.buildRefinery(
         positions,
         (deltaChange) => {
@@ -98,6 +103,19 @@ export default class Player extends EventEmitter {
 
       this.emit('refineryBuilt', { tiles, fuel, gems });
       this.notifyMarket();
+    } else {
+      const fuelPrice = gemCost.reduce((result, amount, resourceName) => {
+        const gem = new Resource(resourceName);
+        const localAmount = this.gems.count(gem);
+        const required = Math.max(amount - localAmount, 0);
+        const productionValue = Refinery.calculateProductionValue(new Set(positions));
+
+        return result + this.market.calculateFuelPrice(gem, required, productionValue);
+      }, 0);
+
+      console.log('this refinery will cost', fuelPrice, 'fuel');
+
+      throw new Error('Cannot build refinery: Not enough gems');
     }
   }
 
