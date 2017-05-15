@@ -1,5 +1,7 @@
+import assert from 'assert';
 import EventEmitter from 'events';
 import { fromJS, Map, List } from 'immutable';
+import logger from '../logger.js';
 
 class RegisterStack {
   constructor() {
@@ -10,7 +12,8 @@ class RegisterStack {
     const last = this.register.last();
 
     if (last && last.player.equals(player) && last.gem.equals(gem)) {
-      this.register = this.register.set(0, { player, gem, amount: amount + first.amount });
+      const lastIndex = this.register.size - 1;
+      this.register = this.register.set(lastIndex, { player, gem, amount: amount + last.amount });
     } else {
       this.register = this.register.push({ player, gem, amount });
     }
@@ -38,9 +41,11 @@ class RegisterStack {
     }
   }
 
-  count(gem) {
-    return this.register.reduce((result, { gem: g, amount }) => {
-      if (g.equals(gem)) {
+  count(gem, player) {
+    return this.register.reduce((result, { gem: g, amount, player: p }) => {
+      const correctPlayer = player ? p.equals(player) : true;
+
+      if (g.equals(gem) && correctPlayer) {
         return result + amount;
       }
 
@@ -72,17 +77,11 @@ export default class Market extends EventEmitter {
     return this.register.count(gem);
   }
 
-  calculateFuelPrice(gem, amount, refineryProductionValue) {
+  calculateFuelPrice(gem, refineryProductionValue) {
     const globalAmount = this.getGlobalAmount(gem);
 
     if (globalAmount > 0) {
-      const price = (amount * amount * refineryProductionValue) / globalAmount;
-
-      if (price < 1) {
-        return 1;
-      }
-
-      return Math.round(price);
+      return refineryProductionValue / globalAmount;
     }
 
     throw new Error(`Cannot calculate fuel price: There are no ${gem.name} on the market`);
@@ -104,7 +103,25 @@ export default class Market extends EventEmitter {
     this.register.pop(player, gem, amount);
   }
 
-  buyGemFromPlayers(player, gem, amount) {
+  buyGems(player, gem, amount, pricePerGem) {
+    assert(pricePerGem > 0, 'Price per gem must be set > 0');
 
+    if (this.getGlobalAmount(gem) >= amount) {
+      const { player: seller, amount: sellerAmount } = this.register.findFirst(player, gem);
+      const smallestAmount = Math.min(amount, sellerAmount);
+      const fuelPrice = Math.round(amount * pricePerGem);
+
+      player.buyGems(gem, smallestAmount, fuelPrice);
+      seller.sellGems(gem, smallestAmount, fuelPrice);
+      this.registerDecrease(seller, gem, smallestAmount);
+
+      logger.debug(`${player.nickname} bought ${smallestAmount} ${gem.name} for ${fuelPrice} fuel from ${seller.nickname}`);
+
+      if (amount > sellerAmount) {
+        this.buyGems(player, gem, amount - sellerAmount, pricePerGem);
+      }
+    } else {
+      throw new Error('Cannot buy gems from market: Not enough gems available');
+    }
   }
 }

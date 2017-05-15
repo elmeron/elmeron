@@ -95,7 +95,7 @@ export function calculateFuelPrice(refineryProduction, required, available) {
       return 0;
     }
 
-    const price = Math.round((required * required * refineryProduction) / available);
+    const price = Math.round((required * refineryProduction) / available);
 
     return Math.max(price, 1);
   }

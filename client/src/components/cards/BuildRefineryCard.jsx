@@ -93,7 +93,7 @@ function BuildRefineryCard(props) {
 
   const cannotAfford = costMap.some((amount, resource) =>
     !props.globalGems.get(resource) || props.globalGems.get(resource) < amount
-  ) || availableFuel < fuelPrice;
+  ); // || availableFuel < fuelPrice;
 
   return (
     <Card>

@@ -11,19 +11,6 @@ function pipeChannels(events, from, to) {
   );
 }
 
-function wrapException(...args) {
-  const handler = args[0];
-  const handlerArgs = args.slice(1, args.length);
-  try {
-    return handler(...handlerArgs);
-  } catch (err) {
-    return {
-      type: err.name,
-      message: err.message,
-    };
-  }
-}
-
 class GameAPI {
   constructor(game, namespace) {
     this.game = game;
