@@ -98,6 +98,7 @@ export default class Player extends EventEmitter {
         const resource = new Resource(resourceName);
 
         this.gems.add(resource, -amount);
+        this.market.registerDecrease(this, resource, amount);
       });
 
       this.addFuelDelta(delta);
@@ -175,6 +176,7 @@ export default class Player extends EventEmitter {
   sellGems(gem, amount, fuel) {
     if (this.gems.count(gem) >= amount) {
       this.gems.add(gem, -amount);
+      this.market.registerDecrease(this, gem, amount);
       this.fuel.addAmount(fuel);
       this.emit('getPlayer', this.getData());
     } else {
@@ -186,6 +188,7 @@ export default class Player extends EventEmitter {
     if (this.getFuelAmount() >= fuel) {
       this.fuel.addAmount(-fuel);
       this.gems.add(gem, amount);
+      this.market.registerIncrease(this, gem, amount);
       this.emit('getPlayer', this.getData());
     } else {
       throw new Error('Cannot buy gem: Not enough fuel');

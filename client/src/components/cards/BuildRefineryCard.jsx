@@ -79,7 +79,7 @@ function BuildRefineryCard(props) {
   const fuelPrice = costMap.reduce((result, amount, resource) => {
     const localAmount = props.localGems.get(resource) || 0;
     const required = Math.max(amount - localAmount, 0);
-    const available = props.globalGems.get(resource) - localAmount;
+    const available = props.globalGems.get(resource);
     const price = available > 0 ?
       calculateFuelPrice(production, required, available) :
       0;
@@ -93,7 +93,7 @@ function BuildRefineryCard(props) {
 
   const cannotAfford = costMap.some((amount, resource) =>
     !props.globalGems.get(resource) || props.globalGems.get(resource) < amount
-  ); // || availableFuel < fuelPrice;
+  ) || availableFuel < fuelPrice;
 
   return (
     <Card>

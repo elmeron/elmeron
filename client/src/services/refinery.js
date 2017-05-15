@@ -91,7 +91,7 @@ export function calculateRefineryProduction(tiles, availableTypes) {
 
 export function calculateFuelPrice(refineryProduction, required, available) {
   if (available > 0) {
-    if (required === 0) {
+    if (required === 0) {
       return 0;
     }
 

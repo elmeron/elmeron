@@ -30,7 +30,7 @@ test('global amount', () => {
   const market = new Market();
 
   expect(market.getGlobalAmount(forest)).toEqual(0);
-  market.registerIncrease(undefined, forest, 10);
+  market.registerIncrease(new Player('Player'), forest, 10);
   expect(market.getGlobalAmount(forest)).toEqual(10);
 });
 
@@ -39,7 +39,7 @@ test('calculate fuel price', () => {
   const market = new Market();
 
   expect(() => market.calculateFuelPrice(forest)).toThrow();
-  market.registerIncrease(undefined, forest, 10);
+  market.registerIncrease(new Player('Player'), forest, 10);
   expect(market.calculateFuelPrice(forest, 1)).toEqual(0.1);
 });
 

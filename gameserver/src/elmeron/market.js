@@ -109,11 +109,10 @@ export default class Market extends EventEmitter {
     if (this.getGlobalAmount(gem) >= amount) {
       const { player: seller, amount: sellerAmount } = this.register.findFirst(player, gem);
       const smallestAmount = Math.min(amount, sellerAmount);
-      const fuelPrice = Math.round(amount * pricePerGem);
+      const fuelPrice = Math.round(smallestAmount * pricePerGem);
 
       player.buyGems(gem, smallestAmount, fuelPrice);
       seller.sellGems(gem, smallestAmount, fuelPrice);
-      this.registerDecrease(seller, gem, smallestAmount);
 
       logger.debug(`${player.nickname} bought ${smallestAmount} ${gem.name} for ${fuelPrice} fuel from ${seller.nickname}`);
 
