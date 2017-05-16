@@ -15,6 +15,7 @@ RUN npm run webserver:build
 
 RUN mkdir -p /elmeron/client
 COPY ./webpack.config.babel.js /elmeron
+COPY ./webpack.common.babel.js /elmeron
 COPY ./webpack.prod.babel.js /elmeron
 COPY ./client /elmeron/client
 RUN GAMESERVER_URL=$GAMESERVER_URL npm run client:build
