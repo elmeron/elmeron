@@ -13,6 +13,7 @@ export default class Player extends EventEmitter {
   constructor(nickname) {
     super();
     this.nickname = nickname;
+    this.online = false;
     this.hasLeftGame = false;
     this.location = undefined;
     this.fuel = new Fuel(Date.now(), timeUnit);

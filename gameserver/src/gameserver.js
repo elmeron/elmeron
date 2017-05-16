@@ -64,11 +64,14 @@ class GameAPI {
 
       this.kickOutSocket(nickname);
       this.socketMap = this.socketMap.set(socket.id, nickname);
+      player.online = true;
 
       socket.on('disconnect', (reason) => {
         logger.info(`${nickname} disconnected (${reason})`);
         player.removeAllListeners();
+        player.online = false;
         this.socketMap = this.socketMap.delete(socket.id);
+        this.game.notifyPlayersStatus();
       });
 
       pipeChannels([
@@ -79,11 +82,16 @@ class GameAPI {
         'refineryChange',
       ], player, socket);
 
+      pipeChannels(['playersStatusUpdate'], this.game, socket);
+
+      this.game.notifyPlayersStatus();
+
       return {
         player: player.getData(),
         world: player.location.getData(),
         elmeronFound: this.game.elmeronFound,
         market: this.game.market.getData(),
+        players: this.game.getPlayersStatus(),
       };
     }
 
@@ -96,7 +104,10 @@ class GameAPI {
     logger.info(`${player.nickname} left game (${this.game.id})`);
 
     player.hasLeftGame = true;
+    player.online = false;
     player.removeAllListeners();
+
+    this.game.notifyPlayersStatus();
 
     if (this.game.allPlayersHasLeft()) {
       const connectedSockets = fromJS(this.namespace.connected);
@@ -134,6 +145,10 @@ class GameAPI {
 
   pickGem(position, socket) {
     this.getPlayerBySocket(socket).pickGem(position);
+  }
+
+  getPlayersStatus() {
+    return this.game.getPlayersStatus();
   }
 }
 

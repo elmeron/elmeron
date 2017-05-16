@@ -1,3 +1,4 @@
+import { fromJS } from 'immutable';
 import { act, reducer } from './util.js';
 import Elmeron from '../services/elmeron.js';
 import LocalStorage from '../services/local-storage.js';
@@ -16,12 +17,14 @@ const SET_NICKNAME = 'elmeron/SET_NICKNAME';
 const SET_CONNECTED = 'elmeron/SET_CONNECTED';
 const SET_CONNECTING = 'elmeron/SET_CONNECTING';
 const SET_ERROR = 'elmeron/SET_ERROR';
+const SET_PLAYERS = 'elmeron/SET_PLAYERS';
 
 const initialState = {
   nickname: undefined,
   connected: false,
   connecting: true,
   error: undefined,
+  players: [],
 };
 
 export function setNickname(nickname) {
@@ -75,6 +78,7 @@ export function initListeners() {
       world: worldData,
       elmeronFound,
       market: marketData,
+      players,
     }) => {
       dispatch(world.setCurrentLocation(worldData.name));
       dispatch(world.setParentLocation(worldData.parent));
@@ -89,6 +93,7 @@ export function initListeners() {
       dispatch(player.setGemData(playerData.gems));
 
       dispatch(market.updateMarket(marketData));
+      dispatch(act(SET_PLAYERS, players));
 
       dispatch(card.closeCard());
 
@@ -146,6 +151,10 @@ export function initListeners() {
 
     elmeron.on('marketUpdate', (gems) => {
       dispatch(market.updateMarket(gems));
+    });
+
+    elmeron.on('playersStatusUpdate', (players) => {
+      dispatch(act(SET_PLAYERS, players));
     });
   };
 }
@@ -220,11 +229,16 @@ function handleSetError(state, value) {
   return state.set('error', value);
 }
 
+function handleSetPlayers(state, players) {
+  return state.set('players', fromJS(players));
+}
+
 const handlers = {
   [SET_NICKNAME]: handleSetNickname,
   [SET_CONNECTED]: handleSetConnected,
   [SET_CONNECTING]: handleSetConnecting,
   [SET_ERROR]: handleSetError,
+  [SET_PLAYERS]: handleSetPlayers,
 };
 
 export default reducer(initialState, handlers);

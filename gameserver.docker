@@ -1,17 +1,14 @@
-FROM hypriot/rpi-node:7.4
+FROM elmeron/modules
 
 ARG PORT=3000
 
-RUN mkdir /elmeron
 WORKDIR /elmeron
 
-COPY ./package.json /elmeron
-RUN npm install
-
-# Using the same refinery functions as in the client.
+# Using the same refinery functions as in the client
 RUN mkdir -p /elmeron/client/src/services
 COPY ./client/src/services/refinery.js /elmeron/client/src/services
 
+# Build gameserver
 RUN mkdir -p /elmeron/gameserver
 COPY ./gameserver /elmeron/gameserver
 RUN npm run gameserver:build

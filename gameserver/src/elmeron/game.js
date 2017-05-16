@@ -1,6 +1,6 @@
 import Chance from 'chance';
 import EventEmitter from 'events';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import SpaceNode from './world/space-node.js';
 import Market from './market.js';
 
@@ -34,7 +34,21 @@ export default class Game extends EventEmitter {
     return this.players.get(nickname);
   }
 
+  getPlayersStatus() {
+    return this.players.reduce((result, player) =>
+      result.push(new Map({
+        nickname: player.nickname,
+        online: player.online,
+        hasLeft: player.hasLeftGame,
+      }))
+    , new List()).toJS();
+  }
+
   allPlayersHasLeft() {
     return this.players.every(player => player.hasLeftGame);
+  }
+
+  notifyPlayersStatus() {
+    this.emit('playersStatusUpdate', this.getPlayersStatus());
   }
 }

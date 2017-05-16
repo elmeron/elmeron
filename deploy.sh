@@ -35,6 +35,12 @@ function restart_container {
   fi
 }
 
+# Modules image
+print "Building modules image..."
+docker build \
+  -t elmeron/modules \
+  -f modules.docker .
+
 # Webserver image
 print "Building Webserver image..."
 docker build \

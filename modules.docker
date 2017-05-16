@@ -1,0 +1,7 @@
+FROM hypriot/rpi-node:7.4
+
+RUN mkdir /elmeron
+WORKDIR /elmeron
+
+COPY ./package.json /elmeron
+RUN npm install

@@ -1,10 +1,14 @@
 import Player from '../player.js';
 import Resource from '../world/resource.js';
+import Market from '../market.js';
 
 test('sell gem', (done) => {
   const forest = new Resource('Forest');
   const player = new Player('Player');
   const productionValue = 1;
+  const market = new Market();
+
+  player.market = market;
 
   player.on('getPlayer', ({ gems }) => {
     expect(player.gems.count(forest)).toEqual(0);
@@ -16,13 +20,17 @@ test('sell gem', (done) => {
   });
 
   player.gems.add(forest, 10);
+  market.registerIncrease(player, forest, 10);
   player.sellGems(forest, 10, 10);
 });
 
-test('sell gem', (done) => {
+test('buy gem', (done) => {
   const forest = new Resource('Forest');
   const player = new Player('Player');
   const productionValue = 1;
+  const market = new Market();
+
+  player.market = market;
 
   player.on('getPlayer', ({ gems }) => {
     expect(player.gems.count(forest)).toEqual(10);
