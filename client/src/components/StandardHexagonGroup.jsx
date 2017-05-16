@@ -10,23 +10,15 @@ export default function StandardHexagonGroup(props) {
     <g ref={props.refs}>
       {
         props.hexagons.map((hex) => {
-          const { q, r, owner } = hex;
+          const { q, r, owner, resource } = hex;
           const center = hexToPixel(q, r);
-          let type;
-
-          if (owner && owner.type) {
-            type = { name: owner.type }; // have to do this because of reasons
-          }
-          else {
-            type = hex.resource;
-          }
 
           return (
             <HexagonComponent
               key={`${q}-${r}`}
               center={center}
               size={props.size}
-              type={type}
+              type={resource}
               customClassName={props.customClassName}
               onClick={elem => onHexClick(elem, hex)}
             />

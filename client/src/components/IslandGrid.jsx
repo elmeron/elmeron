@@ -19,6 +19,10 @@ function IslandGrid(props) {
     props.openCard(anchor, <IslandTileCard tile={hex} anchor={anchor} />);
   }
 
+  function onRefineryClick(anchor, hex) {
+    props.openCard(anchor, <RefineryCard tile={hex} />);
+  }
+
   function onGemClick(elem, tile) {
     props.closeCard();
     props.pickGem(tile);
@@ -26,9 +30,16 @@ function IslandGrid(props) {
 
   const { size } = config.tiles;
   const gemSize = size - (size * 0.6);
+  const refinerySize = size - (size * 0.2);
 
   return (
     <ExplorableHexagonGrid onHexClick={onHexClick}>
+      <StandardHexagonGroup
+        hexagons={props.refineries}
+        size={refinerySize}
+        customClassName="refinery"
+        onHexClick={onRefineryClick}
+      />
       <StandardHexagonGroup
         hexagons={props.gems}
         size={gemSize}
@@ -39,12 +50,17 @@ function IslandGrid(props) {
   );
 }
 
+function getRefineries(tiles) {
+  return tiles.filter(tile => tile.has('owner') && tile.getIn(['owner', 'type']) === 'Refinery').toIndexedSeq().toJS();
+}
+
 export default connect(
   (state) => ({
     tiles: state.world.get('tiles').toIndexedSeq().toJS(),
     gems: state.world.get('tiles').filter(tile =>
       tile.getIn(['resource', 'canPickGem'])
     ).toIndexedSeq().toJS(),
+    refineries: getRefineries(state.world.get('tiles')),
   }),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),
