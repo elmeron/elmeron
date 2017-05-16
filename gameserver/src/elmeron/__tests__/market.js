@@ -38,9 +38,8 @@ test('calculate fuel price', () => {
   const forest = new Resource('Forest');
   const market = new Market();
 
-  expect(() => market.calculateFuelPrice(forest)).toThrow();
   market.registerIncrease(new Player('Player'), forest, 10);
-  expect(market.calculateFuelPrice(forest, 1)).toEqual(0.1);
+  expect(market.calculateFuelPrice(forest, 1)).toEqual(1);
 });
 
 test('register increase', () => {
@@ -117,7 +116,7 @@ test('buy gems from other players', () => {
 
   expect(market.getGlobalAmount(forest)).toEqual(15);
   expect(seller.gems.count(forest)).toEqual(0);
-  expect(seller.getFuelAmount()).toEqual(100);
+  expect(seller.getFuelAmount()).toEqual(110);
   expect(buyer.gems.count(forest)).toEqual(15);
-  expect(buyer.getFuelAmount()).toEqual(100);
+  expect(buyer.getFuelAmount()).toEqual(90);
 });

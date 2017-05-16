@@ -78,13 +78,7 @@ export default class Market extends EventEmitter {
   }
 
   calculateFuelPrice(gem, refineryProductionValue) {
-    const globalAmount = this.getGlobalAmount(gem);
-
-    if (globalAmount > 0) {
-      return refineryProductionValue / globalAmount;
-    }
-
-    throw new Error(`Cannot calculate fuel price: There are no ${gem.name} on the market`);
+    return refineryProductionValue;
   }
 
   getData() {
