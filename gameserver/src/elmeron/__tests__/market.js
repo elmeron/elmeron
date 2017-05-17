@@ -104,6 +104,9 @@ test('buy gems from other players', () => {
   buyer.market = market;
   seller.market = market;
 
+  buyer.initStartResources();
+  seller.initStartResources();
+
   seller.gems.add(forest, 10);
   buyer.gems.add(forest, 5);
 
@@ -114,9 +117,9 @@ test('buy gems from other players', () => {
   const pricePerGem = market.calculateFuelPrice(forest, refineryProductionValue);
   market.buyGems(buyer, forest, 10, pricePerGem);
 
-  expect(market.getGlobalAmount(forest)).toEqual(15);
-  expect(seller.gems.count(forest)).toEqual(0);
+  expect(market.getGlobalAmount(forest)).toEqual(19);
+  expect(seller.gems.count(forest)).toEqual(2);
   expect(seller.getFuelAmount()).toEqual(110);
-  expect(buyer.gems.count(forest)).toEqual(15);
+  expect(buyer.gems.count(forest)).toEqual(17);
   expect(buyer.getFuelAmount()).toEqual(90);
 });

@@ -22,11 +22,14 @@ export default class IslandNode extends WorldNode {
     startResource.generateStartAmount();
     this.grid.addTile(new Tile(origo, startResource));
     this.grid.addTiles(neighbours.tiles);
+
+    this.gemGenerationInterval = 60000;
+    this.nextGeneration = Date.now() + this.gemGenerationInterval;
     this.generateGems();
   }
 
   static calculateLikelihood(grid) {
-    const likelihood = (10 * Math.sqrt(grid.size)) / grid.size;
+    const likelihood = (50 * Math.sqrt(grid.size)) / grid.size;
 
     return chance.bool({ likelihood });
   }
@@ -63,7 +66,10 @@ export default class IslandNode extends WorldNode {
 
         this.emit('explore', { tiles: returnGrid.getTiles() });
       }
-    }, 1000);
+
+      this.nextGeneration = Date.now() + this.gemGenerationInterval;
+      this.emit('generateGems', this.nextGeneration);
+    }, this.gemGenerationInterval);
   }
 
   pickGem(position, now) {
@@ -104,5 +110,12 @@ export default class IslandNode extends WorldNode {
 
   checkIfExplored() {
     return this.grid.filter(tile => tile.resource.equals(new Unexplored())).size === 0;
+  }
+
+  getData() {
+    const data = super.getData();
+    data.nextGeneration = this.nextGeneration;
+
+    return data;
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import time from '../services/time.js';
 import { getFuelAmount } from '../services/utils.js';
 import { openCard as open } from '../ducks/card.js';
 import './ResourceMonitor.less';
@@ -25,10 +26,12 @@ class ResourceMonitor extends React.PureComponent {
   }
 
   tick() {
-    const { delta, deltaStart, offset } = this.props;
-    const now = Date.now();
+    const { delta, deltaStart, offset, nextGemGeneration } = this.props;
+    const now = time.now();
 
-    this.setState({ amount: getFuelAmount(delta, deltaStart, offset, timeUnit, now) });
+    this.setState({
+      amount: getFuelAmount(delta, deltaStart, offset, timeUnit, now),
+    });
   }
 
   onFuelClick() {
@@ -69,6 +72,7 @@ export default connect(
     deltaStart: state.player.getIn(['fuel', 'deltaStart']),
     offset: state.player.getIn(['fuel', 'offset']),
     gems: countGems(state.player.get('gems')),
+    nextGemGeneration: state.world.get('nextGemGeneration'),
   }),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),

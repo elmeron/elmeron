@@ -55,6 +55,7 @@ export default class Elmeron extends EventEmitter {
           'getPlayer',
           'getWorld',
           'explore',
+          'generateGems',
           'refineryBuilt',
           'refineryChange',
           'elmeronFound',

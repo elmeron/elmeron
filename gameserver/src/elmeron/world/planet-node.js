@@ -7,7 +7,7 @@ import Ocean from './resources/ocean.js';
 
 export default class PlanetNode extends WorldNode {
   constructor(deck, name) {
-    super(deck, PlanetTerraformer, name, 50);
+    super(deck, PlanetTerraformer, name, 100);
 
     const origo = new Position(0, 0);
     this.grid.addTile(new Tile(origo, new Unexplored()));

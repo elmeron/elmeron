@@ -2,6 +2,7 @@ import { fromJS } from 'immutable';
 import { act, reducer } from './util.js';
 import Elmeron from '../services/elmeron.js';
 import LocalStorage from '../services/local-storage.js';
+import time from '../services/time.js';
 import * as card from './card.js';
 import * as grid from './grid.js';
 import * as player from './player.js';
@@ -65,6 +66,8 @@ export function initListeners() {
       dispatch(world.setTiles(data.tiles));
       dispatch(grid.setExtremes(data.tiles));
       dispatch(world.setIsExplored(data.isExplored));
+      dispatch(world.setNextGemGeneration(data.nextGeneration));
+
       dispatch(card.closeCard());
     });
 
@@ -79,7 +82,10 @@ export function initListeners() {
       elmeronFound,
       market: marketData,
       players,
+      timestamp,
     }) => {
+      elmeron.emit('getWorld', worldData);
+      /*
       dispatch(world.setCurrentLocation(worldData.name));
       dispatch(world.setParentLocation(worldData.parent));
       dispatch(world.setChildrenLocations(worldData.children));
@@ -88,12 +94,15 @@ export function initListeners() {
       dispatch(world.setTiles(worldData.tiles));
       dispatch(grid.setExtremes(worldData.tiles));
       dispatch(world.setIsExplored(worldData.isExplored));
+      */
 
       dispatch(player.setFuelData(playerData.fuel));
       dispatch(player.setGemData(playerData.gems));
 
       dispatch(market.updateMarket(marketData));
       dispatch(act(SET_PLAYERS, players));
+
+      time.setOffset(timestamp - time.now());
 
       dispatch(card.closeCard());
 
@@ -155,6 +164,10 @@ export function initListeners() {
 
     elmeron.on('playersStatusUpdate', (players) => {
       dispatch(act(SET_PLAYERS, players));
+    });
+
+    elmeron.on('generateGems', (data) => {
+      dispatch(world.setNextGemGeneration(data));
     });
   };
 }

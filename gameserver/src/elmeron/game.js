@@ -15,7 +15,7 @@ export default class Game extends EventEmitter {
       result.set(player.nickname, player),
     new Map());
 
-    this.market = new Market(this.players);
+    this.market = new Market();
     this.market.on('marketUpdate', data => this.emit('marketUpdate', data));
 
     this.world = new SpaceNode(onElmeronFound);
@@ -44,6 +44,7 @@ export default class Game extends EventEmitter {
     this.players.toList().forEach((player, index) => {
       player.setLocation(islands.get(index));
       player.market = this.market;
+      player.initStartResources();
 
       logger.info(`${player.nickname} -> ${player.location.name}`);
     });

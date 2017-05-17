@@ -6,6 +6,9 @@ import GemInventory from './gem-inventory.js';
 import Position from './world/position.js';
 import Refinery from './world/refinery.js';
 import Resource from './world/resource.js';
+import Forest from './world/resources/forest.js';
+import Rock from './world/resources/rock.js';
+import Sand from './world/resources/sand.js';
 
 const timeUnit = 1000;
 
@@ -20,10 +23,20 @@ export default class Player extends EventEmitter {
     this.gems = new GemInventory();
     this.market = undefined;
 
-    this.fuel.addAmount(100);
-
     this.onExplore = this.onExplore.bind(this);
     this.onRefineryChange = this.onRefineryChange.bind(this);
+    this.onGenerateGems = this.onGenerateGems.bind(this);
+  }
+
+  initStartResources() {
+    this.fuel.addAmount(100);
+    this.gems.add(new Forest(), 2);
+    this.gems.add(new Rock(), 2);
+    this.gems.add(new Sand(), 2);
+
+    this.market.registerIncrease(this, new Forest(), 2);
+    this.market.registerIncrease(this, new Rock(), 2);
+    this.market.registerIncrease(this, new Sand(), 2);
   }
 
   equals(player) {
@@ -73,6 +86,10 @@ export default class Player extends EventEmitter {
 
   onRefineryChange(data) {
     this.emit('refineryChange', data);
+  }
+
+  onGenerateGems(data) {
+    this.emit('generateGems', data);
   }
 
   buildRefinery(positions) {
@@ -141,11 +158,13 @@ export default class Player extends EventEmitter {
     if (this.location) {
       this.location.removeListener('explore', this.onExplore);
       this.location.removeListener('refineryChange', this.onRefineryChange);
+      this.location.removeListener('generateGems', this.onGenerateGems);
     }
 
     this.location = location;
     this.location.on('explore', this.onExplore);
     this.location.on('refineryChange', this.onRefineryChange);
+    this.location.on('generateGems', this.onGenerateGems);
   }
 
   getFuelAmount() {

@@ -12,7 +12,7 @@ test('sell gem', (done) => {
 
   player.on('getPlayer', ({ gems }) => {
     expect(player.gems.count(forest)).toEqual(0);
-    expect(player.fuel.getAmount(Date.now())).toEqual(110); // starting value is 100
+    expect(player.fuel.getAmount(Date.now())).toEqual(10);
     expect(gems).toEqual({
       Forest: 0,
     });
@@ -31,9 +31,10 @@ test('buy gem', (done) => {
   const market = new Market();
 
   player.market = market;
+  player.initStartResources();
 
   player.on('getPlayer', ({ gems }) => {
-    expect(player.gems.count(forest)).toEqual(10);
+    expect(player.gems.count(forest)).toEqual(12);
     expect(player.fuel.getAmount(Date.now())).toEqual(90); // starting value is 100
     done();
   });

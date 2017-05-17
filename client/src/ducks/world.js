@@ -10,6 +10,7 @@ const ADD_CHILDREN_LOCATIONS = 'world/ADD_CHILDREN_LOCATIONS';
 const SET_NODE_TYPE = 'world/SET_NODE_TYPE';
 const SET_EXPLORATION_COST = 'world/SET_EXPLORATION_COST';
 const SET_IS_EXPLORED = 'world/SET_IS_EXPLORED';
+const SET_NEXT_GEM_GENERATION = 'world/SET_NEXT_GEM_GENERATION';
 
 const initialState = {
   tiles: {},
@@ -21,6 +22,7 @@ const initialState = {
   nodeType: undefined,
   explorationCost: 0,
   isExplored: false,
+  nextGemGeneration: 0,
 };
 
 export function setTiles(tiles) {
@@ -57,6 +59,10 @@ export function setExplorationCost(cost) {
 
 export function setIsExplored(value = false) {
   return act(SET_IS_EXPLORED, value);
+}
+
+export function setNextGemGeneration(timestamp) {
+  return act(SET_NEXT_GEM_GENERATION, timestamp);
 }
 
 function handleSetTiles(state, tiles) {
@@ -110,6 +116,10 @@ function handleSetIsExplored(state, value) {
   return state.set('isExplored', value);
 }
 
+function handleSetNextGemGeneration(state, timestamp) {
+  return state.set('nextGemGeneration', timestamp);
+}
+
 const handlers = {
   [SET_TILES]: handleSetTiles,
   [MERGE_TILES]: handleMergeTiles,
@@ -120,6 +130,7 @@ const handlers = {
   [SET_NODE_TYPE]: handleSetNodeType,
   [SET_EXPLORATION_COST]: handleSetExplorationCost,
   [SET_IS_EXPLORED]: handleSetIsExplored,
+  [SET_NEXT_GEM_GENERATION]: handleSetNextGemGeneration,
 };
 
 export default reducer(initialState, handlers);

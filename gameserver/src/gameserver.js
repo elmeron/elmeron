@@ -78,6 +78,7 @@ class GameAPI {
         'getPlayer',
         'getWorld',
         'explore',
+        'generateGems',
         'refineryBuilt',
         'refineryChange',
       ], player, socket);
@@ -92,6 +93,7 @@ class GameAPI {
         elmeronFound: this.game.elmeronFound,
         market: this.game.market.getData(),
         players: this.game.getPlayersStatus(),
+        timestamp: Date.now(),
       };
     }
 

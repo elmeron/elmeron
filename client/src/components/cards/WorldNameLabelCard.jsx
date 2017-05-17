@@ -13,7 +13,7 @@ function WorldNameLabelCard(props) {
 
   const { nodeType, explorationCost } = props;
   const isSpace = nodeType && nodeType.startsWith('Space');
-  const canZoomOut = !isSpace && props.hasExploredFirstIsland;
+  const canZoomOut = true; // !isSpace && props.hasExploredFirstIsland;
 
   return (
     <Card customClassName="world-name-label-card">
