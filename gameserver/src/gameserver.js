@@ -133,10 +133,12 @@ class GameAPI {
 
   zoomIn(childName, socket) {
     this.getPlayerBySocket(socket).zoomIn(childName);
+    this.game.notifyPlayersStatus();
   }
 
   zoomOut(socket) {
     this.getPlayerBySocket(socket).zoomOut();
+    this.game.notifyPlayersStatus();
   }
 
   buildRefinery(positions, socket) {

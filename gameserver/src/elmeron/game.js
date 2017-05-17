@@ -3,6 +3,8 @@ import EventEmitter from 'events';
 import { Map, List } from 'immutable';
 import SpaceNode from './world/space-node.js';
 import Market from './market.js';
+import ElmeronResource from './world/resources/elmeron.js';
+import logger from '../logger.js';
 
 export default class Game extends EventEmitter {
   constructor(players, onElmeronFound) {
@@ -22,11 +24,28 @@ export default class Game extends EventEmitter {
       this.emit('elmeronFound', data, this.world);
     });
 
-    const startingIsland = this.world.children.first().children.first();
+    // populate the world with one island per player
+    const populated = this.world.populate(this.players.size);
 
-    this.players.forEach(player => {
-      player.setLocation(startingIsland);
+    logger.info(`Populated ${populated} islands`);
+
+    // add Elmeron to the deck
+    this.world.deck.distribution.set(new ElmeronResource(), 1);
+    this.world.deck.size += 1;
+
+    // make a list of all islands and shuffle it
+    const islands = this.world.children.reduce((result, planet) =>
+      result.concat(planet.children.reduce((r, island) =>
+        r.push(island)
+      , new List()))
+    , new List()).sortBy(Math.random);
+
+    // put all players on a unique island
+    this.players.toList().forEach((player, index) => {
+      player.setLocation(islands.get(index));
       player.market = this.market;
+
+      logger.info(`${player.nickname} -> ${player.location.name}`);
     });
   }
 
@@ -38,6 +57,7 @@ export default class Game extends EventEmitter {
     return this.players.reduce((result, player) =>
       result.push(new Map({
         nickname: player.nickname,
+        location: player.location.name,
         online: player.online,
         hasLeft: player.hasLeftGame,
       }))

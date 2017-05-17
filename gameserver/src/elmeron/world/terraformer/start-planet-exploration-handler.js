@@ -11,6 +11,12 @@ const chance = new Chance();
 
 export default class StartPlanetExplorationHandler extends TerraformHandler {
   static canHandle(position, node, neighbours) {
+    const onlyVoid = neighbours.every(tile => tile.resource.equals(new Void()));
+
+    if (onlyVoid) {
+      return false;
+    }
+
     const hasNoTiles = neighbours.every(tile =>
       tile.resource.equals(new Void()) || tile.resource.equals(new Unexplored())
     ) && node.deck.size > 0;
@@ -21,10 +27,11 @@ export default class StartPlanetExplorationHandler extends TerraformHandler {
   static makeTiles(position, node) {
     const returnGrid = new TileHexagonGrid();
     const resource = new UnknownResource();
-    const tempWorld = new WorldNode();
+    const name = WorldNode.generateWorldName('Planet');
+
     const unexploredNeighbours = node.grid.populateUndefinedNeighbours(position, new Unexplored());
 
-    returnGrid.addTile(new Tile(position, resource, tempWorld.name));
+    returnGrid.addTile(new Tile(position, resource, name));
     returnGrid.addTiles(unexploredNeighbours.tiles);
 
     return {

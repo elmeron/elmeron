@@ -9,12 +9,10 @@ import TileHexagonGrid from './tile-hexagon-grid.js';
 import Unexplored from './resources/unexplored.js';
 import Ocean from './resources/ocean.js';
 
-function generateWorldName() {
-  return new Chance().word();
-}
+const chance = new Chance();
 
 export default class WorldNode extends EventEmitter {
-  constructor(deck, terraformer, name = generateWorldName(), explorationCost = 0) {
+  constructor(deck, terraformer, name, explorationCost = 0) {
     super();
     this.deck = deck;
     this.terraformer = terraformer;
@@ -23,6 +21,13 @@ export default class WorldNode extends EventEmitter {
     this.children = new Map();
     this.explorationCost = explorationCost;
     this.isExplored = false;
+  }
+
+  static generateWorldName(prefix) {
+    const randomWord = chance.word();
+    const proper = randomWord.charAt(0).toUpperCase() + randomWord.substr(1);
+
+    return `${proper} ${prefix}`;
   }
 
   getNodeType() {
@@ -95,7 +100,8 @@ export default class WorldNode extends EventEmitter {
     const unexploredTiles = this.grid.filter(tile => tile.resource.equals(new Unexplored()));
 
     if (unexploredTiles.size > 0) {
-      const didExplore = unexploredTiles.tiles.some(({ position }) => {
+      const randomOrder = unexploredTiles.tiles.toList().sortBy(Math.random);
+      const didExplore = randomOrder.some(({ position }) => {
         const neighbours = this.grid.getDefinedNeighbours(position);
 
         if (shouldExplore(neighbours)) {

@@ -17,4 +17,8 @@ export default class Position {
       r: this.r,
     };
   }
+
+  equals(position) {
+    return position.q === this.q && position.r === this.r;
+  }
 }

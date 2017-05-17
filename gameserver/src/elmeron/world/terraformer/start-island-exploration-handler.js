@@ -20,15 +20,14 @@ export default class StartIslandExplorationHandler extends TerraformHandler {
   static makeTiles(position, node) {
     const returnGrid = new TileHexagonGrid();
     const pickedResource = node.deck.pick();
-    const tempWorld = new WorldNode();
+    const name = WorldNode.generateWorldName('Island');
     const unexploredNeighbours = node.grid.populateUndefinedNeighbours(position, new Unexplored());
 
-    returnGrid.addTile(new Tile(position, pickedResource, tempWorld.name));
+    returnGrid.addTile(new Tile(position, pickedResource, name));
     returnGrid.addTiles(unexploredNeighbours.tiles);
 
     return {
       grid: returnGrid,
-      world: tempWorld,
     };
   }
 }

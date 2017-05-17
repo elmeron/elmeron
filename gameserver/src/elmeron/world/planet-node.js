@@ -9,23 +9,8 @@ export default class PlanetNode extends WorldNode {
   constructor(deck, name) {
     super(deck, PlanetTerraformer, name, 50);
 
-    const startResource = deck.pick();
     const origo = new Position(0, 0);
-    const unexploredNeighbours = this.grid.populateUndefinedNeighbours(origo, new Unexplored());
-    const tempIsland = new WorldNode();
-
-    this.setChild(tempIsland);
-    this.deck.remove(startResource);
-    this.grid.addTile(new Tile(origo, startResource, tempIsland.name));
-    this.grid.addTiles(unexploredNeighbours.tiles);
-
-    this.exploreWhile((neighbours) => {
-      const islandNeighbours = neighbours.filter(tile =>
-        !tile.resource.equals(new Unexplored()) && !tile.resource.equals(new Ocean())
-      );
-
-      return islandNeighbours.size > 0;
-    });
+    this.grid.addTile(new Tile(origo, new Unexplored()));
   }
 
   checkIfExplored() {
@@ -36,5 +21,29 @@ export default class PlanetNode extends WorldNode {
       );
 
     return this.deck.size === 0 && allIslandsAreExplored;
+  }
+
+  populate(maxIslands) {
+    this.exploreWhile((neighbours) => {
+      if (this.children.size < maxIslands) {
+        const unknownIslands = this.grid
+          .filterOut([new Unexplored(), new Ocean()])
+          .filter(tile => !this.children.has(tile.owner));
+
+        if (unknownIslands.size > 0) {
+          return neighbours.some(neighbour =>
+            unknownIslands.some(island =>
+              neighbour.position.equals(island.position)
+            )
+          );
+        }
+
+        return this.deck.size > 0;
+      }
+
+      return false;
+    });
+
+    return this.children.size;
   }
 }

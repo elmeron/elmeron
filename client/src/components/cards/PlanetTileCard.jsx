@@ -2,15 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { zoomIn as zi } from '../../ducks/elmeron.js';
-import { properCase } from '../../services/utils.js';
 import Card from './Card.jsx';
 
 function IslandCard(owner, onZoom) {
-  const name = properCase(owner);
-
   return (
     <div>
-      <h1>{`${name} Island`}</h1>
+      <h1>{owner}</h1>
       <button onClick={onZoom}>ZOOM IN</button>
     </div>
   );

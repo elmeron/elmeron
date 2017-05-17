@@ -8,14 +8,15 @@ import Card from './Card.jsx';
 import PlayerIcon from '../PlayerIcon.jsx';
 
 function PlayerListItem(player) {
-  const { nickname, online } = player;
+  const { nickname, online, location } = player;
   const className = online ?
-    'online' : 'offline fa-user-times'
+    'online' : 'offline fa-user-times';
+  const locationInfo = online ? `(${location})` : '';
 
   return (
     <p key={nickname}>
       <PlayerIcon customClassName={className} />
-      {nickname}
+      {nickname} {locationInfo}
     </p>
   );
 }

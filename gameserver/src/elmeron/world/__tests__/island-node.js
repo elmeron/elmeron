@@ -13,7 +13,6 @@ test('constructor', () => {
   const island = new IslandNode(deck);
 
   expect(island.grid.size).toBe(7);
-  expect(island.name).toBeDefined();
 });
 
 test('explore until', () => {
