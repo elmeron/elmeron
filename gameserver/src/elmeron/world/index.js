@@ -84,6 +84,10 @@ export default class WorldNode extends EventEmitter {
       this.grid.addTiles(grid.tiles);
       this.isExplored = this.checkIfExplored();
 
+      if (this.isExplored && player && !player.hasExploredFirstIsland) {
+        player.hasExploredFirstIsland = true;
+      }
+
       return {
         tiles: grid.getTiles(),
         worlds: addedWorlds,

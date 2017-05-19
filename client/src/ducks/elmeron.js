@@ -71,9 +71,10 @@ export function initListeners() {
       dispatch(card.closeCard());
     });
 
-    elmeron.on('getPlayer', ({ fuel, gems }) => {
+    elmeron.on('getPlayer', ({ fuel, gems, hasExploredFirstIsland }) => {
       dispatch(player.setFuelData(fuel));
       dispatch(player.setGemData(gems));
+      dispatch(player.setHasExploredFirstIsland(hasExploredFirstIsland));
     });
 
     elmeron.on('gameStart', ({
@@ -85,19 +86,7 @@ export function initListeners() {
       timestamp,
     }) => {
       elmeron.emit('getWorld', worldData);
-      /*
-      dispatch(world.setCurrentLocation(worldData.name));
-      dispatch(world.setParentLocation(worldData.parent));
-      dispatch(world.setChildrenLocations(worldData.children));
-      dispatch(world.setNodeType(worldData.nodeType));
-      dispatch(world.setExplorationCost(worldData.explorationCost));
-      dispatch(world.setTiles(worldData.tiles));
-      dispatch(grid.setExtremes(worldData.tiles));
-      dispatch(world.setIsExplored(worldData.isExplored));
-      */
-
-      dispatch(player.setFuelData(playerData.fuel));
-      dispatch(player.setGemData(playerData.gems));
+      elmeron.emit('getPlayer', playerData);
 
       dispatch(market.updateMarket(marketData));
       dispatch(act(SET_PLAYERS, players));

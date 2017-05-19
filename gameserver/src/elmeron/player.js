@@ -22,6 +22,7 @@ export default class Player extends EventEmitter {
     this.fuel = new Fuel(Date.now(), timeUnit);
     this.gems = new GemInventory();
     this.market = undefined;
+    this.hasExploredFirstIsland = false;
 
     this.onExplore = this.onExplore.bind(this);
     this.onRefineryChange = this.onRefineryChange.bind(this);
@@ -219,6 +220,7 @@ export default class Player extends EventEmitter {
     return {
       fuel: this.fuel.getData(),
       gems: this.gems.getData(),
+      hasExploredFirstIsland: this.hasExploredFirstIsland,
     };
   }
 }

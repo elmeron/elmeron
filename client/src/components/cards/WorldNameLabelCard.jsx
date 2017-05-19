@@ -13,7 +13,8 @@ function WorldNameLabelCard(props) {
 
   const { nodeType, explorationCost } = props;
   const isSpace = nodeType && nodeType.startsWith('Space');
-  const canZoomOut = true; // !isSpace && props.hasExploredFirstIsland;
+  const hasExplored = props.hasExploredFirstIsland || props.isExplored;
+  const canZoomOut = !isSpace && hasExplored;
 
   return (
     <Card customClassName="world-name-label-card">
@@ -35,6 +36,7 @@ export default connect(
   (state) => ({
     nodeType: state.world.get('nodeType'),
     explorationCost: state.world.get('explorationCost'),
+    isExplored: state.world.get('isExplored'),
     hasExploredFirstIsland: state.player.get('hasExploredFirstIsland'),
   }),
   (dispatch) => ({

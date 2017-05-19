@@ -24,8 +24,8 @@ export function setGemData(data) {
   return act(SET_GEM_DATA, data);
 }
 
-export function setHasExploredFirstIsland() {
-  return act(SET_HAS_EXPLORED_FIRST_ISLAND, true);
+export function setHasExploredFirstIsland(value = true) {
+  return act(SET_HAS_EXPLORED_FIRST_ISLAND, value);
 }
 
 function handleResetData() {
