@@ -19,7 +19,7 @@ function WorldNameLabelCard(props) {
   return (
     <Card customClassName="world-name-label-card">
       <p>
-        <FuelIcon />
+        Exploration cost is <FuelIcon />
         {explorationCost}
       </p>
       {!props.hasExploredFirstIsland &&

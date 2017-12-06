@@ -19,7 +19,7 @@ export default class Refinery {
       return t;
     });
     this.onDeltaChange = onDeltaChange;
-    this.startDeltaChangeTimer();
+    // this.startDeltaChangeTimer();
   }
 
   getData() {

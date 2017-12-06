@@ -7,7 +7,7 @@ import Ocean from './resources/ocean.js';
 
 export default class PlanetNode extends WorldNode {
   constructor(deck, name) {
-    super(deck, PlanetTerraformer, name, 100);
+    super(deck, PlanetTerraformer, name);
 
     const origo = new Position(0, 0);
     this.grid.addTile(new Tile(origo, new Unexplored()));
@@ -46,4 +46,10 @@ export default class PlanetNode extends WorldNode {
 
     return this.children.size;
   }
+
+  getExplorationCost() {
+    return PlanetNode.explorationCost;
+  }
 }
+
+PlanetNode.explorationCost = 10;

@@ -15,11 +15,11 @@ class RefineryCard extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => this.tick(), 100);
+    // this.timer = setInterval(() => this.tick(), 100);
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    // clearInterval(this.timer);
   }
 
   getTile() {
@@ -49,16 +49,19 @@ class RefineryCard extends React.PureComponent {
       <Card>
         <div className="refinery-card">
           <h1>Refinery</h1>
+          { /*
           <p>
             <GemIcon color={color} />
             {amount}
           </p>
+          */ }
           <p>
-            <FuelIcon />
-            {productionRate}
+            <FuelIcon /> {productionRate} / s
+            { /*
             <span className="ratio-colon">:</span>
             <GemIcon color={color} />
             1
+            */ }
           </p>
         </div>
       </Card>

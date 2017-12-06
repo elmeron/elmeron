@@ -71,7 +71,8 @@ export function initListeners() {
       dispatch(card.closeCard());
     });
 
-    elmeron.on('getPlayer', ({ fuel, gems, hasExploredFirstIsland }) => {
+    elmeron.on('getPlayer', ({ fuel, gems, hasExploredFirstIsland, explorationCost }) => {
+      dispatch(player.setExplorationCost(explorationCost));
       dispatch(player.setFuelData(fuel));
       dispatch(player.setGemData(gems));
       dispatch(player.setHasExploredFirstIsland(hasExploredFirstIsland));

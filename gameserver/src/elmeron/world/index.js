@@ -12,14 +12,14 @@ import Ocean from './resources/ocean.js';
 const chance = new Chance();
 
 export default class WorldNode extends EventEmitter {
-  constructor(deck, terraformer, name, explorationCost = 0) {
+  constructor(deck, terraformer, name) {
     super();
     this.deck = deck;
     this.terraformer = terraformer;
     this.name = name;
     this.grid = new TileHexagonGrid();
     this.children = new Map();
-    this.explorationCost = explorationCost;
+    this.explorationCost = this.getExplorationCost();
     this.isExplored = false;
   }
 

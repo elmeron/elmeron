@@ -12,7 +12,7 @@ const chance = new Chance();
 
 export default class SpaceNode extends WorldNode {
   constructor() {
-    super(new SpaceDeck(), SpaceTerraformer, 'Space', 1000);
+    super(new SpaceDeck(), SpaceTerraformer, 'Space');
     let startResource = new ElmeronResource();
 
     while (startResource.equals(new ElmeronResource())) {
@@ -74,4 +74,10 @@ export default class SpaceNode extends WorldNode {
 
     return currentIslandAmount;
   }
+
+  getExplorationCost() {
+    return SpaceNode.explorationCost;
+  }
 }
+
+SpaceNode.explorationCost = 50;

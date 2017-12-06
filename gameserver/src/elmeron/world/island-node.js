@@ -12,7 +12,7 @@ const chance = new Chance();
 
 export default class IslandNode extends WorldNode {
   constructor(deck, name) {
-    super(deck, IslandTerraformer, name, 10);
+    super(deck, IslandTerraformer, name);
 
     const startResource = deck.pick();
     const origo = new Position(0, 0);
@@ -118,4 +118,10 @@ export default class IslandNode extends WorldNode {
 
     return data;
   }
+
+  getExplorationCost() {
+    return IslandNode.explorationCost;
+  }
 }
+
+IslandNode.explorationCost = 1;

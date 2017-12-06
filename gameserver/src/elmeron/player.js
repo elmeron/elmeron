@@ -9,6 +9,7 @@ import Resource from './world/resource.js';
 import Forest from './world/resources/forest.js';
 import Rock from './world/resources/rock.js';
 import Sand from './world/resources/sand.js';
+import ExplorationCostCounter from './exploration-cost-counter.js';
 
 const timeUnit = 1000;
 
@@ -23,6 +24,7 @@ export default class Player extends EventEmitter {
     this.gems = new GemInventory();
     this.market = undefined;
     this.hasExploredFirstIsland = false;
+    this.costCounter = new ExplorationCostCounter();
 
     this.onExplore = this.onExplore.bind(this);
     this.onRefineryChange = this.onRefineryChange.bind(this);
@@ -69,12 +71,13 @@ export default class Player extends EventEmitter {
   }
 
   explore(position) {
-    const explorationCost = this.location.explorationCost;
+    const explorationCost = this.costCounter.getExplorationCost();
     const fuelAmount = this.getFuelAmount();
 
     if (fuelAmount >= explorationCost) {
       const explorationResult = this.location.explore(new Position(position.q, position.r), this);
 
+      this.costCounter.increaseCount(this.location);
       this.addFuelAmount(-explorationCost);
       this.emit('getPlayer', this.getData());
       this.location.emit('explore', explorationResult);
@@ -221,6 +224,7 @@ export default class Player extends EventEmitter {
       fuel: this.fuel.getData(),
       gems: this.gems.getData(),
       hasExploredFirstIsland: this.hasExploredFirstIsland,
+      explorationCost: this.costCounter.getExplorationCost(),
     };
   }
 }
