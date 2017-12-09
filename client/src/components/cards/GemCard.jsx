@@ -32,7 +32,7 @@ export default connect(
   (state) => ({
     gems: mapLocalGemsToGlobal(
       state.player.get('gems'),
-      state.market
+      state.player.get('exploredTiles'),
     ),
   })
 )(GemCard);

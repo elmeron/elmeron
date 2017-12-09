@@ -22,27 +22,23 @@ class WorldNameLabel extends React.PureComponent {
     this.timer = undefined;
   }
 
+    /*
   componentDidUpdate() {
     if (this.props.nextGemGeneration && !this.timer) {
       this.timer = setInterval(() => this.tick(), 500);
     }
   }
+  */
 
   tick() {
-    const { nextGemGeneration } = this.props;
+    const { nextTick } = this.props;
+    const now = time.now();
+    const duration = moment.duration(nextTick - now);
 
-    if (nextGemGeneration) {
-      const now = time.now();
-      const duration = moment.duration(nextGemGeneration - now);
-
-      this.setState({
-        minutes: duration.get('minutes'),
-        seconds: duration.get('seconds'),
-      });
-    } else if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = undefined;
-    }
+    this.setState({
+      minutes: duration.get('minutes'),
+      seconds: duration.get('seconds'),
+    });
   }
 
   onClick({ target }) {
@@ -50,16 +46,11 @@ class WorldNameLabel extends React.PureComponent {
   }
 
   render() {
-    const { name, nodeType, zoomOut, nextGemGeneration } = this.props;
-    let timeStr = '';
-
-    if (nextGemGeneration) {
-      const { minutes, seconds } = this.state;
-      const minStr = minutes < 10 ? `0${minutes}` : minutes;
-      const secStr = seconds < 10 ? `0${seconds}` : seconds;
-
-      timeStr = `${minStr} : ${secStr}`;
-    }
+    const { name, nodeType, zoomOut } = this.props;
+    const { minutes, seconds } = this.state;
+    const minStr = minutes < 10 ? `0${minutes}` : minutes;
+    const secStr = seconds < 10 ? `0${seconds}` : seconds;
+    const timeStr = `${minStr} : ${secStr}`;
 
     return (
       <div className="world-name-label">
@@ -76,7 +67,7 @@ export default connect(
   (state) => ({
     name: state.world.getIn(['location', 'current']),
     nodeType: state.world.get('nodeType') || '',
-    nextGemGeneration: state.world.get('nextGemGeneration'),
+    nextTick: state.elmeron.get('nextTick'),
   }),
   (dispatch) => ({
     openCard: bindActionCreators(open, dispatch),

@@ -61,6 +61,7 @@ export default class Elmeron extends EventEmitter {
           'elmeronFound',
           'marketUpdate',
           'playersStatusUpdate',
+          'gameTick',
         ], this.client, this);
 
         return this.rmi.joinGame(nickname)

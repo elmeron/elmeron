@@ -48,6 +48,16 @@ export default class Game extends EventEmitter {
 
       logger.info(`${player.nickname} -> ${player.location.name}`);
     });
+
+    // start game iteration
+    this.gameInterval = 60000;
+    this.nextTick = Date.now() + this.gameInterval;
+
+    setInterval(() => {
+      this.tickGameIteration();
+    }, this.gameInterval);
+
+    this.tickGameIteration(this.gameInterval);
   }
 
   getPlayer(nickname) {
@@ -71,5 +81,15 @@ export default class Game extends EventEmitter {
 
   notifyPlayersStatus() {
     this.emit('playersStatusUpdate', this.getPlayersStatus());
+  }
+
+  tickGameIteration() {
+    this.nextTick = Date.now() + this.gameInterval;
+
+    this.players.toList().forEach((player) => {
+      player.resetGems();
+      // player.resetFuelAmount();
+    });
+    this.emit('gameTick', this.nextTick);
   }
 }

@@ -34,6 +34,14 @@ class GameAPI {
         socket.emit('marketUpdate', data);
       })
     );
+
+    this.game.on('gameTick', data =>
+      this.socketMap.forEach((nickname, id) => {
+        const socket = this.namespace.connected[id];
+
+        socket.emit('gameTick', data);
+      })
+    );
   }
 
   getPlayerBySocket(socket) {
@@ -94,6 +102,7 @@ class GameAPI {
         market: this.game.market.getData(),
         players: this.game.getPlayersStatus(),
         timestamp: Date.now(),
+        nextTick: this.game.nextTick,
       };
     }
 

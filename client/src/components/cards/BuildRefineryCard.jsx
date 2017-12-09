@@ -113,7 +113,7 @@ export default connect(
   (state) => ({
     selectedTiles: state.refinery.get('selectedTiles'),
     localGems: state.player.get('gems'),
-    globalGems: state.market,
+    globalGems: state.player.get('exploredTiles'),
     fuel: state.player.get('fuel').toJS(),
   }),
   (dispatch) => ({

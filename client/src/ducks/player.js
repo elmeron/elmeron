@@ -6,12 +6,14 @@ const SET_FUEL_DATA = 'player/SET_FUEL_DATA';
 const SET_GEM_DATA = 'player/SET_GEM_DATA';
 const SET_HAS_EXPLORED_FIRST_ISLAND = 'player/SET_HAS_EXPLORED_FIRST_ISLAND';
 const SET_EXPLORATION_COST = 'player/SET_EXPLORATION_COST';
+const SET_EXPLORED_TILES = 'player/SET_EXPLORED_TILES';
 
 const initialState = {
   fuel: {},
   gems: {},
   hasExploredFirstIsland: false,
   explorationCost: 0,
+  exploredTiles: {},
 };
 
 export function resetData() {
@@ -34,6 +36,10 @@ export function setExplorationCost(value) {
   return act(SET_EXPLORATION_COST, value);
 }
 
+export function setExploredTiles(data) {
+  return act(SET_EXPLORED_TILES, data);
+}
+
 function handleResetData() {
   return fromJS(initialState);
 }
@@ -54,12 +60,17 @@ function handleSetExplorationCost(state, value) {
   return state.set('explorationCost', value);
 }
 
+function handleSetExploredTiles(state, data) {
+  return state.mergeIn(['exploredTiles'], fromJS(data));
+}
+
 const handlers = {
   [RESET]: handleResetData,
   [SET_FUEL_DATA]: handleSetFuelData,
   [SET_GEM_DATA]: handleSetGemData,
   [SET_HAS_EXPLORED_FIRST_ISLAND]: handleSetHasExploredFirstIsland,
   [SET_EXPLORATION_COST]: handleSetExplorationCost,
+  [SET_EXPLORED_TILES]: handleSetExploredTiles,
 };
 
 export default reducer(initialState, handlers);

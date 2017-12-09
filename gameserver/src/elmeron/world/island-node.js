@@ -24,8 +24,8 @@ export default class IslandNode extends WorldNode {
     this.grid.addTiles(neighbours.tiles);
 
     this.gemGenerationInterval = 60000;
-    this.nextGeneration = Date.now() + this.gemGenerationInterval;
-    this.generateGems();
+    // this.nextGeneration = Date.now() + this.gemGenerationInterval;
+    // this.generateGems();
   }
 
   static calculateLikelihood(grid) {

@@ -12,6 +12,10 @@ export default class GemInventory {
     this.distribution.set(resource, previousAmount + amount);
   }
 
+  set(resource, amount) {
+    this.distribution.set(resource, amount);
+  }
+
   count(resource) {
     return this.distribution.count(resource);
   }

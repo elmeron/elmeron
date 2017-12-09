@@ -80,4 +80,4 @@ export default class SpaceNode extends WorldNode {
   }
 }
 
-SpaceNode.explorationCost = 50;
+SpaceNode.explorationCost = 100;

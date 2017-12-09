@@ -19,6 +19,7 @@ const SET_CONNECTED = 'elmeron/SET_CONNECTED';
 const SET_CONNECTING = 'elmeron/SET_CONNECTING';
 const SET_ERROR = 'elmeron/SET_ERROR';
 const SET_PLAYERS = 'elmeron/SET_PLAYERS';
+const SET_NEXT_TICK = 'elmeron/SET_NEXT_TICK';
 
 const initialState = {
   nickname: undefined,
@@ -26,6 +27,7 @@ const initialState = {
   connecting: true,
   error: undefined,
   players: [],
+  nextTick: undefined,
 };
 
 export function setNickname(nickname) {
@@ -71,7 +73,8 @@ export function initListeners() {
       dispatch(card.closeCard());
     });
 
-    elmeron.on('getPlayer', ({ fuel, gems, hasExploredFirstIsland, explorationCost }) => {
+    elmeron.on('getPlayer', ({ fuel, gems, hasExploredFirstIsland, explorationCost, exploredTiles }) => {
+      dispatch(player.setExploredTiles(exploredTiles));
       dispatch(player.setExplorationCost(explorationCost));
       dispatch(player.setFuelData(fuel));
       dispatch(player.setGemData(gems));
@@ -85,12 +88,14 @@ export function initListeners() {
       market: marketData,
       players,
       timestamp,
+      nextTick,
     }) => {
       elmeron.emit('getWorld', worldData);
       elmeron.emit('getPlayer', playerData);
 
       dispatch(market.updateMarket(marketData));
       dispatch(act(SET_PLAYERS, players));
+      dispatch(act(SET_NEXT_TICK, nextTick));
 
       time.setOffset(timestamp - time.now());
 
@@ -158,6 +163,13 @@ export function initListeners() {
 
     elmeron.on('generateGems', (data) => {
       dispatch(world.setNextGemGeneration(data));
+    });
+
+    elmeron.on('gameTick', (nextTick) => {
+      dispatch(act(SET_NEXT_TICK, nextTick));
+      elmeron.getPlayer().then(data =>
+        elmeron.emit('getPlayer', data)
+      );
     });
   };
 }
@@ -236,12 +248,17 @@ function handleSetPlayers(state, players) {
   return state.set('players', fromJS(players));
 }
 
+function handleSetNextTick(state, value) {
+  return state.set('nextTick', value);
+}
+
 const handlers = {
   [SET_NICKNAME]: handleSetNickname,
   [SET_CONNECTED]: handleSetConnected,
   [SET_CONNECTING]: handleSetConnecting,
   [SET_ERROR]: handleSetError,
   [SET_PLAYERS]: handleSetPlayers,
+  [SET_NEXT_TICK]: handleSetNextTick,
 };
 
 export default reducer(initialState, handlers);

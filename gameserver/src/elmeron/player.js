@@ -9,6 +9,7 @@ import Resource from './world/resource.js';
 import Forest from './world/resources/forest.js';
 import Rock from './world/resources/rock.js';
 import Sand from './world/resources/sand.js';
+import Ocean from './world/resources/ocean.js';
 import ExplorationCostCounter from './exploration-cost-counter.js';
 
 const timeUnit = 1000;
@@ -22,6 +23,7 @@ export default class Player extends EventEmitter {
     this.location = undefined;
     this.fuel = new Fuel(Date.now(), timeUnit);
     this.gems = new GemInventory();
+    this.exploredTiles = new GemInventory();
     this.market = undefined;
     this.hasExploredFirstIsland = false;
     this.costCounter = new ExplorationCostCounter();
@@ -32,14 +34,18 @@ export default class Player extends EventEmitter {
   }
 
   initStartResources() {
+    const origo = new Position(0, 0);
+    const startResource = this.location.grid.getTile(origo).resource.clone();
+
+    this.exploredTiles.add(startResource, 1);
     this.fuel.addAmount(100);
     this.gems.add(new Forest(), 2);
     this.gems.add(new Rock(), 2);
     this.gems.add(new Sand(), 2);
 
-    this.market.registerIncrease(this, new Forest(), 2);
-    this.market.registerIncrease(this, new Rock(), 2);
-    this.market.registerIncrease(this, new Sand(), 2);
+    // this.market.registerIncrease(this, new Forest(), 2);
+    // this.market.registerIncrease(this, new Rock(), 2);
+    // this.market.registerIncrease(this, new Sand(), 2);
   }
 
   equals(player) {
@@ -75,7 +81,16 @@ export default class Player extends EventEmitter {
     const fuelAmount = this.getFuelAmount();
 
     if (fuelAmount >= explorationCost) {
-      const explorationResult = this.location.explore(new Position(position.q, position.r), this);
+      const pos = new Position(position.q, position.r);
+      const explorationResult = this.location.explore(pos, this);
+
+      if (this.location.getNodeType() === 'IslandNode') {
+        const exploredResource = this.location.grid.getTile(pos).resource.clone();
+
+        if (!exploredResource.equals(new Ocean())) {
+          this.exploredTiles.add(exploredResource, 1);
+        }
+      }
 
       this.costCounter.increaseCount(this.location);
       this.addFuelAmount(-explorationCost);
@@ -120,7 +135,8 @@ export default class Player extends EventEmitter {
         const resource = new Resource(resourceName);
 
         this.gems.add(resource, -amount);
-        this.market.registerDecrease(this, resource, amount);
+        this.exploredTiles.add(resource, -amount);
+        // this.market.registerDecrease(this, resource, amount);
       });
 
       this.addFuelDelta(delta);
@@ -128,8 +144,9 @@ export default class Player extends EventEmitter {
       const { fuel, gems } = this.getData();
 
       this.emit('refineryBuilt', { tiles, fuel, gems });
-      this.notifyMarket();
-    } else {
+      // this.notifyMarket();
+    }
+    /*else {
       const productionValue = Refinery.calculateProductionValue(new Set(positions));
       const totalFuelPrice = gemCost.reduce((result, amount, resourceName) => {
         const gem = new Resource(resourceName);
@@ -152,10 +169,12 @@ export default class Player extends EventEmitter {
         });
 
         this.buildRefinery(positions);
-      } else {
-        throw new Error('Cannot build refinery: Not enough fuel');
+      }
+      else {
+        throw new Error('Cannot build refinery: Not enough gems');
       }
     }
+    */
   }
 
   setLocation(location) {
@@ -185,6 +204,11 @@ export default class Player extends EventEmitter {
 
   addFuelAmount(amount) {
     this.fuel.addAmount(amount);
+  }
+
+  resetFuelAmount() {
+    const amount = this.getFuelAmount();
+    this.addFuelAmount(-amount);
   }
 
   pickGem({ q, r }) {
@@ -219,10 +243,21 @@ export default class Player extends EventEmitter {
     }
   }
 
+  resetGems() {
+    const forestCount = this.exploredTiles.count(new Forest());
+    const rockCount = this.exploredTiles.count(new Rock());
+    const sandCount = this.exploredTiles.count(new Sand());
+
+    this.gems.set(new Forest(), forestCount);
+    this.gems.set(new Rock(), rockCount);
+    this.gems.set(new Sand(), sandCount);
+  }
+
   getData() {
     return {
       fuel: this.fuel.getData(),
       gems: this.gems.getData(),
+      exploredTiles: this.exploredTiles.getData(),
       hasExploredFirstIsland: this.hasExploredFirstIsland,
       explorationCost: this.costCounter.getExplorationCost(),
     };
