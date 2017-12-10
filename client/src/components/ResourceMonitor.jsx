@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import time from '../services/time.js';
-import { getFuelAmount } from '../services/utils.js';
+import { calculateAffordableTiles } from '../services/utils.js';
 import { openCard as open } from '../ducks/card.js';
 import './ResourceMonitor.less';
 import FuelCard from './cards/FuelCard.jsx';
@@ -14,46 +14,12 @@ import HexagonIcon from './HexagonIcon.jsx';
 const timeUnit = 1000;
 
 class ResourceMonitor extends React.PureComponent {
-  componentWillMount() {
-    this.state = { affordableTiles: 0, timeLeft: 0 };
-  }
-
-  componentDidMount() {
-    this.timer = setInterval(() => this.tick(), 500);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
-
   calculateAffordableTiles(amount) {
     const { explorationCost: x, explorationCostConstant: y } = this.props;
     const xy = x / y;
 
     // calculated analytically
     return Math.floor(0.5 - xy + Math.sqrt(xy * (xy - 1) + 0.25 + 2 * amount / y));
-  }
-
-  calculateTimeLeft(amount) {
-    const { explorationCost: x, explorationCostConstant: y, delta } = this.props;
-    const n = this.calculateAffordableTiles(amount);
-
-    // calculated analytically
-    const usableAmount = n * x + n * y * ((n - 1) / 2);
-    const nonUsableAmount = amount - usableAmount;
-    const remainingCost =  x + n * y;
-
-    return Math.round((remainingCost - nonUsableAmount) / delta);
-  }
-
-  tick() {
-    const { delta, deltaStart, offset, nextGemGeneration, explorationCost } = this.props;
-    const now = time.now();
-    const amount = getFuelAmount(delta, deltaStart, offset, timeUnit, now);
-    const affordableTiles = this.calculateAffordableTiles(amount);
-    const timeLeft = this.calculateTimeLeft(amount);
-
-    this.setState({ affordableTiles, timeLeft });
   }
 
   onFuelClick() {
@@ -64,23 +30,9 @@ class ResourceMonitor extends React.PureComponent {
     this.props.openCard(this.gemIcon, <GemCard />, 'down');
   }
 
-  makeTimeText() {
-    const { timeLeft } = this.state;
-    const timeTrunc = timeLeft;
-
-    if (timeTrunc < 60) {
-      return `${timeTrunc} s`;
-    }
-
-    const minTrunc = Math.floor(timeLeft / 60);
-
-    return `${minTrunc} min`;
-  }
-
   render() {
-    const { affordableTiles } = this.state;
-    const timeText = this.makeTimeText();
-    const fuelText = `${affordableTiles}, ${timeText}`;
+    const { fuelAmount, explorationCost, explorationCostConstant } = this.props;
+    const affordableTiles = calculateAffordableTiles(fuelAmount, explorationCost, explorationCostConstant);
 
     return (
       <div className="resource-monitor">
@@ -90,7 +42,7 @@ class ResourceMonitor extends React.PureComponent {
         </p>
         <p onClick={() => this.onFuelClick()} className="fuel-monitor">
           <HexagonIcon refs={(r) => { this.fuelIcon = r; }} />
-          {fuelText}
+          {affordableTiles}
         </p>
       </div>
     );
@@ -107,11 +59,8 @@ function countGems(gems) {
 
 export default connect(
   (state) => ({
-    delta: state.player.getIn(['fuel', 'delta']),
-    deltaStart: state.player.getIn(['fuel', 'deltaStart']),
-    offset: state.player.getIn(['fuel', 'offset']),
+    fuelAmount: state.player.get('fuelAmount'),
     gems: countGems(state.player.get('gems')),
-    nextGemGeneration: state.world.get('nextGemGeneration'),
     explorationCost: state.player.get('explorationCost'),
     explorationCostConstant: state.world.get('explorationCost'),
   }),

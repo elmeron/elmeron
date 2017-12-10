@@ -26,7 +26,7 @@ function costBody(cost, available, fuelCost, fuelAmount) {
     return <p>Free</p>;
   }
 
-  const shouldPrintFuelCost = fuelCost > 0;
+  const shouldPrintFuelCost = false; // fuelCost > 0;
   const cannotAffordFuel = fuelAmount < fuelCost;
   const cannotAffordFuelClass = cannotAffordFuel ? 'cannot-afford' : '';
 
@@ -85,12 +85,12 @@ function BuildRefineryCard(props) {
   }, 0);
 
 
-  const { delta, deltaStart, offset } = props.fuel;
-  const availableFuel = getFuelAmount(delta, deltaStart, offset, 1000, Date.now());
+  // const { delta, deltaStart, offset } = props.fuel;
+  // const availableFuel = getFuelAmount(delta, deltaStart, offset, 1000, Date.now());
 
   const cannotAfford = costMap.some((amount, resource) =>
-    !props.globalGems.get(resource) || props.globalGems.get(resource) < amount
-  ) || availableFuel < fuelPrice;
+    !props.localGems.get(resource) || props.localGems.get(resource) < amount
+  );
 
   return (
     <Card>
@@ -101,7 +101,7 @@ function BuildRefineryCard(props) {
           <FuelIcon />
           {`${production} / s`}
         </p>
-        {costBody(cost, props.globalGems, fuelPrice, availableFuel)}
+        {costBody(cost, props.localGems, fuelPrice)}
         <button disabled={cannotAfford} onClick={onBuild}>BUILD</button>
         <button onClick={onCancel}>CANCEL</button>
       </div>

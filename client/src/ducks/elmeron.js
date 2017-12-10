@@ -73,12 +73,14 @@ export function initListeners() {
       dispatch(card.closeCard());
     });
 
-    elmeron.on('getPlayer', ({ fuel, gems, hasExploredFirstIsland, explorationCost, exploredTiles }) => {
+    elmeron.on('getPlayer', ({ fuel, gems, hasExploredFirstIsland, explorationCost, exploredTiles, fuelAmount, delta }) => {
       dispatch(player.setExploredTiles(exploredTiles));
       dispatch(player.setExplorationCost(explorationCost));
       dispatch(player.setFuelData(fuel));
       dispatch(player.setGemData(gems));
       dispatch(player.setHasExploredFirstIsland(hasExploredFirstIsland));
+      dispatch(player.setFuelAmount(fuelAmount));
+      dispatch(player.setFuelDelta(delta));
     });
 
     elmeron.on('gameStart', ({
@@ -136,12 +138,15 @@ export function initListeners() {
       }
     });
 
-    elmeron.on('refineryBuilt', ({ tiles, fuel, gems }) => {
+    elmeron.on('refineryBuilt', ({ tiles, fuel, gems, exploredTiles, fuelAmount, delta }) => {
       dispatch(world.mergeTiles(tiles));
       dispatch(player.setFuelData(fuel));
       dispatch(player.setGemData(gems));
       dispatch(refinery.stopMonitoring());
       dispatch(card.closeCard());
+      dispatch(player.setExploredTiles(exploredTiles));
+      dispatch(player.setFuelAmount(fuelAmount));
+      dispatch(player.setFuelDelta(delta));
     });
 
     elmeron.on('refineryChange', ({ tiles, fuel }) => {
