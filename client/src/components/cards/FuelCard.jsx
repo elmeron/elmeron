@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { calculateAffordableTiles } from '../../services/utils.js';
 import Card from './Card.jsx';
 import HexagonIcon from '../HexagonIcon.jsx';
+import FuelIcon from '../FuelIcon.jsx';
 
 const gameInterval = 90;
 
@@ -17,6 +18,14 @@ function FuelCard(props) {
       <p>
         <HexagonIcon />
         {currentAffordableTiles} / {maxAffordableTiles}
+      </p>
+      <p>
+        Production<br />
+        <FuelIcon /> {delta} / s
+      </p>
+      <p>
+        Cost / tile<br />
+        <FuelIcon /> {explorationCost} + {explorationCostConstant}
       </p>
     </Card>
   );
