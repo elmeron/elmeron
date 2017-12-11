@@ -28,6 +28,9 @@ export default class Player extends EventEmitter {
     this.hasExploredFirstIsland = false;
     this.costCounter = new ExplorationCostCounter();
 
+    this.delta = 1;
+    this.fuelAmount = 0;
+
     this.onExplore = this.onExplore.bind(this);
     this.onRefineryChange = this.onRefineryChange.bind(this);
     this.onGenerateGems = this.onGenerateGems.bind(this);
@@ -131,19 +134,24 @@ export default class Player extends EventEmitter {
         }
       );
 
+      positions.forEach((position) => {
+        const { name } = position.resource;
+        const resource = new Resource(name);
+        this.exploredTiles.add(resource, -1);
+      });
+
       gemCost.forEach((amount, resourceName) => {
         const resource = new Resource(resourceName);
 
         this.gems.add(resource, -amount);
-        this.exploredTiles.add(resource, -amount);
         // this.market.registerDecrease(this, resource, amount);
       });
 
       this.addFuelDelta(delta);
 
-      const { fuel, gems } = this.getData();
+      const { fuel, gems, exploredTiles, fuelAmount, delta: _delta } = this.getData();
 
-      this.emit('refineryBuilt', { tiles, fuel, gems });
+      this.emit('refineryBuilt', { tiles, fuel, gems, exploredTiles, fuelAmount, delta: _delta });
       // this.notifyMarket();
     }
     /*else {
@@ -191,24 +199,34 @@ export default class Player extends EventEmitter {
   }
 
   getFuelAmount() {
+    /*
     const now = Date.now();
     return this.fuel.getAmount(now);
+    */
+    return this.fuelAmount;
   }
 
   addFuelDelta(delta) {
+    /*
     const now = Date.now();
     const { delta: previousDelta } = this.fuel.getData();
 
     this.fuel.setDelta(delta + previousDelta, now);
+    */
+    this.delta += delta;
   }
 
   addFuelAmount(amount) {
-    this.fuel.addAmount(amount);
+    // this.fuel.addAmount(amount);
+    this.fuelAmount += amount;
   }
 
-  resetFuelAmount() {
+  resetFuelAmount(timeInterval) {
+    /*
     const amount = this.getFuelAmount();
     this.addFuelAmount(-amount);
+    */
+    this.fuelAmount = Math.round(this.delta * timeInterval);
   }
 
   pickGem({ q, r }) {
@@ -260,6 +278,8 @@ export default class Player extends EventEmitter {
       exploredTiles: this.exploredTiles.getData(),
       hasExploredFirstIsland: this.hasExploredFirstIsland,
       explorationCost: this.costCounter.getExplorationCost(),
+      fuelAmount: this.fuelAmount,
+      delta: this.delta,
     };
   }
 }

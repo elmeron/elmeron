@@ -88,7 +88,7 @@ export default class Game extends EventEmitter {
 
     this.players.toList().forEach((player) => {
       player.resetGems();
-      // player.resetFuelAmount();
+      player.resetFuelAmount(this.gameInterval / 1000);
     });
     this.emit('gameTick', this.nextTick);
   }
