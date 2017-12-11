@@ -4,7 +4,7 @@ import { calculateAffordableTiles } from '../../services/utils.js';
 import Card from './Card.jsx';
 import HexagonIcon from '../HexagonIcon.jsx';
 
-const gameInterval = 60;
+const gameInterval = 90;
 
 function FuelCard(props) {
   const { delta, fuelAmount, explorationCost, explorationCostConstant } = props;

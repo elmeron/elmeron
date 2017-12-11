@@ -50,7 +50,7 @@ export default class Game extends EventEmitter {
     });
 
     // start game iteration
-    this.gameInterval = 60000;
+    this.gameInterval = 90000;
     this.nextTick = Date.now() + this.gameInterval;
 
     setInterval(() => {
