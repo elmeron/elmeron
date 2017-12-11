@@ -12,6 +12,7 @@ function FuelCard(props) {
   const maxAmount = Math.round(delta * gameInterval);
   const currentAffordableTiles = calculateAffordableTiles(fuelAmount, explorationCost, explorationCostConstant);
   const maxAffordableTiles = calculateAffordableTiles(maxAmount, explorationCost, explorationCostConstant);
+  const deltaFixed = delta % 1 != 0 ? delta.toFixed(1) : delta;
 
   return (
     <Card>
@@ -21,7 +22,7 @@ function FuelCard(props) {
       </p>
       <p>
         Production<br />
-        <FuelIcon /> {delta} / s
+        <FuelIcon /> {deltaFixed} / s
       </p>
       <p>
         Cost / tile<br />
